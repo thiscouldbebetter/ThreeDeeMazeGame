@@ -1,7 +1,7 @@
 
-function DisplayHelper3D()
+function DisplayHelper3D(sizeInPixels)
 {
-	// do nothing
+		this.sizeInPixels = sizeInPixels;
 }
 
 {
@@ -204,7 +204,7 @@ function DisplayHelper3D()
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		var camera = world.camera;
-		var cameraLoc = camera.entity.loc;
+		var cameraLoc = camera.loc;
 
 		gl.uniform1f
 		(
@@ -333,13 +333,11 @@ function DisplayHelper3D()
 		);
 	}
 
-	DisplayHelper3D.prototype.initialize = function(viewSize)
+	DisplayHelper3D.prototype.initialize = function()
 	{
-		this.viewSize = viewSize;
-
 		var canvas = document.createElement("canvas");
-		canvas.width = viewSize.x;
-		canvas.height = viewSize.y;
+		canvas.width = this.sizeInPixels.x;
+		canvas.height = this.sizeInPixels.y;
 		document.body.appendChild(canvas);
 
 		this.webGLContext = new WebGLContext(canvas);

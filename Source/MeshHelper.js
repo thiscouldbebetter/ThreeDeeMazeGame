@@ -131,11 +131,6 @@ function MeshHelper()
 			meshesForEntityParts
 		);
 
-		/*
-		returnValue.transform(new Transform_DimensionsSwap([0, 1]))
-		returnValue.transform(new Transform_Scale(new Coords(-1, -1, 1)));
-		*/
-
 		returnValue.transform
 		(
 			new Transform_Orient

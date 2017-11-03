@@ -175,10 +175,12 @@ function Collision(pos, distanceToCollision, colliders)
 
 		return returnValue;
 	}
+	
+	Collision.CoordsTemp = new Coords(0, 0, 0);
 
 	Collision.isPosWithinFace = function(posToCheck, face)
 	{
-		var displacementFromVertex0ToCollision = Coords.Instances.Temp;
+		var displacementFromVertex0ToCollision = Collision.CoordsTemp;
 
 		var isPosWithinAllEdgesOfFaceSoFar = true;
 

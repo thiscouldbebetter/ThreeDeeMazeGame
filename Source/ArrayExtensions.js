@@ -36,50 +36,13 @@ function ArrayExtensions()
 		return returnValue;
 	}
 
-	Array.prototype.getPropertyValueForEachItem = function(propertyName)
-	{
-		var returnValues = [];
-
-		for (var i = 0; i < this.length; i++)
-		{
-			returnValues.push(this[i][propertyName]);
-		}
-
-		return returnValues;
-	}
-
-	Array.prototype.prependElementsFrom = function(other)
+	Array.prototype.prepend = function(other)
 	{
 		for (var i = 0; i < other.length; i++)
 		{
-			this.splice(0, 0, other[i]);
+			var element = other[i];
+			this.splice(0, 0, element);
 		}
-	}
-
-	Array.prototype.sortArrayIntoOtherUsingCompareFunction = function
-	(
-		arraySorted, 
-		compareFunction
-	)
-	{
-		for (var i = 0; i < this.length; i++)
-		{
-			var elementToSort = this[i];
-
-			var j = 0;
-			for (j = 0; j < arraySorted.length; j++)
-			{
-				var elementSorted = arraySorted[j];
-
-				if (compareFunction(elementToSort, elementSorted) > 0)
-				{
-					break;
-				}
-			}
-
-			arraySorted.splice(j, 0, elementToSort);
-		}
-
-		return arraySorted;
+		return this;
 	}
 }

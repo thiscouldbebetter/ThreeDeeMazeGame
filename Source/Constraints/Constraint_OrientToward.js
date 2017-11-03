@@ -5,7 +5,7 @@ function Constraint_OrientToward(targetEntity)
 
 	this.transformOrient = new Transform_Orient
 	(
-		Orientation.buildDefault()
+		Orientation.Instances.ForwardXDownZ.clone()
 	);
 }
 

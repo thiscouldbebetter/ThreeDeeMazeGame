@@ -7,6 +7,6 @@ function Transform_TranslateInvert(displacement)
 {
 	Transform_TranslateInvert.prototype.applyToCoords = function(coordsToTransform)
 	{
-		coordsToTransform.subtract(this.displacement);
+		return coordsToTransform.subtract(this.displacement);
 	}
 }

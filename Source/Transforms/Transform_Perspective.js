@@ -21,5 +21,6 @@ function Transform_Perspective(focalLength)
 				distanceAlongCameraForward
 			);
 		}
+		return coordsToTransform;
 	}
 }

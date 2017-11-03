@@ -1,27 +1,13 @@
 
-function DisplayHelper2D()
+function DisplayHelper2D(sizeInPixels)
 {
+	this.sizeInPixels = sizeInPixels;
+
 	this.drawPositions = [];
 	this.isSketchModeOn = false;
 }
 
 {
-	/*
-	DisplayHelper2D.prototype.camera_Set = function(camera)
-	{
-		this.camera = camera;
-
-		this.canvas = document.createElement("canvas");
-		this.canvas.width = this.camera.viewSize.x;
-		this.canvas.height = this.camera.viewSize.y;
-		this.graphics = this.canvas.getContext("2d");
-
-		document.body.appendChild(this.canvas);
-
-		this.transformCamera = new Transform_Camera(this.camera);
-	}
-	*/
-
 	DisplayHelper2D.prototype.clear = function()
 	{
 		this.graphics.strokeStyle = "LightGray";
@@ -38,15 +24,15 @@ function DisplayHelper2D()
 		this.graphics.fillRect
 		(
 			0, 0, 
-			this.viewSize.x, 
-			this.viewSize.y
+			this.sizeInPixels.x, 
+			this.sizeInPixels.y
 		);
 
 		this.graphics.strokeRect
 		(
 			0, 0, 
-			this.viewSize.x, 
-			this.viewSize.y
+			this.sizeInPixels.x, 
+			this.sizeInPixels.y
 		);
 	}
 
@@ -65,7 +51,7 @@ function DisplayHelper2D()
 
 		var displacementFromCameraToVertex0 = vertices[0].pos.clone().subtract
 		(
-			camera.entity.loc.pos
+			camera.loc.pos
 		);
 
 		var faceNormalDotDisplacementFromCameraToVertex0 = faceToDraw.plane.normal.dotProduct
@@ -86,13 +72,13 @@ function DisplayHelper2D()
 		this.graphics.beginPath();
 
 		for (var i = 0; i < vertices.length; i++)
-		{
-			this.drawPos.overwriteWith
+		{			
+			transformCamera.applyToCoords
 			(
-				vertices[i].pos
-			).transform
-			(
-				transformCamera
+				this.drawPos.overwriteWith
+				(
+					vertices[i].pos
+				)
 			);
 
 			if (i == 0)
@@ -160,7 +146,7 @@ function DisplayHelper2D()
 	{
 		var facesToDraw = [];
 
-		var cameraPos = world.camera.entity.loc.pos;
+		var cameraPos = world.camera.loc.pos;
 
 		var spacePartitioningTreeRoot = 
 			world.spacePartitioningTreeForZonesActive.nodeRoot;
@@ -235,13 +221,11 @@ function DisplayHelper2D()
 		);
 	}
 
-	DisplayHelper2D.prototype.initialize = function(viewSize)
+	DisplayHelper2D.prototype.initialize = function()
 	{
-		this.viewSize = viewSize;
-
 		this.canvas = document.createElement("canvas");
-		this.canvas.width = viewSize.x;
-		this.canvas.height = viewSize.y;
+		this.canvas.width = this.sizeInPixels.x;
+		this.canvas.height = this.sizeInPixels.y;
 		this.graphics = this.canvas.getContext("2d");
 
 		document.body.appendChild(this.canvas);

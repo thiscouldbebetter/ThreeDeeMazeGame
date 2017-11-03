@@ -13,7 +13,8 @@ function Transform_DimensionsSwap(dimensionIndices)
 		var dimension0 = coordsToTransform.dimension(dimensionIndex0);
 		var dimension1 = coordsToTransform.dimension(dimensionIndex1);
 		
-		coordsToTransform.dimension_Set(dimensionIndex0, dimension1);
-		coordsToTransform.dimension_Set(dimensionIndex1, dimension0);
+		coordsToTransform.dimension(dimensionIndex0, dimension1);
+		coordsToTransform.dimension(dimensionIndex1, dimension0);
+		return coordsToTransform;
 	}	
 }

@@ -40,7 +40,7 @@ function Face(vertices, material)
 
 	var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
 
-	this.bounds.setFromPositions(vertexPositions);
+	this.bounds.ofPoints(vertexPositions);
 }
 
 {
@@ -61,7 +61,7 @@ function Face(vertices, material)
 		}
 
 		var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-		this.bounds.setFromPositions(vertexPositions);
+		this.bounds.ofPoints(vertexPositions);
 
 	}
 }

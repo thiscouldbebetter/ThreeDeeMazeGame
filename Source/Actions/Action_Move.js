@@ -1,6 +1,7 @@
 
 function Action_Move(amountToMoveForwardRightDown)
 {
+	this.ticksToHold = 1;
 	this.amountToMoveForwardRightDown = amountToMoveForwardRightDown;
 
 	this.name = "Move" + this.amountToMoveForwardRightDown.toString();
@@ -18,12 +19,12 @@ function Action_Move(amountToMoveForwardRightDown)
 		{
 			this.transformOrient.orientation = entityLoc.orientation;
 
-			this.acceleration.overwriteWith
+			this.transformOrient.applyToCoords
 			(
-				this.amountToMoveForwardRightDown
-			).transform
-			(
-				this.transformOrient
+				this.acceleration.overwriteWith
+				(
+					this.amountToMoveForwardRightDown
+				)
 			)
 	
 			entityLoc.accel.add

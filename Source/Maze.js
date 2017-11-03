@@ -102,7 +102,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 			neighborOffset
 		);
 
-		if (cellPosNeighbor.isWithinRangeMax(sizeInCellsMinusOnes) == true)
+		if (cellPosNeighbor.isInRangeMax(sizeInCellsMinusOnes) == true)
 		{
 			if (cellCurrent.connectedToNeighbors[neighborOffsetIndex] == false)
 			{

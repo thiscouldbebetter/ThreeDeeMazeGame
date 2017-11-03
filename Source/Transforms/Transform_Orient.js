@@ -13,5 +13,6 @@ function Transform_Orient(orientation)
 			this.orientation.right.dotProduct(coordsToTransform),
 			this.orientation.down.dotProduct(coordsToTransform)
 		);
+		return coordsToTransform;
 	}
 }

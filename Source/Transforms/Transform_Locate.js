@@ -12,5 +12,6 @@ function Transform_Locate(loc)
 	{
 		this.transformOrient.applyToCoords(coordsToTransform);
 		this.transformTranslate.applyToCoords(coordsToTransform);
+		return coordsToTransform;
 	}
 }

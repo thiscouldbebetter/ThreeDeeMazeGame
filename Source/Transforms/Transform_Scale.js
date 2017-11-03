@@ -7,6 +7,6 @@ function Transform_Scale(scaleFactors)
 {
 	Transform_Scale.prototype.applyToCoords = function(coordsToTransform)
 	{
-		coordsToTransform.multiply(this.scaleFactors);
+		return coordsToTransform.multiply(this.scaleFactors);
 	}
 }

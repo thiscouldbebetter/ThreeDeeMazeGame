@@ -145,16 +145,6 @@ function World(name, sizeInPixels, zones, bodies)
 
 	World.prototype.initialize = function()
 	{
-		/*
-		this.collisionTree = new SpaceTree
-		(
-			this.name + "_CollisionTree",
-			this.sizeInPixels,
-			new Coords(2, 2, 1), // nodeSizeInChildren
-			4 //depthMax
-		);
-		*/
-
 		this.meshesToDraw = [];
 
 		var entityForPlayer = this.bodies[0];
@@ -189,10 +179,10 @@ function World(name, sizeInPixels, zones, bodies)
 				entity.actions = [];
 
 				entity.constraints = [];
-				entity.constraints.appendElementsFrom(constraintsForMovers);
+				entity.constraints.append(constraintsForMovers);
 
 				var skeletonCloned = skeleton.clone();
-				entity.constraints.prependElementsFrom
+				entity.constraints.prepend
 				([
 					new Constraint_Pose(skeleton, skeletonCloned),
 					new Constraint_Animate(skeleton, skeletonCloned, animationDefnGroupBiped),
@@ -202,7 +192,7 @@ function World(name, sizeInPixels, zones, bodies)
 			}
 		}
 
-		var viewSizeInPixels = Globals.Instance.displayHelpers[0].viewSize.clone();
+		var viewSizeInPixels = Globals.Instance.displayHelpers[0].sizeInPixels.clone();
 		var focalLength = viewSizeInPixels.z / 16;
 		var followDivisor = 16;
 		var offsetOfCameraFromPlayer = new Coords
@@ -211,50 +201,52 @@ function World(name, sizeInPixels, zones, bodies)
 			0, 
 			0 - focalLength
 		).divideScalar(followDivisor);
+		
+		var cameraEntity = new Entity
+		( 
+			"EntityCamera",
+
+			new EntityDefn
+			(
+				"EntityDefnCamera",
+				false, // isDrawable
+				true, // isMovable
+				null // mesh
+			),
+
+			new Location
+			(
+				this.zoneNext.name,
+
+				this.zoneNext.entity.loc.pos.clone().add
+				(
+					offsetOfCameraFromPlayer
+				),
+
+				new Orientation
+				(
+					new Coords(1, 0, 1), // forward
+					new Coords(0, 0, 1) // down
+				)
+			)
+		);
 
 		this.camera = new Camera
 		(
 			viewSizeInPixels, 
-			focalLength, // focalLength,
-			new Entity
-			( 
-				"EntityCamera",
-
-				new EntityDefn
-				(
-					"EntityDefnCamera",
-					false, // isDrawable
-					true, // isMovable
-					null // mesh
-				),
-
-				new Location
-				(
-					this.zoneNext.name,
-
-					this.zoneNext.entity.loc.pos.clone().add
-					(
-						offsetOfCameraFromPlayer
-					),
-
-					new Orientation
-					(
-						new Coords(1, 0, 1), // forward
-						new Coords(0, 0, 1) // down
-					)
-				)
-			)
+			focalLength,
+			cameraEntity.loc
 		);	
 
-		this.camera.entity.constraints = 
+		cameraEntity.constraints = 
 		[
-			//new Constraint_Attach(entityForPlayer, offsetOfCameraFromPlayer),
 			new Constraint_Follow(entityForPlayer, focalLength / followDivisor),
 			new Constraint_OrientToward(entityForPlayer),
-		];
-		this.camera.entity.constraints.addLookups("name");
-
-		this.bodies.push(this.camera.entity);
+		].addLookups("name");
+		
+		this.bodies.push(cameraEntity);
+		
+		this.cameraEntity = cameraEntity;
 
 		this.dateStarted = new Date();
 	}
@@ -303,7 +295,7 @@ function World(name, sizeInPixels, zones, bodies)
 				zoneActive.initialize();
 				this.bodies.push(zoneActive.entity);
 				
-				facesForZonesActive.appendElementsFrom
+				facesForZonesActive.append
 				(
 					zoneActive.entity.meshTransformed.faces					
 				);
@@ -354,22 +346,6 @@ function World(name, sizeInPixels, zones, bodies)
 					constraint.constrainEntity(this, entity);
 				}
 			}
-
-			// todo - Get collision tree working.
-			/*
-			this.collisionTree.removeItemFromNodes
-			(
-				entity,
-				entity.collidableData.collisionNodesOccupied
-			);
-
-			this.collisionTree.addItemWithBounds
-			(
-				entity,
-				entity.meshTransformed.bounds,
-				entity.collidableData.collisionNodesOccupied
-			);
-			*/
 		}
 
 		var displayHelpers = Globals.Instance.displayHelpers;
@@ -384,14 +360,14 @@ function World(name, sizeInPixels, zones, bodies)
 		
 		var zoneCurrentBounds = this.zoneCurrent.entity.meshTransformed.bounds;
 
-		if (zoneCurrentBounds.containsPos(entityForPlayer.loc.pos) == false)
+		if (zoneCurrentBounds.containsPoint(entityForPlayer.loc.pos) == false)
 		{
 			for (var z = 0; z < this.zonesActive.length; z++)
 			{
 				var zoneActive = this.zonesActive[z];
 				var zoneActiveMesh = zoneActive.entity.meshTransformed;
 				var zoneActiveBounds = zoneActiveMesh.bounds;
-				var isPlayerInZoneActive = zoneActiveBounds.containsPos
+				var isPlayerInZoneActive = zoneActiveBounds.containsPoint
 				(
 					entityForPlayer.loc.pos
 				);

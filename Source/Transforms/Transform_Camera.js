@@ -5,11 +5,11 @@ function Transform_Camera(camera)
 
 	this.transformTranslateInvert = new Transform_TranslateInvert
 	(
-		this.camera.entity.loc.pos
+		this.camera.loc.pos
 	);
 	this.transformOrientForCamera = new Transform_OrientForCamera
 	(
-		this.camera.entity.loc.orientation
+		this.camera.loc.orientation
 	);
 	this.transformPerspective = new Transform_Perspective
 	(
@@ -28,5 +28,6 @@ function Transform_Camera(camera)
 		this.transformOrientForCamera.applyToCoords(coordsToTransform);
 		this.transformPerspective.applyToCoords(coordsToTransform);
 		this.transformViewCenter.applyToCoords(coordsToTransform);
+		return coordsToTransform;
 	}
 }

@@ -68,6 +68,11 @@ var orientationCloned = this.orientation.clone();
 
 	Bone.prototype.transform = function(transformToApply)
 	{
-		this.orientation.transform(transformToApply);		
+		var axes = this.orientation.axes;
+		for (var i = 0; i < axes.length; i++)
+		{
+			var axis = axes[i];
+			transformToApply.applyToCoords(axis);
+		}
 	}
 }

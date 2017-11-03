@@ -43,7 +43,7 @@ function Mesh
 
 	this.bounds = new Bounds(new Coords(0, 0, 0), new Coords(0, 0, 0));
 	var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-	this.bounds.setFromPositions(vertexPositions);
+	this.bounds.ofPoints(vertexPositions);
 }
 
 {
@@ -89,7 +89,7 @@ function Mesh
 		}
 
 		var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-		this.bounds.setFromPositions(vertexPositions);
+		this.bounds.ofPoints(vertexPositions);
 
 		return this;
 	}

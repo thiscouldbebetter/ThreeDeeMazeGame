@@ -8,7 +8,7 @@ function Bounds(min, max)
 {
 	Bounds.prototype.containsPos = function(posToCheck)
 	{
-		return posToCheck.isWithinRangeMinMax(this.min, this.max);
+		return posToCheck.isInRangeMinMax(this.min, this.max);
 	}
 
 	Bounds.prototype.minAndMax = function()
@@ -30,11 +30,11 @@ function Bounds(min, max)
 				var posDimension = pos.dimension(d);
 				if (posDimension < this.min.dimension(d))
 				{
-					this.min.dimension_Set(d, posDimension);
+					this.min.dimension(d, posDimension);
 				}
 				if (posDimension > this.max.dimension(d))
 				{
-					this.max.dimension_Set(d, posDimension);
+					this.max.dimension(d, posDimension);
 				}				
 			}
 		}

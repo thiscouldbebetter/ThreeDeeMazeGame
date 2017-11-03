@@ -12,5 +12,6 @@ function Transform_Multiple(transforms)
 			var transform = this.transforms[i];
 			transform.applyToCoords(coordsToTransform);
 		}
+		return coordsToTransform;
 	}
 }

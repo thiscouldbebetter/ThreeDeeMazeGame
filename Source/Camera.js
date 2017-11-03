@@ -7,22 +7,23 @@ function Camera(viewSize, focalLength, entity)
 
 	this.viewSizeHalf = this.viewSize.clone().divideScalar(2);
 	this.viewSizeHalf.z = 0;
-
-	this._clipPlanes = 
-	[
-		new Plane(new Coords(0, 0, 0), 0),
-		new Plane(new Coords(0, 0, 0), 0),
-		new Plane(new Coords(0, 0, 0), 0),
-		new Plane(new Coords(0, 0, 0), 0),
-	];
 }
 
 {
 	Camera.prototype.clipPlanes = function()
 	{
-		var returnValues = [];
-
-		var cameraLoc = this.entity.loc;
+		if (this._clipPlanes == null)
+		{
+			this._clipPlanes = 
+			[
+				new Plane(new Coords(0, 0, 0), 0),
+				new Plane(new Coords(0, 0, 0), 0),
+				new Plane(new Coords(0, 0, 0), 0),
+				new Plane(new Coords(0, 0, 0), 0),
+			];			
+		}
+		
+		var cameraLoc = this.loc;
 		var cameraOrientation = cameraLoc.orientation;
 
 		var cameraPos = cameraLoc.pos.clone();

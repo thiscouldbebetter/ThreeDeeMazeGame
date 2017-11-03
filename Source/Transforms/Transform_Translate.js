@@ -8,6 +8,6 @@ function Transform_Translate(displacement)
 {
 	Transform_Translate.prototype.applyToCoords = function(coordsToTransform)
 	{
-		coordsToTransform.add(this.displacement);
+		return coordsToTransform.add(this.displacement);
 	}
 }

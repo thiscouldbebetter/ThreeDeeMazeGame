@@ -1,8 +1,9 @@
 
-function Universe(name, inputToActionBindings, materials, entityDefns, worlds)
+function Universe(name, actions, inputToActionMappings, materials, entityDefns, worlds)
 {
 	this.name = name;
-	this.inputToActionBindings = inputToActionBindings;
+	this.actions = actions.addLookups("name");
+	this.inputToActionMappings = inputToActionMappings.addLookups("inputName");
 	this.materials = materials;
 	this.entityDefns = entityDefns;
 	this.worlds = worlds;
@@ -15,7 +16,7 @@ function Universe(name, inputToActionBindings, materials, entityDefns, worlds)
 {
 	// static methods
 
-	Universe.buildRandom = function(mazeSizeInCells, mazeCellSizeInPixels, inputToActionBindings)
+	Universe.buildRandom = function(mazeSizeInCells, mazeCellSizeInPixels, actions, inputToActionMappings)
 	{
 		var textures = Texture.Instances;
 
@@ -124,7 +125,8 @@ function Universe(name, inputToActionBindings, materials, entityDefns, worlds)
 		var returnValue = new Universe
 		(
 			"Random Universe",
-			inputToActionBindings,
+			actions,
+			inputToActionMappings,
 			materials,
 			entityDefns,
 			// worlds
