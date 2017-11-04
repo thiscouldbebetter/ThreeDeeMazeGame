@@ -221,7 +221,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 
 				var mesh = MeshHelper.buildRoom
 				(
-					zoneForNodeName, 
+					//zoneForNodeName, 
 					materialNormal,
 					roomSizeInPixelsHalf.x,
 					roomSizeInPixelsHalf.y,
@@ -286,7 +286,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 
 						var mesh = MeshHelper.buildRoom
 						(
-							zoneForConnectorName, 
+							//zoneForConnectorName, 
 							materialNormal,
 							connectorSizeInPixels.x,
 							connectorSizeInPixels.y,

@@ -1,7 +1,6 @@
 
 function Mesh
 (
-	name, 
 	material,
 	vertices, 
 	vertexIndicesForFaces,
@@ -9,7 +8,6 @@ function Mesh
 	vertexGroups
 )
 {
-	this.name = name;
 	this.material = material;
 	this.vertices = vertices;
 	this.vertexIndicesForFaces = vertexIndicesForFaces;
@@ -55,7 +53,6 @@ function Mesh
 	{
 		return new Mesh
 		(
-			this.name,
 			this.material,
 			Cloneable.cloneMany(this.vertices),
 			this.vertexIndicesForFaces,

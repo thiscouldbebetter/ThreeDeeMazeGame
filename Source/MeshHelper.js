@@ -22,7 +22,7 @@ function MeshHelper()
 		[
 			MeshHelper.buildBox
 			(
-				"Pelvis",
+				//"Pelvis",
 				material, 
 				new Coords(heightOver12, heightOver24, heightOver24), 
 				new Coords(0, 0, -heightOver2)
@@ -30,7 +30,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Spine.1", 
+				//"Spine.1", 
 				material,
 				new Coords(heightOver12, heightOver24, heightOver6),
 				new Coords(0, 0, 0 - heightOver2 - heightOver4)
@@ -38,7 +38,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Head", 
+				//"Head", 
 				material,
 				new Coords(heightOver18, heightOver18, heightOver18),
 				new Coords(0, heightOver36, 0 - heightInPixels)
@@ -46,7 +46,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Thigh.L", 
+				//"Thigh.L", 
 				material,
 				new Coords(heightOver36, heightOver36, heightOver8), 
 				new Coords(heightOver18, 0, 0 - heightOver2 + heightOver12)
@@ -54,7 +54,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Shin.L", 
+				//"Shin.L", 
 				material,
 				new Coords(heightOver36, heightOver36, heightOver8), 
 				new Coords(heightOver18, 0, 0 - heightOver6)
@@ -62,7 +62,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Foot.L", 
+				//"Foot.L", 
 				material,
 				new Coords(heightOver36, heightOver12, heightOver36), 
 				new Coords(heightOver18, heightOver12, 0 - heightOver36)
@@ -70,7 +70,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Bicep.L", 
+				//"Bicep.L", 
 				material,
 				new Coords(heightOver36, heightOver36, heightOver12), 
 				new Coords(heightOver6, 0, 0 - heightOver2 - heightOver3)
@@ -78,7 +78,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Forearm.L", 
+				//"Forearm.L", 
 				material,
 				new Coords(heightOver36, heightOver36, heightOver12), 
 				new Coords(heightOver6, 0, 0 - heightOver2 - heightOver4 + heightOver8)
@@ -86,7 +86,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Thigh.R", 
+				//"Thigh.R", 
 				material,
 				new Coords(heightOver36, heightOver36, heightOver8), 
 				new Coords(0 - heightOver18, 0, 0 - heightOver2 + heightOver12)
@@ -94,7 +94,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Shin.R", 
+				//"Shin.R", 
 				material,
 				new Coords(heightOver36, heightOver36, heightOver8), 
 				new Coords(0 - heightOver18, 0, 0 - heightOver6)
@@ -102,7 +102,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Foot.R", 
+				//"Foot.R", 
 				material,
 				new Coords(heightOver36, heightOver12, heightOver36), 
 				new Coords(0 - heightOver18, heightOver12, 0 - heightOver36)
@@ -110,7 +110,7 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Bicep.R",
+				//"Bicep.R",
 				material, 
 				new Coords(heightOver36, heightOver36, heightOver12), 
 				new Coords(0 - heightOver6, 0, 0 - heightOver2 - heightOver3)
@@ -118,17 +118,34 @@ function MeshHelper()
 
 			MeshHelper.buildBox
 			(
-				"Forearm.R", 
+				//"Forearm.R", 
 				material,
 				new Coords(heightOver36, heightOver36, heightOver12), 
 				new Coords(0 - heightOver6, 0, 0 - heightOver2 - heightOver4 + heightOver8)
 			),		
 		];
 
+		var vertexGroupNames = 
+		[
+			"Pelvis",
+			"Spine.1", 
+			"Head", 
+			"Thigh.L", 
+			"Shin.L", 
+			"Foot.L", 
+			"Bicep.L", 
+			"Forearm.L", 
+			"Thigh.R", 
+			"Shin.R", 
+			"Foot.R", 
+			"Bicep.R",
+			"Forearm.R", 
+		];
+
 		var returnValue = MeshHelper.mergeMeshes
 		(
-			"MeshBiped",
-			meshesForEntityParts
+			meshesForEntityParts,
+			vertexGroupNames
 		);
 
 		returnValue.transform
@@ -149,9 +166,9 @@ function MeshHelper()
 		return returnValue;
 	}
 
-	MeshHelper.buildBox = function(name, material, size, pos)
+	MeshHelper.buildBox = function(material, size, pos)
 	{
-		var returnMesh = MeshHelper.buildUnitCube(name, material);
+		var returnMesh = MeshHelper.buildUnitCube(material);
 
 		returnMesh.transform
 		(
@@ -174,7 +191,7 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildRoom = function(name, material, x, y, z, neighborOffsets, connectedToNeighbors)
+	MeshHelper.buildRoom = function(material, x, y, z, neighborOffsets, connectedToNeighbors)
 	{
 		var wallNormals = neighborOffsets;
 
@@ -192,8 +209,6 @@ function MeshHelper()
 			var wallNormal = wallNormals[i];
 
 			var scaleFactors = new Coords(x, y, z);
-
-			var meshName = "[wall]";
 	
 			var meshForWall;
 			
@@ -201,7 +216,6 @@ function MeshHelper()
 			{	
 				meshForWall = MeshHelper.buildRoom_WallWithDoorway
 				(
-					meshName, 
 					material
 				);
 			}
@@ -209,7 +223,6 @@ function MeshHelper()
 			{
 				meshForWall = MeshHelper.buildRoom_Wall
 				(
-					meshName, 
 					material
 				);
 			}
@@ -302,7 +315,6 @@ function MeshHelper()
 
 		var returnMesh = MeshHelper.mergeMeshes
 		(
-			name,
 			meshesForRoom
 		);
 
@@ -318,7 +330,7 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildUnitRing = function(name, material, numberOfVertices)
+	MeshHelper.buildUnitRing = function(material, numberOfVertices)
 	{
 		var vertices = [];
 		var vertexIndicesForFace = [];
@@ -341,7 +353,6 @@ function MeshHelper()
 
 		var returnMesh = new Mesh
 		(
-			name,
 			material, 
 			vertices,
 			[ vertexIndicesForFace ]
@@ -354,7 +365,6 @@ function MeshHelper()
 	{
 		var returnMesh = new MeshHelper.buildUnitSquare
 		(
-			"Ceiling",
 			material
 		).transform
 		(
@@ -381,7 +391,6 @@ function MeshHelper()
 	{
 		var returnMesh = new MeshHelper.buildUnitSquare
 		(
-			"Floor",
 			material
 		).transform
 		(
@@ -397,11 +406,10 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildRoom_Wall = function(name, material)
+	MeshHelper.buildRoom_Wall = function(material)
 	{
 		var returnMesh = new Mesh
 		(
-			name, 
 			material,
 			// vertices
 			Vertex.buildManyFromPositions
@@ -432,11 +440,10 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildRoom_WallWithDoorway = function(name, material)
+	MeshHelper.buildRoom_WallWithDoorway = function(material)
 	{
 		var returnMesh = new Mesh
 		(
-			name, 
 			material,
 			// vertices
 			Vertex.buildManyFromPositions
@@ -495,11 +502,10 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildUnitCube = function(name, material)
+	MeshHelper.buildUnitCube = function(material)
 	{
 		var returnMesh = new Mesh
 		(
-			name, 
 			material,
 			// vertices
 			Vertex.buildManyFromPositions
@@ -532,11 +538,10 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildUnitSquare = function(name, material)
+	MeshHelper.buildUnitSquare = function(material)
 	{
 		var returnMesh = new Mesh
 		(
-			name, 
 			material,
 			// vertices
 			Vertex.buildManyFromPositions
@@ -587,7 +592,7 @@ function MeshHelper()
 		return faceToClip;
 	}
 
-	MeshHelper.mergeMeshes = function(name, meshesToMerge)
+	MeshHelper.mergeMeshes = function(meshesToMerge, vertexGroupNames)
 	{
 		var verticesMerged = [];
 		var vertexIndicesForFacesMerged = [];
@@ -635,26 +640,28 @@ function MeshHelper()
 				}
 			}
 
-			var vertexIndicesInVertexGroup = [];
-			for (var v = 0; v < meshToMerge.vertices.length; v++)
+			if (vertexGroupNames != null)
 			{
-				vertexIndicesInVertexGroup.push(numberOfVerticesSoFar + v);	
+				var vertexIndicesInVertexGroup = [];
+				for (var v = 0; v < meshToMerge.vertices.length; v++)
+				{
+					vertexIndicesInVertexGroup.push(numberOfVerticesSoFar + v);	
+				}
+
+				var vertexGroup = new VertexGroup
+				(
+					vertexGroupNames[m],
+					vertexIndicesInVertexGroup
+				);
+
+				vertexGroups.push(vertexGroup);
 			}
-
-			var vertexGroup = new VertexGroup
-			(
-				meshToMerge.name,
-				vertexIndicesInVertexGroup
-			);
-
-			vertexGroups.push(vertexGroup);
 
 			numberOfVerticesSoFar += meshToMerge.vertices.length;
 		}
 
 		var returnMesh = new Mesh
 		(
-			name,
 			meshesToMerge[0].material, 
 			verticesMerged,
 			vertexIndicesForFacesMerged,

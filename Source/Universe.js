@@ -68,7 +68,6 @@ function Universe(name, actions, inputToActionMappings, materials, entityDefns, 
 		// An alternate, asymmetric mesh.
 		var meshMover = new Mesh
 		(
-			"MeshMover",
 			materials["MaterialMover"],
 			Vertex.buildManyFromPositions
 			([

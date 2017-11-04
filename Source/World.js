@@ -174,7 +174,7 @@ function World(name, sizeInPixels, zones, bodies)
 		{
 			var entity = this.bodies[i];
 
-			if (entity.defn.mesh.name == "MeshBiped")
+			if (entity.defn.name == "EntityDefnMover") // hack
 			{
 				entity.actions = [];
 

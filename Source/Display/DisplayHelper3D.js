@@ -252,6 +252,8 @@ function DisplayHelper3D(sizeInPixels)
 
 		var bodies = world.bodies;
 
+		var entityForPlayer = bodies[0];
+
 		for (var b = 0; b < bodies.length; b++)
 		{
 			var entity = bodies[b];
@@ -261,7 +263,7 @@ function DisplayHelper3D(sizeInPixels)
 			var normalMatrix;
 
 			normalMatrix = this.matrixOrient;
-			if (entity.defn.mesh != null && entity.defn.mesh.name == "MeshBiped")
+			if (entity.defn.name == "EntityDefnMover") // hack
 			{
 				normalMatrix = this.matrixOrient.overwriteWithOrientationMover
 				(
