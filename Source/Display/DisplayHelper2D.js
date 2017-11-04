@@ -173,7 +173,6 @@ function DisplayHelper2D(sizeInPixels)
 
 					var edgeForFootprint = new Edge
 					(
-						null,
 						[
 							entity.loc.pos,
 							entity.loc.pos.clone().add(new Coords(0, 0, 100))

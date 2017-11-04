@@ -27,7 +27,6 @@ function Constraint_Solid()
 
 			var edgeForMovement = new Edge
 			(
-				null, // face
 				[ entityPos, entityPosNext ]
 			);
 	

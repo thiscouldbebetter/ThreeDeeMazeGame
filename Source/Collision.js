@@ -16,7 +16,7 @@ function Collision(pos, distanceToCollision, colliders)
 		{
 			var face = mesh.faces[f];
 	
-			if (face.plane.normal.dotProduct(edge.direction) < 0)
+			if (face.plane.normal.dotProduct(edge.direction()) < 0)
 			{
 				var collision = Collision.findCollisionOfEdgeAndFace
 				(
@@ -149,11 +149,11 @@ function Collision(pos, distanceToCollision, colliders)
 				plane.distanceFromOrigin 
 				- plane.normal.dotProduct(edge.vertices[0])
 			)
-			/ plane.normal.dotProduct(edge.direction);
+			/ plane.normal.dotProduct(edge.direction());
 
-		if (distanceToCollision >= 0 && distanceToCollision <= edge.length)
+		if (distanceToCollision >= 0 && distanceToCollision <= edge.length())
 		{
-			var collisionPos = edge.direction.clone().multiplyScalar
+			var collisionPos = edge.direction().clone().multiplyScalar
 			(
 				distanceToCollision
 			).add
@@ -180,6 +180,8 @@ function Collision(pos, distanceToCollision, colliders)
 
 	Collision.isPosWithinFace = function(posToCheck, face)
 	{
+		var faceNormal = face.plane.normal;
+
 		var displacementFromVertex0ToCollision = Collision.CoordsTemp;
 
 		var isPosWithinAllEdgesOfFaceSoFar = true;
@@ -199,7 +201,7 @@ function Collision(pos, distanceToCollision, colliders)
 			var displacementProjectedAlongEdgeTransverse = 
 				displacementFromVertex0ToCollision.dotProduct
 				(
-					edgeFromFace.transverse
+					edgeFromFace.transverse(faceNormal)
 				);
 
 			if (displacementProjectedAlongEdgeTransverse > 0)

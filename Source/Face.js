@@ -31,7 +31,6 @@ function Face(vertices, material)
 
 		var edge = new Edge
 		(
-			this,
 			[vertexPos, vertexPosNext]
 		);
 
@@ -52,13 +51,6 @@ function Face(vertices, material)
 			this.vertices[1].pos,
 			this.vertices[2].pos
 		);
-
-		for (var i = 0; i < this.edges.length; i++)
-		{
-			var edge = this.edges[i];
-
-			edge.recalculateDerivedValues();	
-		}
 
 		var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
 		this.bounds.ofPoints(vertexPositions);
