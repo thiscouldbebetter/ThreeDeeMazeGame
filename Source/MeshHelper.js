@@ -337,12 +337,9 @@ function MeshHelper()
 
 		for (var i = 0; i < numberOfVertices; i++)
 		{
-			var vertexAngle = 
-				Constants.RadiansPerCircle 
-				* i 
-				/ numberOfVertices;
+			var vertexAngleInTurns = i / numberOfVertices;
 
-			var vertexPolar = new Polar(vertexAngle, 0, 1);
+			var vertexPolar = new Polar(vertexAngleInTurns, 1);
 			var vertex = vertexPolar.toCoords();
 
 			vertices.push(vertex);

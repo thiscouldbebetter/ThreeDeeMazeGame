@@ -1,14 +1,16 @@
 
-function Polar(azimuth, elevation, radius)
+function Polar(azimuthInTurns, elevationInTurns, radius)
 {
-	// values in radians
-
-	this.azimuth = azimuth;
-	this.elevation = elevation;
+	this.azimuthInTurns = azimuthInTurns;
 	this.radius = radius;
+	this.elevationInTurns = (elevationInTurns == null ? 0 : elevationInTurns);
 }
 
 {
+	// constants
+
+	Polar.RadiansPerTurn = Math.PI * 2;
+
 	// static methods
 
 	Polar.fromCoords = function(coordsToConvert)
@@ -16,7 +18,7 @@ function Polar(azimuth, elevation, radius)
 		var azimuth = Math.atan2(coordsToConvert.y, coordsToConvert.x);
 		if (azimuth < 0)
 		{
-			azimuth += Constants.Tau;
+			azimuth += 1;
 		}
 
 		var radius = coordsToConvert.magnitude();
@@ -26,8 +28,8 @@ function Polar(azimuth, elevation, radius)
 		var returnValue = new Polar
 		(
 			azimuth,
-			elevation,
-			radius
+			radius,
+			elevation
 		);
 
 		return returnValue;
@@ -35,22 +37,18 @@ function Polar(azimuth, elevation, radius)
 
 	// instance methods
 
-	Polar.prototype.randomize = function()
-	{
-		this.azimuth = randomizer.next() * Constants.Tau;
-		this.elevation = randomizer.next() * Constants.Tau;
-		this.radius = randomzier.next();
-	}
-
 	Polar.prototype.toCoords = function()
 	{
-		var cosineOfElevation = Math.cos(this.elevation);
+		var azimuthInRadians = this.azimuthInTurns * Polar.RadiansPerTurn;
+		var elevationInRadians = this.elevationInTurns * Polar.RadiansPerTurn;
+
+		var cosineOfElevation = Math.cos(elevationInRadians);
 
 		var returnValue = new Coords
 		(
-			Math.cos(this.azimuth) * cosineOfElevation,
-			Math.sin(this.azimuth) * cosineOfElevation,
-			Math.sin(this.elevation)
+			Math.cos(azimuthInRadians) * cosineOfElevation,
+			Math.sin(azimuthInRadians) * cosineOfElevation,
+			Math.sin(elevationInRadians)
 		).multiplyScalar(this.radius);
 
 		return returnValue;
