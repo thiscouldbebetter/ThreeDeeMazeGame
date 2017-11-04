@@ -15,8 +15,8 @@ function Globals()
 	{		
 		this.displayHelpers = 
 		[	
-			new DisplayHelper2D(viewSizeInPixels),
-			//new DisplayHelper3D(viewSizeInPixels),
+			//new DisplayHelper2D(viewSizeInPixels),
+			new DisplayHelper3D(viewSizeInPixels),
 		]
 		this.inputHelper = new InputHelper();
 

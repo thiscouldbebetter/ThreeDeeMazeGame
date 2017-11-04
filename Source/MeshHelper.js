@@ -518,14 +518,14 @@ function MeshHelper()
 			]),
 			// vertexIndicesForFaces
 			[
-				[7, 4, 0, 3], // west
-				[5, 6, 2, 1], // east
+				[7, 3, 0, 4], // west
+				[5, 1, 2, 6], // east
 
-				[4, 5, 1, 0], // north
-				[6, 7, 3, 2], // south
+				[4, 0, 1, 5], // north
+				[6, 2, 3, 7], // south
 
-				[0, 1, 2, 3], // top
-				[5, 4, 7, 6], // bottom
+				[0, 3, 2, 1], // top
+				[5, 6, 7, 4], // bottom
 			]
 		);
 
