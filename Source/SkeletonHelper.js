@@ -378,7 +378,7 @@ function SkeletonHelper()
 
 		for (var v = 0; v < vertices.length; v++)
 		{
-			var vertexPos = vertices[v];
+			var vertex = vertices[v];
 
 			var distanceLeastSoFar = Number.POSITIVE_INFINITY;
 			var indexOfBoneClosestSoFar = null;
@@ -387,7 +387,7 @@ function SkeletonHelper()
 			{
 				var bone = bones[b];
 
-				var displacement = vertexPos.clone().subtract
+				var displacement = vertex.clone().subtract
 				(
 					bone.pos(bones).add
 					(

@@ -40,8 +40,7 @@ function Mesh
 	}
 
 	this.bounds = new Bounds(new Coords(0, 0, 0), new Coords(0, 0, 0));
-	var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-	this.bounds.ofPoints(vertexPositions);
+	this.bounds.ofPoints(this.vertices);
 }
 
 {
@@ -85,20 +84,17 @@ function Mesh
 			face.recalculateDerivedValues();
 		}
 
-		var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-		this.bounds.ofPoints(vertexPositions);
+		this.bounds.ofPoints(this.vertices);
 
 		return this;
 	}
 
 	Mesh.prototype.transform = function(transformToApply)
 	{
-		var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-
 		Transform.applyTransformToCoordsMany
 		(
 			transformToApply, 
-			vertexPositions
+			this.vertices
 		);
 
 		this.recalculateDerivedValues();

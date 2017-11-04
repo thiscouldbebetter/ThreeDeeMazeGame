@@ -69,13 +69,12 @@ function Universe(name, actions, inputToActionMappings, materials, entityDefns, 
 		var meshMover = new Mesh
 		(
 			materials["MaterialMover"],
-			Vertex.buildManyFromPositions
-			([
+			[
 				new Coords(-1, -1, 0),
 				new Coords(1, -1, 0),
 				new Coords(4, 1, 0),
 				new Coords(-1, 1, 0),
-			]),
+			],
 			//vertexIndicesForFaces
 			[
 				[3, 2, 1, 0]

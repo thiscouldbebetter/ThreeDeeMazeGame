@@ -48,11 +48,10 @@ function DisplayHelper3D(sizeInPixels)
 				{
 					var vertexIndex = vertexIndicesForTriangle[vi];
 					var vertex = face.vertices[vertexIndex];
-					var vertexPosition = vertex.pos;
 
 					vertexPositionsAsFloatArray = vertexPositionsAsFloatArray.concat
 					(
-						vertexPosition.dimensions()
+						vertex.dimensions()
 					);
 
 					var vertexColor = faceMaterial.colorFill;

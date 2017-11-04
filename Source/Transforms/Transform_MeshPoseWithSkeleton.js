@@ -36,8 +36,8 @@ function Transform_MeshPoseWithSkeleton
 			{
 				var vertexIndex = vertexIndicesControlled[vi];
 
-				var vertexAtRest = this.meshAtRest.vertices[vertexIndex].pos;
-				var vertexToPose = meshToPose.vertices[vertexIndex].pos;
+				var vertexAtRest = this.meshAtRest.vertices[vertexIndex];
+				var vertexToPose = meshToPose.vertices[vertexIndex];
 
 				var boneAtRestPos = boneAtRest.pos(bonesAtRest);
 				var bonePosedPos = bonePosed.pos(bonesPosed);

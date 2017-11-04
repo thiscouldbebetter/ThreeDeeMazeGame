@@ -11,9 +11,9 @@ function Face(vertices, material)
 		new Coords()
 	).fromPoints
 	(
-		this.vertices[0].pos,
-		this.vertices[1].pos,
-		this.vertices[2].pos
+		this.vertices[0],
+		this.vertices[1],
+		this.vertices[2]
 	);
 
 	this.edges = [];
@@ -26,20 +26,18 @@ function Face(vertices, material)
 			iNext = 0;
 		}
 
-		var vertexPos = this.vertices[i].pos;
-		var vertexPosNext = this.vertices[iNext].pos;
+		var vertex = this.vertices[i];
+		var vertexNext = this.vertices[iNext];
 
 		var edge = new Edge
 		(
-			[vertexPos, vertexPosNext]
+			[vertex, vertexNext]
 		);
 
 		this.edges.push(edge);
 	}
 
-	var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-
-	this.bounds.ofPoints(vertexPositions);
+	this.bounds.ofPoints(this.vertices);
 }
 
 {
@@ -47,13 +45,11 @@ function Face(vertices, material)
 	{
 		this.plane.fromPoints
 		(
-			this.vertices[0].pos,
-			this.vertices[1].pos,
-			this.vertices[2].pos
+			this.vertices[0],
+			this.vertices[1],
+			this.vertices[2]
 		);
 
-		var vertexPositions = Vertex.addPositionsOfManyToList(this.vertices, []);
-		this.bounds.ofPoints(vertexPositions);
-
+		this.bounds.ofPoints(this.vertices);
 	}
 }

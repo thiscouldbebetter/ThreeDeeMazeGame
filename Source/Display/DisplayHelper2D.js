@@ -49,7 +49,7 @@ function DisplayHelper2D(sizeInPixels)
 
 		var vertices = faceToDraw.vertices;
 
-		var displacementFromCameraToVertex0 = vertices[0].pos.clone().subtract
+		var displacementFromCameraToVertex0 = vertices[0].clone().subtract
 		(
 			camera.loc.pos
 		);
@@ -77,7 +77,7 @@ function DisplayHelper2D(sizeInPixels)
 			(
 				this.drawPos.overwriteWith
 				(
-					vertices[i].pos
+					vertices[i]
 				)
 			);
 

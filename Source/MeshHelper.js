@@ -343,8 +343,7 @@ function MeshHelper()
 				/ numberOfVertices;
 
 			var vertexPolar = new Polar(vertexAngle, 0, 1);
-			var vertexPos = vertexPolar.toCoords();
-			var vertex = new Vertex(vertexPos);
+			var vertex = vertexPolar.toCoords();
 
 			vertices.push(vertex);
 
@@ -412,15 +411,14 @@ function MeshHelper()
 		(
 			material,
 			// vertices
-			Vertex.buildManyFromPositions
-			([
+			[
 				// wall
 				new Coords(0, 1, -1),
 				new Coords(0, -1, -1), 
 				new Coords(0, -1, 1),
 				new Coords(0, 1, 1),
 
-			]),
+			],
 			// vertexIndicesForFaces
 			[
 				//[ 3, 2, 1, 0 ],
@@ -446,8 +444,7 @@ function MeshHelper()
 		(
 			material,
 			// vertices
-			Vertex.buildManyFromPositions
-			([
+			[
 				// top
 				new Coords(0, -.25, -1), 
 				new Coords(0, .25, -1),
@@ -465,7 +462,7 @@ function MeshHelper()
 				new Coords(0, 1, 1),
 				new Coords(0, .25, 1),
 				new Coords(0, .25, -1),
-			]),
+			],
 			// vertexIndicesForFaces
 			[
 				// top, left, right
@@ -508,8 +505,7 @@ function MeshHelper()
 		(
 			material,
 			// vertices
-			Vertex.buildManyFromPositions
-			([
+			[
 				// top
 				new Coords(-1, -1, -1), 
 				new Coords(1, -1, -1),
@@ -521,7 +517,7 @@ function MeshHelper()
 				new Coords(1, -1, 1),
 				new Coords(1, 1, 1),
 				new Coords(-1, 1, 1),
-			]),
+			],
 			// vertexIndicesForFaces
 			[
 				[7, 3, 0, 4], // west
@@ -544,14 +540,13 @@ function MeshHelper()
 		(
 			material,
 			// vertices
-			Vertex.buildManyFromPositions
-			([
+			[
 				// back 
 				new Coords(1, -1, 0), 
 				new Coords(1, 1, 0),
 				new Coords(-1, 1, 0),
 				new Coords(-1, -1, 0),
-			]),
+			],
 			// vertexIndicesForFaces
 			[
 				[3, 2, 1, 0]
@@ -814,11 +809,11 @@ function MeshHelper()
 
 		for (var v = 0; v < faceToDivide.vertices.length; v++)
 		{
-			var vertexPosition = faceToDivide.vertices[v].pos;
+			var vertex = faceToDivide.vertices[v];
 
 			var distanceOfVertexAbovePlane = Collision.findDistanceOfPositionAbovePlane
 			(
-				vertexPosition,
+				vertex,
 				planeToDivideOn
 			);
 
@@ -837,16 +832,16 @@ function MeshHelper()
 		for (var e = 0; e < faceToDivide.edges.length; e++)
 		{
 			var edge = faceToDivide.edges[e];
-			var vertexPosition0 = edge.vertices[0];
+			var vertex0 = edge.vertices[0];
 
 			verticesInFaceDivided.push
 			(
-				new Vertex(vertexPosition0)
+				vertex0
 			);
 
 			var distanceOfVertex0AbovePlane = Collision.findDistanceOfPositionAbovePlane
 			(
-				vertexPosition0,
+				vertex0,
 				planeToDivideOn
 			);
 
@@ -870,7 +865,7 @@ function MeshHelper()
 
 					verticesInFaceDivided.push
 					(
-						new Vertex(collision.pos)
+						collision.pos
 					);
 	
 					facesDividedIndex = 1 - facesDividedIndex;
@@ -878,7 +873,7 @@ function MeshHelper()
 					
 					verticesInFaceDivided.push
 					(
-						new Vertex(collision.pos)
+						collision.pos
 					);
 				}
 			}
