@@ -15,15 +15,15 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 		),
 		new Location
 		(
-			this.name, 
 			pos,
 			new Orientation
 			(
 				new Coords(1, 0, 0),
 				new Coords(0, 0, 1)
-			)
+			),
+			this.name // venue
 		)
-	);	
+	);
 }
 {
 	Zone.prototype.finalize = function()
@@ -34,7 +34,7 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 	Zone.prototype.initialize = function()
 	{
 		this.entity.resetMeshTransformed();
-	
+
 		this.entity.meshTransformed.transform
 		(
 			new Transform_Locate(this.entity.loc)
@@ -43,7 +43,6 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 
 	Zone.prototype.update = function()
 	{
-		//var displayHelper = Globals.Instance.displayHelper;
-		//displayHelper.drawMesh(this.entity.meshTransformed);
+		// todo
 	}
 }

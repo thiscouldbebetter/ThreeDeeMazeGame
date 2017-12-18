@@ -29,15 +29,15 @@ function main()
 	
 	var inputToActionMappings = 
 	[
-		new InputToActionMapping( "a", actions[0].name ),
-		new InputToActionMapping( "e", actions[1].name ),
-		new InputToActionMapping( "c", actions[2].name ),
-		new InputToActionMapping( "d", actions[3].name ),
-		new InputToActionMapping( "s", actions[4].name ),
-		new InputToActionMapping( "w", actions[5].name ),
-		new InputToActionMapping( "x", actions[6].name ),
-		new InputToActionMapping( "z", actions[7].name ),
-		new InputToActionMapping( " ", actions[8].name ),
+		new InputToActionMapping( "_a", actions[0].name ),
+		new InputToActionMapping( "_e", actions[1].name ),
+		new InputToActionMapping( "_c", actions[2].name ),
+		new InputToActionMapping( "_d", actions[3].name ),
+		new InputToActionMapping( "_s", actions[4].name ),
+		new InputToActionMapping( "_w", actions[5].name ),
+		new InputToActionMapping( "_x", actions[6].name ),
+		new InputToActionMapping( "_z", actions[7].name ),
+		new InputToActionMapping( "_ ", actions[8].name ),
 	]
 
 	var universe0 = Universe.buildRandom

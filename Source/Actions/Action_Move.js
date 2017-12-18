@@ -11,7 +11,7 @@ function Action_Move(amountToMoveForwardRightDown)
 }
 
 {
-	Action_Move.prototype.perform = function(world, entity)
+	Action_Move.prototype.perform = function(universe, world, entity)
 	{
 		var entityLoc = entity.loc;
 		var isEntityOnGround = (entityLoc.pos.z >= 0); // hack

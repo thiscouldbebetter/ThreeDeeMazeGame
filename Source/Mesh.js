@@ -53,10 +53,10 @@ function Mesh
 		return new Mesh
 		(
 			this.material,
-			Cloneable.cloneMany(this.vertices),
+			this.vertices.clone(),
 			this.vertexIndicesForFaces,
-			Cloneable.cloneMany(this.textureUVsForFaceVertices),
-			Cloneable.cloneMany(this.vertexGroups)
+			this.textureUVsForFaceVertices.clone(),
+			this.vertexGroups.clone()
 		);
 	}
 

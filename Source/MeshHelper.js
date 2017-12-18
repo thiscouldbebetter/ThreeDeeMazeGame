@@ -122,7 +122,7 @@ function MeshHelper()
 				material,
 				new Coords(heightOver36, heightOver36, heightOver12), 
 				new Coords(0 - heightOver6, 0, 0 - heightOver2 - heightOver4 + heightOver8)
-			),		
+			),
 		];
 
 		var vertexGroupNames = 
@@ -175,6 +175,9 @@ function MeshHelper()
 			new Transform_Scale(size)
 		);
 
+		//returnMesh = MeshHelper.meshNormalsFlip(returnMesh);
+
+		/*
 		returnMesh.transform
 		(
 			new Transform_Translate
@@ -182,11 +185,12 @@ function MeshHelper()
 				new Coords(0, 0, 0)//size.z / 2)
 			)
 		);
+		*/
 
 		returnMesh.transform
 		(
 			new Transform_Translate(pos)
-		);		
+		);
 
 		return returnMesh;
 	}
@@ -209,11 +213,11 @@ function MeshHelper()
 			var wallNormal = wallNormals[i];
 
 			var scaleFactors = new Coords(x, y, z);
-	
+
 			var meshForWall;
-			
+
 			if (connectedToNeighbors[i] == true)
-			{	
+			{
 				meshForWall = MeshHelper.buildRoom_WallWithDoorway
 				(
 					material
@@ -244,7 +248,7 @@ function MeshHelper()
 				new Transform_Translate
 				(
 					wallNormal
-				)	
+				)
 			);
 
 			// hack
@@ -258,7 +262,7 @@ function MeshHelper()
 					)
 				);
 			}
-	
+
 			meshesForRoom.push
 			(
 				meshForWall
@@ -277,7 +281,7 @@ function MeshHelper()
 
 			var face = mesh.faces[0];
 			var faceNormal = face.plane.normal;
-			
+
 			var faceOrientation;
 
 			if (faceNormal.z == 0)
@@ -298,7 +302,7 @@ function MeshHelper()
 			}
 
 			var faceTangent = faceOrientation.right;
-			var faceDown = faceOrientation.down;			
+			var faceDown = faceOrientation.down;
 
 			mesh.transformTextureUVs
 			(
@@ -310,7 +314,7 @@ function MeshHelper()
 						faceDown.dotProduct(scaleFactors)
 					).absolute()
 				)
-			)			
+			)
 		}
 
 		var returnMesh = MeshHelper.mergeMeshes
@@ -601,8 +605,8 @@ function MeshHelper()
 			(
 				meshToMerge.vertices
 				//Cloneable.cloneMany(meshToMerge.vertices)
-			);			
-			
+			);
+
 			for (var f = 0; f < meshToMerge.vertexIndicesForFaces.length; f++)
 			{
 				var vertexIndicesForFace = meshToMerge.vertexIndicesForFaces[f];
@@ -615,7 +619,7 @@ function MeshHelper()
 					vertexIndicesForFaceShifted.push
 					(
 						vertexIndexShifted
-					);	
+					);
 				}
 
 				vertexIndicesForFacesMerged.push(vertexIndicesForFaceShifted);
@@ -637,7 +641,7 @@ function MeshHelper()
 				var vertexIndicesInVertexGroup = [];
 				for (var v = 0; v < meshToMerge.vertices.length; v++)
 				{
-					vertexIndicesInVertexGroup.push(numberOfVerticesSoFar + v);	
+					vertexIndicesInVertexGroup.push(numberOfVerticesSoFar + v);
 				}
 
 				var vertexGroup = new VertexGroup
@@ -664,6 +668,11 @@ function MeshHelper()
 		return returnMesh;
 	}
 
+	MeshHelper.meshNormalsFlip = function(mesh)
+	{
+		return mesh.transform(new Transform_Scale(new Coords(-1, -1, -1)));
+	}
+
 	MeshHelper.meshVerticesMergeIfWithinDistance = function(mesh, distanceToMergeWithin)
 	{
 		var vertices = mesh.vertices;
@@ -676,7 +685,7 @@ function MeshHelper()
 		for (var i = 0; i < vertices.length; i++)
 		{
 			var vertexToConsider = vertices[i];
-		
+
 			for (j = 0; j < i; j++)
 			{
 				var vertexAlreadyConsidered = vertices[j];
@@ -716,7 +725,7 @@ function MeshHelper()
 				1
 			);
 		}
-	
+
 		for (var f = 0; f < mesh.vertexIndicesForFaces.length; f++)
 		{
 			var vertexIndices = mesh.vertexIndicesForFaces[f];
@@ -731,13 +740,13 @@ function MeshHelper()
 					var vertexIndexOriginal = vertexIndexDuplicateToOriginalLookup[vertexIndexToUpdate];
 					vertexToUpdate = vertices[vertexIndexOriginal];
 
-				}	
+				}
 				var vertexIndexUpdated = verticesMinusDuplicates.indexOf
 				(
 					vertexToUpdate
 				);
 
-				vertexIndices[vi] = vertexIndexUpdated;	
+				vertexIndices[vi] = vertexIndexUpdated;
 			}
 		}
 
@@ -756,7 +765,7 @@ function MeshHelper()
 					var vertexIndexOriginal = vertexIndexDuplicateToOriginalLookup[vertexIndexToUpdate];
 					vertexToUpdate = vertices[vertexIndexOriginal];
 
-				}	
+				}
 				var vertexIndexUpdated = verticesMinusDuplicates.indexOf
 				(
 					vertexToUpdate
@@ -769,9 +778,9 @@ function MeshHelper()
 	}
 
 	MeshHelper.removeFacesWithIndicesFromMesh = function(indicesOfFacesToRemove, meshToRemoveFrom)
-	{	
+	{
 		var indicesOfFacesToRemoveSorted = indicesOfFacesToRemove.sortIntoOtherUsingCompareFunction
-		(	
+		(
 			[], // arraySorted, 
 			function(index0, index1)
 			{
@@ -845,7 +854,7 @@ function MeshHelper()
 			var distanceOfVertex1AbovePlane = Collision.findDistanceOfPositionAbovePlane
 			(
 				edge.vertices[1],
-				planeToDivideOn				
+				planeToDivideOn
 			);
 
 			if (distanceOfVertex0AbovePlane * distanceOfVertex1AbovePlane < 0)
@@ -857,17 +866,17 @@ function MeshHelper()
 				);
 
 				if (collision != null)
-				{					
+				{
 					doAnyEdgesCollideWithPlaneSoFar = true;
 
 					verticesInFaceDivided.push
 					(
 						collision.pos
 					);
-	
+
 					facesDividedIndex = 1 - facesDividedIndex;
 					verticesInFaceDivided = verticesInFacesDivided[facesDividedIndex];
-					
+
 					verticesInFaceDivided.push
 					(
 						collision.pos

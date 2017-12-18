@@ -13,26 +13,19 @@ function Globals()
 		universe
 	)
 	{		
-		this.displayHelpers = 
-		[	
-			new DisplayHelper2D(viewSizeInPixels),
-			new DisplayHelper3D(viewSizeInPixels),
-		]
-		this.inputHelper = new InputHelper();
+		//universe.display = new Display([viewSizeInPixels]);
+		universe.display = new Display3D(viewSizeInPixels);
+		universe.inputHelper = new InputHelper();
 
-		for (var i = 0; i < this.displayHelpers.length; i++)
-		{
-			var displayHelper = this.displayHelpers[i];
-			displayHelper.initialize();
-		}
-		this.platformHelper = new PlatformHelper();
-		this.platformHelper.initialize(this.displayHelpers[0]);		
-		this.inputHelper.initialize();
+		universe.platformHelper = new PlatformHelper();
+		universe.platformHelper.initialize(universe);
+
+		universe.display.initialize(universe);
+		universe.inputHelper.initialize(universe);
 
 		this.universe = universe;
 		this.universe.initialize();		
 
-		this.timerTicksSoFar = 0;
 		this.timer = setInterval
 		(
 			this.handleTimerTick.bind(this),
@@ -42,7 +35,6 @@ function Globals()
 
 	Globals.prototype.handleTimerTick = function()
 	{
-		this.timerTicksSoFar++;
 		this.universe.update();
 	}
 }

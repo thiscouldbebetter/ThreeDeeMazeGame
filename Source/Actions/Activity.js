@@ -6,8 +6,8 @@ function Activity(defn, parameters)
 }
 
 {
-	Activity.prototype.perform = function(world, entity)
+	Activity.prototype.perform = function(universe, world, entity)
 	{
-		this.defn.perform(world, entity, this);
+		this.defn.perform(universe, world, entity, this);
 	}
 }

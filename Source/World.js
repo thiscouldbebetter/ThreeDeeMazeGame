@@ -7,6 +7,8 @@ function World(name, sizeInPixels, zones, bodies)
 	this.bodies = bodies;
 
 	this.zones.addLookups("name");
+
+	this.timerTicksSoFar = 0;
 }
 
 {
@@ -26,19 +28,19 @@ function World(name, sizeInPixels, zones, bodies)
 				new Coords(0, 1, 0), // south
 			]
 		).generateRandom();
-	
+
 		var cellPosOfStart = new Coords().randomize().multiply
 		(
 			maze.sizeInCells
 		).floor();
-	
+
 		var cellPosOfGoal = null;
 
 		var distanceOrthogonalFromStartToGoalMin = maze.sizeInCells.x / 2;
 		var distanceOrthogonalFromStartToGoal = 0;
-	
+
 		// hack - The time this will take is nondeterministic.
-	
+
 		while (distanceOrthogonalFromStartToGoal < distanceOrthogonalFromStartToGoalMin)
 		{
 			cellPosOfGoal = new Coords().randomize().multiply
@@ -51,7 +53,7 @@ function World(name, sizeInPixels, zones, bodies)
 				cellPosOfStart
 			).absolute().sumOfDimensions();
 		}
-	
+
 		zones = maze.convertToZones
 		(
 			materials["MaterialWall"],
@@ -69,7 +71,6 @@ function World(name, sizeInPixels, zones, bodies)
 			entityDefns["EntityDefnMover"],
 			new Location
 			(
-				nameOfZoneStart,
 				cellPosOfStart.clone().multiply
 				(
 					maze.cellSizeInPixels
@@ -81,9 +82,10 @@ function World(name, sizeInPixels, zones, bodies)
 				(
 					new Coords(0, 1, 0),
 					new Coords(0, 0, 1)
-				)
+				),
+				nameOfZoneStart // venue
 			)
-		);	
+		);
 
 		var entityForMoverOther = new Entity
 		(
@@ -91,7 +93,6 @@ function World(name, sizeInPixels, zones, bodies)
 			entityDefns["EntityDefnMover"],
 			new Location
 			(
-				nameOfZoneStart,
 				cellPosOfStart.clone().multiply
 				(
 					maze.cellSizeInPixels
@@ -103,10 +104,11 @@ function World(name, sizeInPixels, zones, bodies)
 				(
 					new Coords(0, 1, 0),
 					new Coords(0, 0, 1)
-				)
+				),
+				nameOfZoneStart // venue
 			)
 		);
-	
+
 		var returnValue = new World
 		(
 			"Maze-" + maze.sizeInCells.x + "x" + maze.sizeInCells.y,
@@ -143,13 +145,14 @@ function World(name, sizeInPixels, zones, bodies)
 		// todo
 	}
 
-	World.prototype.initialize = function()
+	World.prototype.initialize = function(universe)
 	{
 		this.meshesToDraw = [];
 
 		var entityForPlayer = this.bodies[0];
-	
-		this.zoneNext = this.zones[entityForPlayer.loc.zoneName];
+
+		var zoneName = entityForPlayer.loc.venue;
+		this.zoneNext = this.zones[zoneName];
 		this.zonesActive = [];
 
 		var activityDefns = new ActivityDefn_Instances();
@@ -192,7 +195,7 @@ function World(name, sizeInPixels, zones, bodies)
 			}
 		}
 
-		var viewSizeInPixels = Globals.Instance.displayHelpers[0].sizeInPixels.clone();
+		var viewSizeInPixels = universe.display.sizeInPixels.clone();
 		var focalLength = viewSizeInPixels.z / 16;
 		var followDivisor = 16;
 		var offsetOfCameraFromPlayer = new Coords
@@ -201,7 +204,7 @@ function World(name, sizeInPixels, zones, bodies)
 			0, 
 			0 - focalLength
 		).divideScalar(followDivisor);
-		
+
 		var cameraEntity = new Entity
 		( 
 			"EntityCamera",
@@ -216,8 +219,6 @@ function World(name, sizeInPixels, zones, bodies)
 
 			new Location
 			(
-				this.zoneNext.name,
-
 				this.zoneNext.entity.loc.pos.clone().add
 				(
 					offsetOfCameraFromPlayer
@@ -227,7 +228,9 @@ function World(name, sizeInPixels, zones, bodies)
 				(
 					new Coords(1, 0, 1), // forward
 					new Coords(0, 0, 1) // down
-				)
+				),
+
+				this.zoneNext.name
 			)
 		);
 
@@ -236,22 +239,22 @@ function World(name, sizeInPixels, zones, bodies)
 			viewSizeInPixels, 
 			focalLength,
 			cameraEntity.loc
-		);	
+		);
 
 		cameraEntity.constraints = 
 		[
 			new Constraint_Follow(entityForPlayer, focalLength / followDivisor),
 			new Constraint_OrientToward(entityForPlayer),
 		].addLookups("name");
-		
+
 		this.bodies.push(cameraEntity);
-		
+
 		this.cameraEntity = cameraEntity;
 
 		this.dateStarted = new Date();
 	}
 
-	World.prototype.update = function()
+	World.prototype.update = function(universe)
 	{
 		if (this.zoneNext != null)
 		{
@@ -262,7 +265,7 @@ function World(name, sizeInPixels, zones, bodies)
 					+ this.secondsElapsed()
 					+ " seconds!  Press refresh for a new maze.";
 
-				alert(messageWin);			
+				alert(messageWin);
 			}
 
 			for (var i = 0; i < this.zonesActive.length; i++)
@@ -294,10 +297,10 @@ function World(name, sizeInPixels, zones, bodies)
 				var zoneActive = this.zonesActive[i];
 				zoneActive.initialize();
 				this.bodies.push(zoneActive.entity);
-				
+
 				facesForZonesActive.append
 				(
-					zoneActive.entity.meshTransformed.faces					
+					zoneActive.entity.meshTransformed.faces
 				);
 			}
 
@@ -312,8 +315,8 @@ function World(name, sizeInPixels, zones, bodies)
 		for (var z = 0; z < this.zonesActive.length; z++)
 		{
 			var zoneActive = this.zonesActive[z];
-			zoneActive.update();
-		}		
+			zoneActive.update(universe, this);
+		}
 
 		for (var b = 0; b < this.bodies.length; b++)
 		{
@@ -321,7 +324,7 @@ function World(name, sizeInPixels, zones, bodies)
 
 			if (entity.activity != null)
 			{
-				entity.activity.perform(this, entity);
+				entity.activity.perform(universe, this, entity);
 			}
 
 			if (entity.actions != null)
@@ -329,7 +332,7 @@ function World(name, sizeInPixels, zones, bodies)
 				for (var a = 0; a < entity.actions.length; a++)
 				{
 					var action = entity.actions[a];
-					action.perform(this, entity);
+					action.perform(universe, this, entity);
 				}
 
 				entity.actions.length = 0;
@@ -348,16 +351,10 @@ function World(name, sizeInPixels, zones, bodies)
 			}
 		}
 
-		var displayHelpers = Globals.Instance.displayHelpers;
-
-		for (var i = 0; i < displayHelpers.length; i++)
-		{
-			var displayHelper = displayHelpers[i];
-			displayHelper.drawWorld(this);
-		}
+		this.draw(universe.display);
 
 		var entityForPlayer = this.bodies[0];
-		
+
 		var zoneCurrentBounds = this.zoneCurrent.entity.meshTransformed.bounds;
 
 		if (zoneCurrentBounds.containsPoint(entityForPlayer.loc.pos) == false)
@@ -376,6 +373,124 @@ function World(name, sizeInPixels, zones, bodies)
 					this.zoneNext = zoneActive;
 					break;
 				}
+			}
+		}
+
+		this.timerTicksSoFar++;
+	}
+
+	// drawable
+
+	World.prototype.draw = function(display)
+	{
+		var displayTypeName = display.constructor.name;
+		if (displayTypeName == "Display")
+		{
+			this.draw2D(display);
+		}
+		else if (displayTypeName == "Display3D")
+		{
+			this.draw3D(display);
+		}
+	}
+
+	World.prototype.draw2D = function(display)
+	{
+		var world  = this;
+		var facesToDraw = [];
+
+		var cameraPos = world.camera.loc.pos;
+
+		var spacePartitioningTreeRoot = 
+			world.spacePartitioningTreeForZonesActive.nodeRoot;
+
+		spacePartitioningTreeRoot.addFacesBackToFrontForCameraPosToList
+		(
+			cameraPos,
+			facesToDraw
+		);
+
+		var bodies = world.bodies;
+		for (var b = 0; b < bodies.length; b++)
+		{
+			var entity = bodies[b];
+			var entityDefn = entity.defn;
+
+			if (entityDefn.isDrawable == true)
+			{
+				if (entityDefn.isMovable == true)
+				{
+					// hack
+					// Find the floor the mover is standing on,
+					// and draw the mover immediately after that floor.
+
+					var edgeForFootprint = new Edge
+					(
+						[
+							entity.loc.pos,
+							entity.loc.pos.clone().add(new Coords(0, 0, 100))
+						]
+					);
+
+					for (var g = facesToDraw.length - 1; g >= 0; g--)
+					{
+						var face = facesToDraw[g];
+						var collisionForFootprint = Collision.findCollisionOfEdgeAndFace
+						(
+							edgeForFootprint,
+							face
+						);
+
+						var isEntityStandingOnFace = (collisionForFootprint != null);
+
+						if (isEntityStandingOnFace == true)
+						{
+							var moverFaces = entity.meshTransformed.faces;
+							for (var f = 0; f < moverFaces.length; f++)
+							{
+								var moverFace = moverFaces[f];
+								facesToDraw.splice
+								(
+									g + 1, 0, moverFace
+								)
+							}
+							break;
+						}
+
+					}
+				}
+			}
+		}
+
+		display.clear();
+		display.drawFacesForCamera(facesToDraw, world.camera);
+		display.drawText(world.name, 10, new Coords(0, 10));
+		display.drawText(world.secondsElapsed(), 10, new Coords(0, 20));
+		display.drawText
+ 		(
+			world.bodies[0].loc.pos.clone().floor().toString(), 
+			10, // fontHeightInPixels
+			new Coords(0, 30)
+		);
+	}
+
+	World.prototype.draw3D = function(display)
+	{
+		display.clear();
+
+		display.cameraSet(this.camera);
+
+		display.lightingSet(null); // todo
+
+		var bodies = this.bodies;
+
+		for (var b = 0; b < bodies.length; b++)
+		{
+			var body = bodies[b];
+			var bodyMesh = body.meshTransformed;
+			if (bodyMesh != null)
+			{
+				display.drawMeshWithOrientation(bodyMesh, body.loc.orientation);
 			}
 		}
 	}

@@ -54,49 +54,12 @@ function Universe(name, actions, inputToActionMappings, materials, entityDefns, 
 
 		materials.addLookups("name");
 
-		/*
-		var meshMover = MeshHelper.buildUnitRing
-		(
-			"MeshMover", materials["MaterialMover"], 3
-		).transform
-		(
-			new Transform_Scale(new Coords(3, 2, 2))
-		);
-		*/
-
-		/*
-		// An alternate, asymmetric mesh.
-		var meshMover = new Mesh
-		(
-			materials["MaterialMover"],
-			[
-				new Coords(-1, -1, 0),
-				new Coords(1, -1, 0),
-				new Coords(4, 1, 0),
-				new Coords(-1, 1, 0),
-			],
-			//vertexIndicesForFaces
-			[
-				[3, 2, 1, 0]
-			],
-			// textureUVsForFaceVertices
-			[
-				[ 
-					new Coords(0, 0), 
-					new Coords(1, 0), 
-					new Coords(1, 1), 
-					new Coords(0, 1) 
-				]
-			]
-		);
-		*/
-
 		var meshMover = MeshHelper.buildBiped
 		(
 			materials["MaterialMover"],
 			6 // height
 		);
-		
+
 		var entityDefnMover = new EntityDefn
 		(
 			"EntityDefnMover",
@@ -112,7 +75,7 @@ function Universe(name, actions, inputToActionMappings, materials, entityDefns, 
 
 		entityDefns.addLookups("name");
 
-		var worldRandom = World.buildRandom
+		var world = World.buildRandom
 		(
 			materials, 
 			entityDefns, 
@@ -129,7 +92,7 @@ function Universe(name, actions, inputToActionMappings, materials, entityDefns, 
 			entityDefns,
 			// worlds
 			[
-				worldRandom,
+				world,
 			]
 		);
 
@@ -153,11 +116,11 @@ function Universe(name, actions, inputToActionMappings, materials, entityDefns, 
 			}
 
 			this.worldCurrent = this.worldNext;
-			this.worldCurrent.initialize();
+			this.worldCurrent.initialize(this);
 
 			this.worldNext = null;
 		}
 
-		this.worldCurrent.update();
+		this.worldCurrent.update(this);
 	}
 }

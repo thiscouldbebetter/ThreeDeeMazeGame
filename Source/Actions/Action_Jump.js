@@ -6,7 +6,7 @@ function Action_Jump(acceleration)
 }
 
 {
-	Action_Jump.prototype.perform = function(world, entity)
+	Action_Jump.prototype.perform = function(universe, world, entity)
 	{
 		var entityLoc = entity.loc;
 		if (entityLoc.pos.z >= 0)

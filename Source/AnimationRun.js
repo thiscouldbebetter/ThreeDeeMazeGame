@@ -21,14 +21,14 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 		return returnValue;
 	}
 
-	AnimationRun.prototype.frameCurrent = function()
+	AnimationRun.prototype.frameCurrent = function(world)
 	{	
 		var returnValue = null;
 
 		var animationDefn = this.animationDefnCurrent();
 
 		var framesSinceBeginningOfCycle = 
-			Globals.Instance.timerTicksSoFar 
+			world.timerTicksSoFar 
 			% animationDefn.numberOfFramesTotal;
 
 		var i;
@@ -60,13 +60,13 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 		return returnValue;
 	}
 
-	AnimationRun.prototype.updateForTimerTick = function()
+	AnimationRun.prototype.updateForTimerTick = function(world)
 	{
 		this.transformable.overwriteWith(this.transformableAtRest);
 	
 		if (this.animationDefnNameCurrent != null)
 		{
-			var frameCurrent = this.frameCurrent();
+			var frameCurrent = this.frameCurrent(world);
 
 			var transforms = frameCurrent.transforms;
 

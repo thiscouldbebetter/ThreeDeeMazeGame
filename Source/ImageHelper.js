@@ -34,8 +34,6 @@ function ImageHelper()
 			stringsForPixels.length
 		);
 
-		var htmlElementLibrary = Globals.Instance.htmlElementLibrary;
-
 		var canvas = document.createElement("canvas");
 		canvas.width = sizeInPixels.x * scaleFactor.x;
 		canvas.height = sizeInPixels.y * scaleFactor.y;

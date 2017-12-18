@@ -51,7 +51,7 @@ var orientationCloned = this.orientation.clone();
 			this.name,
 			this.length,
 			orientationCloned,
-			Cloneable.cloneMany(this.children),
+			this.children.clone(),
 			this.isVisible
 		);
 
@@ -61,7 +61,7 @@ var orientationCloned = this.orientation.clone();
 	Bone.prototype.overwriteWith = function(other)
 	{
 		this.orientation.overwriteWith(other.orientation);
-		Cloneable.overwriteManyWithOthers(this.children, other.children);
+		this.children.overwriteWith(other.children);
 	}
 
 	// transformable

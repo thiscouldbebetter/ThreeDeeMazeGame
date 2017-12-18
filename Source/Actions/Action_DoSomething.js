@@ -5,7 +5,7 @@ function Action_DoSomething()
 }
 
 {
-	Action_DoSomething.prototype.perform = function(world, entity)
+	Action_DoSomething.prototype.perform = function(universe, world, entity)
 	{
 		var animationRun = entity.constraints["Animate"].animationRun;
 		animationRun.animationDefnNameCurrent = "DoSomething";
