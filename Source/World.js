@@ -1,7 +1,11 @@
 
-function World(name, sizeInPixels, zones, bodies)
+function World(name, actions, inputToActionMappings, materials, entityDefns, sizeInPixels, zones, bodies)
 {
 	this.name = name;
+	this.actions = actions.addLookups("name");
+	this.inputToActionMappings = inputToActionMappings.addLookups("inputName");
+	this.materials = materials;
+	this.entityDefns = entityDefns;
 	this.sizeInPixels = sizeInPixels;
 	this.zones = zones;
 	this.bodies = bodies;
@@ -14,8 +18,96 @@ function World(name, sizeInPixels, zones, bodies)
 {
 	// static methods
 
-	World.buildRandom = function(materials, entityDefns, mazeSizeInCells, mazeCellSizeInPixels)
+	World.buildRandom = function(mazeSizeInCells, mazeCellSizeInPixels)
 	{
+		var textures = Texture.Instances;
+
+		var amountToMoveForward = .4;
+		var amountToMoveBackward = amountToMoveForward / 2;
+		var amountToYaw = 0.1;
+		var amountToStrafe = .1;
+
+		var actions =
+		[
+			new Action_Turn(new Coords(amountToYaw, 0, 0)),
+			new Action_DoSomething(),
+			new Action_Move(new Coords(0, amountToStrafe, 0)),
+			new Action_Turn(new Coords(0 - amountToYaw, 0, 0)),
+			new Action_Move(new Coords(-amountToMoveBackward, 0, 0)),
+			new Action_Move(new Coords(amountToMoveForward, 0, 0)),
+			new Action_Stop(),
+			new Action_Move(new Coords(0, 0 - amountToStrafe, 0)),
+			new Action_Jump(.6),
+		];
+
+		var inputToActionMappings =
+		[
+			new InputToActionMapping( "_a", actions[0].name ),
+			new InputToActionMapping( "_e", actions[1].name ),
+			new InputToActionMapping( "_c", actions[2].name ),
+			new InputToActionMapping( "_d", actions[3].name ),
+			new InputToActionMapping( "_s", actions[4].name ),
+			new InputToActionMapping( "_w", actions[5].name ),
+			new InputToActionMapping( "_x", actions[6].name ),
+			new InputToActionMapping( "_z", actions[7].name ),
+			new InputToActionMapping( "_ ", actions[8].name ),
+		];
+
+		var materials =
+		[
+			new Material
+			(
+				"MaterialMover",
+				Color.Instances.Black,
+				Color.Instances.Gray,
+				textures.TestPattern
+			),
+			new Material
+			(
+				"MaterialGoal",
+				Color.Instances.Blue,
+				Color.Instances.GrayLight,
+				textures.Goal
+			),
+			new Material
+			(
+				"MaterialStart",
+				Color.Instances.Blue,
+				Color.Instances.GrayDark,
+				textures.Start
+			),
+			new Material
+			(
+				"MaterialWall",
+				Color.Instances.Blue,
+				Color.Instances.Gray,
+				textures.Wall
+			),
+		];
+
+		materials.addLookups("name");
+
+		var meshMover = MeshHelper.buildBiped
+		(
+			materials["MaterialMover"],
+			6 // height
+		);
+
+		var entityDefnMover = new EntityDefn
+		(
+			"EntityDefnMover",
+			true, // isDrawable
+			true, // isMovable
+			meshMover
+		);
+
+		var entityDefns =
+		[
+			entityDefnMover,
+		];
+
+		entityDefns.addLookups("name");
+		
 		var maze = new Maze
 		(
 			mazeCellSizeInPixels,
@@ -112,6 +204,10 @@ function World(name, sizeInPixels, zones, bodies)
 		var returnValue = new World
 		(
 			"Maze-" + maze.sizeInCells.x + "x" + maze.sizeInCells.y,
+			actions,
+			inputToActionMappings,
+			materials,
+			entityDefns,
 			maze.sizeInPixels,
 			zones,
 			// bodies

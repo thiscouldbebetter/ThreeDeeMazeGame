@@ -31,8 +31,8 @@ function ActivityDefn(name, perform)
 				var inputsActive = inputHelper.inputsActive;
 				var actionsFromActor = entity.actions; 
 
-				var actions = universe.actions;
-				var mappings = universe.inputToActionMappings;
+				var actions = world.actions;
+				var mappings = world.inputToActionMappings;
 
 				for (var i = 0; i < inputsActive.length; i++)
 				{
