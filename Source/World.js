@@ -57,57 +57,43 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		[
 			new Material
 			(
-				"MaterialMover",
+				"Chest",
 				Color.Instances.Black,
 				Color.Instances.Gray,
-				textures.TestPattern
+				textures.Chest
 			),
 			new Material
 			(
-				"MaterialGoal",
+				"Mover",
+				Color.Instances.Black,
+				Color.Instances.Gray,
+				textures._TestPattern
+			),
+			new Material
+			(
+				"Goal",
 				Color.Instances.Blue,
 				Color.Instances.GrayLight,
 				textures.Goal
 			),
 			new Material
 			(
-				"MaterialStart",
+				"Start",
 				Color.Instances.Blue,
 				Color.Instances.GrayDark,
 				textures.Start
 			),
 			new Material
 			(
-				"MaterialWall",
+				"Wall",
 				Color.Instances.Blue,
 				Color.Instances.Gray,
 				textures.Wall
 			),
-		];
+		].addLookups("name");
 
-		materials.addLookups("name");
+		var meshBuilder = new MeshBuilder();
 
-		var meshMover = MeshHelper.buildBiped
-		(
-			materials["MaterialMover"],
-			6 // height
-		);
-
-		var entityDefnMover = new EntityDefn
-		(
-			"EntityDefnMover",
-			true, // isDrawable
-			true, // isMovable
-			meshMover
-		);
-
-		var entityDefns =
-		[
-			entityDefnMover,
-		];
-
-		entityDefns.addLookups("name");
-		
 		var maze = new Maze
 		(
 			mazeCellSizeInPixels,
@@ -120,6 +106,38 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				new Coords(0, 1, 0), // south
 			]
 		).generateRandom();
+
+		var ceilingHeight = maze.cellSizeInPixels.z;
+		var moverHeight = ceilingHeight / 7;
+		var chestHeight = moverHeight / 4;
+
+		var entityDefns =
+		[
+			new EntityDefn
+			(
+				"Chest",
+				true, // isDrawable
+				true, // isMovable
+				meshBuilder.box
+				(
+					materials["Chest"],
+					new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
+					new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
+				).textureUVsBuild()
+			),
+
+			new EntityDefn
+			(
+				"Mover",
+				true, // isDrawable
+				true, // isMovable
+				meshBuilder.biped
+				(
+					materials["Mover"],
+					moverHeight
+				)
+			),
+		].addLookups("name");
 
 		var cellPosOfStart = new Coords().randomize().multiply
 		(
@@ -148,11 +166,11 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		zones = maze.convertToZones
 		(
-			materials["MaterialWall"],
+			materials["Wall"],
 			cellPosOfStart, 
-			materials["MaterialStart"], 
+			materials["Start"], 
 			cellPosOfGoal, 
-			materials["MaterialGoal"]
+			materials["Goal"]
 		);
 
 		var nameOfZoneStart = cellPosOfStart.toString();
@@ -160,7 +178,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		var entityForPlayer = new Entity
 		(
 			"Player", 
-			entityDefns["EntityDefnMover"],
+			entityDefns["Mover"],
 			new Location
 			(
 				cellPosOfStart.clone().multiply
@@ -182,19 +200,41 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		var entityForMoverOther = new Entity
 		(
 			"MoverOther", 
-			entityDefns["EntityDefnMover"],
+			entityDefns["Mover"],
 			new Location
 			(
-				cellPosOfStart.clone().multiply
+				cellPosOfStart.clone().add
+				(
+					new Coords(1, 1, 0).multiplyScalar(.1)
+				).multiply
 				(
 					maze.cellSizeInPixels
-				).add
-				(
-					maze.cellSizeInPixels.multiplyScalar(.1)
 				),
 				new Orientation
 				(
 					new Coords(0, 1, 0),
+					new Coords(0, 0, 1)
+				),
+				nameOfZoneStart // venue
+			)
+		);
+
+		var entityForChest = new Entity
+		(
+			"Chest", 
+			entityDefns["Chest"],
+			new Location
+			(
+				cellPosOfStart.clone().add
+				(
+					new Coords(1, -1, 0).multiplyScalar(.05)
+				).multiply
+				(
+					maze.cellSizeInPixels
+				),
+				new Orientation
+				(
+					new Coords(1, -1, 0),
 					new Coords(0, 0, 1)
 				),
 				nameOfZoneStart // venue
@@ -214,6 +254,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			[
 				entityForPlayer,
 				entityForMoverOther,
+				entityForChest,
 			]
 		);
 
@@ -261,7 +302,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
 
-		var constraintsForMovers = 
+		var constraintsCommon = 
 		[
 			new Constraint_Gravity(.1),
 			new Constraint_Solid(),
@@ -273,12 +314,12 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		{
 			var entity = this.bodies[i];
 
-			if (entity.defn.name == "EntityDefnMover") // hack
+			entity.constraints = constraintsCommon.slice();
+
+			var entityDefnName = entity.defn.name;
+			if (entityDefnName == "Mover") // hack
 			{
 				entity.actions = [];
-
-				entity.constraints = [];
-				entity.constraints.append(constraintsForMovers);
 
 				var skeletonCloned = skeleton.clone();
 				entity.constraints.prepend
@@ -307,7 +348,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 			new EntityDefn
 			(
-				"EntityDefnCamera",
+				"Camera",
 				false, // isDrawable
 				true, // isMovable
 				null // mesh
@@ -354,7 +395,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 	{
 		if (this.zoneNext != null)
 		{
-			if (this.zoneNext.entity.meshTransformed.material.name == "MaterialGoal")
+			if (this.zoneNext.entity.meshTransformed.material.name == "Goal")
 			{
 				var messageWin = 
 					"You reached the goal in "

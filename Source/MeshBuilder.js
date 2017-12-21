@@ -1,11 +1,11 @@
 
-function MeshHelper()
+function MeshBuilder()
 {
 	// do nothing
 }
 
 {
-	MeshHelper.buildBiped = function(material, heightInPixels)
+	MeshBuilder.prototype.biped = function(material, heightInPixels)
 	{
 		var heightOver2 = heightInPixels / 2;
 		var heightOver3 = heightInPixels / 3;
@@ -20,7 +20,7 @@ function MeshHelper()
 
 		var meshesForEntityParts = 
 		[
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Pelvis",
 				material, 
@@ -28,7 +28,7 @@ function MeshHelper()
 				new Coords(0, 0, -heightOver2)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Spine.1", 
 				material,
@@ -36,7 +36,7 @@ function MeshHelper()
 				new Coords(0, 0, 0 - heightOver2 - heightOver4)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Head", 
 				material,
@@ -44,7 +44,7 @@ function MeshHelper()
 				new Coords(0, heightOver36, 0 - heightInPixels)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Thigh.L", 
 				material,
@@ -52,7 +52,7 @@ function MeshHelper()
 				new Coords(heightOver18, 0, 0 - heightOver2 + heightOver12)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Shin.L", 
 				material,
@@ -60,7 +60,7 @@ function MeshHelper()
 				new Coords(heightOver18, 0, 0 - heightOver6)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Foot.L", 
 				material,
@@ -68,7 +68,7 @@ function MeshHelper()
 				new Coords(heightOver18, heightOver12, 0 - heightOver36)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Bicep.L", 
 				material,
@@ -76,7 +76,7 @@ function MeshHelper()
 				new Coords(heightOver6, 0, 0 - heightOver2 - heightOver3)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Forearm.L", 
 				material,
@@ -84,7 +84,7 @@ function MeshHelper()
 				new Coords(heightOver6, 0, 0 - heightOver2 - heightOver4 + heightOver8)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Thigh.R", 
 				material,
@@ -92,7 +92,7 @@ function MeshHelper()
 				new Coords(0 - heightOver18, 0, 0 - heightOver2 + heightOver12)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Shin.R", 
 				material,
@@ -100,7 +100,7 @@ function MeshHelper()
 				new Coords(0 - heightOver18, 0, 0 - heightOver6)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Foot.R", 
 				material,
@@ -108,7 +108,7 @@ function MeshHelper()
 				new Coords(0 - heightOver18, heightOver12, 0 - heightOver36)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Bicep.R",
 				material, 
@@ -116,7 +116,7 @@ function MeshHelper()
 				new Coords(0 - heightOver6, 0, 0 - heightOver2 - heightOver3)
 			),
 
-			MeshHelper.buildBox
+			this.box
 			(
 				//"Forearm.R", 
 				material,
@@ -142,7 +142,7 @@ function MeshHelper()
 			"Forearm.R", 
 		];
 
-		var returnValue = MeshHelper.mergeMeshes
+		var returnValue = this.mergeMeshes
 		(
 			meshesForEntityParts,
 			vertexGroupNames
@@ -161,21 +161,21 @@ function MeshHelper()
 		);
 
 		// fix
-		//MeshHelper.meshVerticesMergeIfWithinDistance(returnValue, 3);
+		//this.meshVerticesMergeIfWithinDistance(returnValue, 3);
 
 		return returnValue;
 	}
 
-	MeshHelper.buildBox = function(material, size, pos)
+	MeshBuilder.prototype.box = function(material, size, pos)
 	{
-		var returnMesh = MeshHelper.buildUnitCube(material);
+		var returnMesh = this.unitCube(material);
 
 		returnMesh.transform
 		(
 			new Transform_Scale(size)
 		);
 
-		//returnMesh = MeshHelper.meshNormalsFlip(returnMesh);
+		//returnMesh = MeshBuilder.meshNormalsFlip(returnMesh);
 
 		/*
 		returnMesh.transform
@@ -195,7 +195,7 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildRoom = function(material, x, y, z, neighborOffsets, connectedToNeighbors)
+	MeshBuilder.prototype.room = function(materialWall, x, y, z, neighborOffsets, connectedToNeighbors)
 	{
 		var wallNormals = neighborOffsets;
 
@@ -218,17 +218,11 @@ function MeshHelper()
 
 			if (connectedToNeighbors[i] == true)
 			{
-				meshForWall = MeshHelper.buildRoom_WallWithDoorway
-				(
-					material
-				);
+				meshForWall = this.room_WallWithDoorway(materialWall);
 			}
 			else
 			{
-				meshForWall = MeshHelper.buildRoom_Wall
-				(
-					material
-				);
+				meshForWall = this.room_Wall(materialWall);
 			}
 
 			wallOrientation = new Orientation
@@ -236,7 +230,7 @@ function MeshHelper()
 				wallNormal,
 				down
 			);
-
+			
 			meshForWall.transform
 			(
 				new Transform_Orient
@@ -269,10 +263,10 @@ function MeshHelper()
 			);
 		}
 
-		var meshForFloor = MeshHelper.buildRoom_Floor(material);
+		var meshForFloor = this.room_Floor(materialWall);
 		meshesForRoom.push(meshForFloor);
 
-		//var meshForCeiling = MeshHelper.buildRoom_Ceiling(material);
+		//var meshForCeiling = this.room_Ceiling(material);
 		//meshesForRoom.push(meshForCeiling);
 
 		for (var i = 0; i < meshesForRoom.length; i++)
@@ -317,7 +311,7 @@ function MeshHelper()
 			)
 		}
 
-		var returnMesh = MeshHelper.mergeMeshes
+		var returnMesh = this.mergeMeshes
 		(
 			meshesForRoom
 		);
@@ -334,36 +328,9 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildUnitRing = function(material, numberOfVertices)
+	MeshBuilder.prototype.room_Ceiling = function(material)
 	{
-		var vertices = [];
-		var vertexIndicesForFace = [];
-
-		for (var i = 0; i < numberOfVertices; i++)
-		{
-			var vertexAngleInTurns = i / numberOfVertices;
-
-			var vertexPolar = new Polar(vertexAngleInTurns, 1);
-			var vertex = vertexPolar.toCoords();
-
-			vertices.push(vertex);
-
-			vertexIndicesForFace.splice(0, 0, i);
-		}
-
-		var returnMesh = new Mesh
-		(
-			material, 
-			vertices,
-			[ vertexIndicesForFace ]
-		);
-
-		return returnMesh;
-	}
-
-	MeshHelper.buildRoom_Ceiling = function(material)
-	{
-		var returnMesh = new MeshHelper.buildUnitSquare
+		var returnMesh = new this.unitSquare
 		(
 			material
 		).transform
@@ -384,12 +351,11 @@ function MeshHelper()
 		);
 
 		return returnMesh;
-	}
-
-
-	MeshHelper.buildRoom_Floor = function(material)
+	}	
+	
+	MeshBuilder.prototype.room_Floor = function(material)
 	{
-		var returnMesh = new MeshHelper.buildUnitSquare
+		var returnMesh = new MeshBuilder().unitSquare
 		(
 			material
 		).transform
@@ -406,7 +372,7 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildRoom_Wall = function(material)
+	MeshBuilder.prototype.room_Wall = function(material)
 	{
 		var returnMesh = new Mesh
 		(
@@ -439,7 +405,7 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildRoom_WallWithDoorway = function(material)
+	MeshBuilder.prototype.room_WallWithDoorway = function(material)
 	{
 		var returnMesh = new Mesh
 		(
@@ -500,7 +466,7 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.buildUnitCube = function(material)
+	MeshBuilder.prototype.unitCube = function(material, hasTexture)
 	{
 		var returnMesh = new Mesh
 		(
@@ -531,11 +497,38 @@ function MeshHelper()
 				[5, 6, 7, 4], // bottom
 			]
 		);
+		
+		return returnMesh;
+	}
+	
+	MeshBuilder.prototype.unitRing = function(material, numberOfVertices)
+	{
+		var vertices = [];
+		var vertexIndicesForFace = [];
+
+		for (var i = 0; i < numberOfVertices; i++)
+		{
+			var vertexAngleInTurns = i / numberOfVertices;
+
+			var vertexPolar = new Polar(vertexAngleInTurns, 1);
+			var vertex = vertexPolar.toCoords();
+
+			vertices.push(vertex);
+
+			vertexIndicesForFace.splice(0, 0, i);
+		}
+
+		var returnMesh = new Mesh
+		(
+			material, 
+			vertices,
+			[ vertexIndicesForFace ]
+		);
 
 		return returnMesh;
 	}
-
-	MeshHelper.buildUnitSquare = function(material)
+	
+	MeshBuilder.prototype.unitSquare = function(material)
 	{
 		var returnMesh = new Mesh
 		(
@@ -567,13 +560,13 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.clipFaceAgainstPlanes = function(faceToClip, planesToClipAgainst)
+	MeshBuilder.prototype.clipFaceAgainstPlanes = function(faceToClip, planesToClipAgainst)
 	{
 		var returnValue = faceToClip;
 
 		for (var p = 0; p < planesToClipAgainst.length; p++)
 		{
-			faceToClip = MeshHelper.splitFaceByPlaneFrontAndBack
+			faceToClip = MeshBuilder.splitFaceByPlaneFrontAndBack
 			(
 				faceToClip,
 				planesToClipAgainst[p]
@@ -588,7 +581,7 @@ function MeshHelper()
 		return faceToClip;
 	}
 
-	MeshHelper.mergeMeshes = function(meshesToMerge, vertexGroupNames)
+	MeshBuilder.prototype.mergeMeshes = function(meshesToMerge, vertexGroupNames)
 	{
 		var verticesMerged = [];
 		var vertexIndicesForFacesMerged = [];
@@ -668,12 +661,12 @@ function MeshHelper()
 		return returnMesh;
 	}
 
-	MeshHelper.meshNormalsFlip = function(mesh)
+	MeshBuilder.prototype.meshNormalsFlip = function(mesh)
 	{
 		return mesh.transform(new Transform_Scale(new Coords(-1, -1, -1)));
 	}
 
-	MeshHelper.meshVerticesMergeIfWithinDistance = function(mesh, distanceToMergeWithin)
+	MeshBuilder.prototype.meshVerticesMergeIfWithinDistance = function(mesh, distanceToMergeWithin)
 	{
 		var vertices = mesh.vertices;
 
@@ -777,7 +770,7 @@ function MeshHelper()
 		mesh.vertices = verticesMinusDuplicates;
 	}
 
-	MeshHelper.removeFacesWithIndicesFromMesh = function(indicesOfFacesToRemove, meshToRemoveFrom)
+	MeshBuilder.prototype.removeFacesWithIndicesFromMesh = function(indicesOfFacesToRemove, meshToRemoveFrom)
 	{
 		var indicesOfFacesToRemoveSorted = indicesOfFacesToRemove.sortIntoOtherUsingCompareFunction
 		(
@@ -801,7 +794,7 @@ function MeshHelper()
 		return meshToRemoveFrom;
 	}
 
-	MeshHelper.splitFaceByPlaneFrontAndBack = function(faceToDivide, planeToDivideOn)
+	MeshBuilder.prototype.splitFaceByPlaneFrontAndBack = function(faceToDivide, planeToDivideOn)
 	{
 		var returnValues = [];
 

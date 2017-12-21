@@ -15,13 +15,13 @@ function Collision(pos, distanceToCollision, colliders)
 		for (var f = 0; f < mesh.faces.length; f++)
 		{
 			var face = mesh.faces[f];
-	
+
 			if (face.plane.normal.dotProduct(edge.direction()) < 0)
 			{
 				var collision = Collision.findCollisionOfEdgeAndFace
 				(
 					edge,
-					face	
+					face
 				);
 
 				if (collision != null)
@@ -55,7 +55,7 @@ function Collision(pos, distanceToCollision, colliders)
 		Collision.addCollisionsOfEdgeAndMeshToList
 		(
 			edge, zone.entity.meshTransformed, listToAddTo
-		);	
+		);
 
 		return listToAddTo;
 	}
@@ -69,7 +69,7 @@ function Collision(pos, distanceToCollision, colliders)
 		for (var b = 0; b < bounds.length; b++)
 		{
 			var boundsThis = bounds[b];
-			var boundsOther = bounds[1 - b];			
+			var boundsOther = bounds[1 - b];
 
 			var doAllDimensionsOverlapSoFar = true;
 
@@ -99,7 +99,7 @@ function Collision(pos, distanceToCollision, colliders)
 	Collision.findClosest = function(collisionsToCheck)
 	{
 		var collisionClosest = collisionsToCheck[0];
-		
+
 		for (var i = 1; i < collisionsToCheck.length; i++)
 		{
 			var collision = collisionsToCheck[i];
@@ -164,7 +164,7 @@ function Collision(pos, distanceToCollision, colliders)
 			var colliders = [];
 			colliders["Edge"] = edge;
 			colliders["Plane"] = plane;
-	
+
 			returnValue = new Collision
 			(
 				collisionPos,
@@ -175,7 +175,7 @@ function Collision(pos, distanceToCollision, colliders)
 
 		return returnValue;
 	}
-	
+
 	Collision.CoordsTemp = new Coords(0, 0, 0);
 
 	Collision.isPosWithinFace = function(posToCheck, face)
@@ -196,7 +196,7 @@ function Collision(pos, distanceToCollision, colliders)
 			).subtract
 			(
 				edgeFromFace.vertices[0]
-			);		
+			);
 
 			var displacementProjectedAlongEdgeTransverse = 
 				displacementFromVertex0ToCollision.dotProduct

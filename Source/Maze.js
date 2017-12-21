@@ -29,7 +29,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 	// static methods
 
 	Maze.prototype.generateRandom = function()
-	{		
+	{
 		var cells = this.cells;
 		var sizeInCells = this.sizeInCells;
 		var neighborOffsets = this.neighborOffsets;
@@ -80,7 +80,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 		var sizeInCellsMinusOnes = this.sizeInCellsMinusOnes;
 		var neighborOffsets = this.neighborOffsets;
 		var numberOfNeighbors = neighborOffsets.length;
-	
+
 		var numberOfCellsInNetworkMerged = 0;
 
 		var cellCurrent = this.cellAtPos(cellPos);
@@ -128,9 +128,9 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 					numberOfCellsInNetworkMerged = networkMerged.cells.length;
 				}
 			}
-		}	
+		}
 
-		return numberOfCellsInNetworkMerged;	
+		return numberOfCellsInNetworkMerged;
 	}
 
 	// instance methods
@@ -151,6 +151,8 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 	)
 	{
 		var returnValues = [];
+
+		var meshBuilder = new MeshBuilder();
 
 		var sizeInPixels = this.sizeInPixels;
 		var cellSizeInPixels = this.cellSizeInPixels;
@@ -191,7 +193,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 					if (cellCurrent.connectedToNeighbors[n] == true)
 					{
 						faceIndicesToRemove.push(n);
-						
+
 						var neighborOffset = this.neighborOffsets[n];
 						var neighborPosInCells = cellPos.clone().add
 						(
@@ -219,7 +221,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 					}
 				}
 
-				var mesh = MeshHelper.buildRoom
+				var mesh = meshBuilder.room
 				(
 					//zoneForNodeName, 
 					materialNormal,
@@ -284,7 +286,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 							roomSizeInPixelsHalf.z
 						);
 
-						var mesh = MeshHelper.buildRoom
+						var mesh = meshBuilder.room
 						(
 							//zoneForConnectorName, 
 							materialNormal,
@@ -324,13 +326,14 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 			}
 		}
 
-		var zoneStart = returnValues[cellPosOfStart.toString()];
+		var zoneStartName = cellPosOfStart.toString();
+		var zoneStart = returnValues[zoneStartName];
 		var meshStart = zoneStart.entity.meshTransformed;
-
 		meshStart.material = materialStart;
 		meshStart.recalculateDerivedValues();
 
-		var zoneGoal = returnValues[cellPosOfGoal.toString()];
+		var zoneGoalName = cellPosOfGoal.toString();
+		var zoneGoal = returnValues[zoneGoalName];
 		var meshGoal = zoneGoal.entity.meshTransformed;
 		meshGoal.material = materialGoal;
 		meshGoal.recalculateDerivedValues();

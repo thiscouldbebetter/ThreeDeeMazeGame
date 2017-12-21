@@ -10,22 +10,50 @@ function Texture(name, image)
 
 	function Texture_Instances()
 	{
-		this.TestPattern = new Texture
+		this._TestPattern = new Texture
 		(
-			"TextureTestPattern", 
+			"TestPattern", 
 			ImageHelper.buildImageFromStrings
 			(
-				"ImageTestPattern",
+				"TestPattern",
 				[ "rg", "by" ]
 			)
 		);
 
-		this.Goal = new Texture
+		this.Chest = new Texture
 		(
-			"TextureGoal",
+			"Chest",
 			ImageHelper.buildImageFromStrings
 			(
-				"ImageGoal",
+				"Chest",
+				[
+					"aaaaaaaaaaaaaaaa",
+					"aAAAAAAAAAAAAAAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAaaaaaaaaaaaaAa",
+					"aAAAAAAAAAAAAAAa",
+					"aaaaaaaaaaaaaaaa",
+				]
+			)
+		);
+
+
+		this.Goal = new Texture
+		(
+			"Goal",
+			ImageHelper.buildImageFromStrings
+			(
+				"Goal",
 				[
 					"@"
 				]
@@ -34,10 +62,10 @@ function Texture(name, image)
 
 		this.Start = new Texture
 		(
-			"TextureStart",
+			"Start",
 			ImageHelper.buildImageFromStrings
 			(
-				"ImageStart",
+				"Start",
 				[
 					"A"
 				]
@@ -46,30 +74,30 @@ function Texture(name, image)
 
 		this.Wall = new Texture
 		(
-			"TextureWall",
+			"Wall",
 			ImageHelper.buildImageFromStrings
 			(
-				"ImageWall",
+				"Wall",
 				[
 					"AAAAAAAAAAAAAAAA",
-	
+
 					"AaaaAaaaAaaaAaaa",
 					"AaaaAaaaAaaaAaaa",
 					"AaaaAaaaAaaaAaaa",
-	
-					"AAAAAAAAAAAAAAAA",
-	
-					"aaAaaaAaaaAaaaAa",
-					"aaAaaaAaaaAaaaAa",
-					"aaAaaaAaaaAaaaAa",
 
 					"AAAAAAAAAAAAAAAA",
 
+					"aaAaaaAaaaAaaaAa",
+					"aaAaaaAaaaAaaaAa",
+					"aaAaaaAaaaAaaaAa",
+
+					"AAAAAAAAAAAAAAAA",
+
 					"AaaaAaaaAaaaAaaa",
 					"AaaaAaaaAaaaAaaa",
 					"AaaaAaaaAaaaAaaa",
 
-					"AAAAAAAAAAAAAAAA",	
+					"AAAAAAAAAAAAAAAA",
 
 					"aaAaaaAaaaAaaaAa",
 					"aaAaaaAaaaAaaaAa",

@@ -8,7 +8,7 @@ function DisplayExtensions2D()
 	{
 		var cameraClipPlanes = camera.clipPlanes();
 
-		faceToDraw = MeshHelper.clipFaceAgainstPlanes(faceToDraw, cameraClipPlanes);
+		faceToDraw = new MeshBuilder().clipFaceAgainstPlanes(faceToDraw, cameraClipPlanes);
 
 		if (faceToDraw == null)
 		{

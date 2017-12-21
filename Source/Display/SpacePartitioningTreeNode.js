@@ -26,7 +26,7 @@ function SpacePartitioningTreeNode(faces)
 			}
 			else
 			{
-				var facesDividedFrontAndBack = MeshHelper.splitFaceByPlaneFrontAndBack
+				var facesDividedFrontAndBack = new MeshBuilder().splitFaceByPlaneFrontAndBack
 				(
 					faceOther,
 					planeToDivideOn

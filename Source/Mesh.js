@@ -1,12 +1,5 @@
 
-function Mesh
-(
-	material,
-	vertices, 
-	vertexIndicesForFaces,
-	textureUVsForFaceVertices,
-	vertexGroups
-)
+function Mesh(material, vertices, vertexIndicesForFaces, textureUVsForFaceVertices, vertexGroups)
 {
 	this.material = material;
 	this.vertices = vertices;
@@ -25,7 +18,7 @@ function Mesh
 		var numberOfVerticesInFace = vertexIndicesForFace.length;
 
 		var verticesForFace = [];
-		
+
 		for (var vi = 0; vi < numberOfVerticesInFace; vi++)
 		{
 			var vertexIndex = vertexIndicesForFace[vi];
@@ -55,8 +48,8 @@ function Mesh
 			this.material,
 			this.vertices.clone(),
 			this.vertexIndicesForFaces,
-			this.textureUVsForFaceVertices.clone(),
-			this.vertexGroups.clone()
+			( this.textureUVsForFaceVertices == null ? null : this.textureUVsForFaceVertices.clone() ),
+			( this.vertexGroups == null ? null : this.vertexGroups.clone() )
 		);
 	}
 
@@ -85,6 +78,25 @@ function Mesh
 		}
 
 		this.bounds.ofPoints(this.vertices);
+
+		return this;
+	}
+
+	Mesh.prototype.textureUVsBuild = function()
+	{
+		var textureUVsForFaces = [];
+
+		var textureUVsForFace = 
+		[
+			new Coords(0, 0), new Coords(1, 0), new Coords(1, 1), new Coords(1, 0)
+		];
+
+		for (var f = 0; f < this.vertexIndicesForFaces.length; f++)
+		{
+			textureUVsForFaces.push(textureUVsForFace);
+		}
+
+		this.textureUVsForFaceVertices = textureUVsForFaces;
 
 		return this;
 	}
