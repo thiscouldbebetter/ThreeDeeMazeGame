@@ -38,11 +38,11 @@ function MeshTextured(geometry, material, textureUVsForFaceVertices, vertexGroup
 				this._faces.push(face);
 			}
 		}
-		
+
 		return this._faces;
 	}
 
-	
+
 	MeshTextured.prototype.textureUVsBuild = function()
 	{
 		var textureUVsForFaces = [];

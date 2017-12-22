@@ -22,8 +22,8 @@ function Action_Turn(amountToTurnRightAndDown)
 				this.orientationTemp.forward.add
 				(
 					this.orientationTemp.right.multiplyScalar
-					(	
-						this.amountToTurnRightAndDown.x	
+					(
+						this.amountToTurnRightAndDown.x
 					)
 				),
 				entityOrientation.down

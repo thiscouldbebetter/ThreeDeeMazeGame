@@ -48,7 +48,7 @@ function ActivityDefn(name, perform)
 							? action.ticksSoFar // hold forever
 							: action.ticksToHold
 						);
-						
+
 						// fix
 						if (action.ticksSoFar == null || action.ticksSoFar <= ticksToHold)
 						{

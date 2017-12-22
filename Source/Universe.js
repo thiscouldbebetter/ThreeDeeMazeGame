@@ -1,8 +1,10 @@
 
-function Universe(name, timerHelper, world)
+function Universe(name, timerHelper, display, mediaLibrary, world)
 {
 	this.name = name;
 	this.timerHelper = timerHelper;
+	this.display = display;
+	this.mediaLibrary = mediaLibrary;
 	this.world = world;
 }
 
@@ -11,11 +13,10 @@ function Universe(name, timerHelper, world)
 
 	Universe.prototype.initialize = function()
 	{
-		this.display = new Display3D(new Coords(320, 240, 2000));
-		this.inputHelper = new InputHelper();
-
 		this.platformHelper = new PlatformHelper();
 		this.platformHelper.initialize(this);
+
+		this.inputHelper = new InputHelper();
 
 		this.display.initialize(this);
 		this.inputHelper.initialize(this);

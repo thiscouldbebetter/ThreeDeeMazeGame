@@ -62,7 +62,7 @@ function ImageHelper()
 					pixelPos.y, 
 					scaleFactor.x, 
 					scaleFactor.y
-				);				
+				);
 			}
 		}
 
@@ -101,7 +101,7 @@ function ImageHelper()
 			var returnImageRow = [];
 
 			for (var x = 0; x < sizeInTiles.x; x++)
-			{							
+			{
 				tilePos.x = x;
 
 				var canvas		 = document.createElement("canvas");

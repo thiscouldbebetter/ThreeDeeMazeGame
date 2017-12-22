@@ -33,7 +33,7 @@ function SpacePartitioningTreeNode(faces)
 					faceOther,
 					planeToDivideOn
 				);
-	
+
 				for (var i = 0; i < facesDividedFrontAndBack.length; i++)
 				{
 					var facePart = facesDividedFrontAndBack[i];
@@ -45,7 +45,7 @@ function SpacePartitioningTreeNode(faces)
 				}
 			}
 		}
-	
+
 		this.children = [];
 
 		for (var i = 0; i < faceSetsFrontAndBack.length; i++)
@@ -74,12 +74,12 @@ function SpacePartitioningTreeNode(faces)
 			{
 				facesToAddTo.push(this.faces[i]);
 			}
-		}			
+		}
 		else
 		{
 			var distanceOfCameraAbovePlane = Collision.findDistanceOfPositionAbovePlane
-			(		
-				cameraPos,	
+			(
+				cameraPos,
 				this.faces[0].plane
 			)
 

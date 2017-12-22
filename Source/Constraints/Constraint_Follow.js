@@ -20,7 +20,7 @@ function Constraint_Follow(entityToFollow, distanceToKeep)
 		var directionToLeader = displacementToLeader.clone().divideScalar(distanceToLeader);
 
 		var deviation = distanceToLeader - this.distanceToKeep;
-		
+
 		if (deviation > 0)
 		{
 			var deviationFractional = deviation / this.distanceToKeep;

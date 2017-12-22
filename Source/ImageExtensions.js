@@ -1,5 +1,5 @@
 
-function Image()
+function ImageExtensions()
 {}
 {
 	// static methods
@@ -16,15 +16,9 @@ function Image()
 		return returnValue;
 	}
 
-	Image.buildFromSystemImage = function(name, systemImage, sizeInPixels)
+	Image.buildFromSystemImage = function(name, systemImage)
 	{
-		var returnValue = new Image();
-
-		returnValue.name = name;
-		returnValue.htmlElementID = systemImage.id;
-		returnValue.filePath = systemImage.src;
-		returnValue.sizeInPixels = sizeInPixels;
-		returnValue.systemImage = systemImage;
+		var returnValue = new Image(name, systemImage.src);
 
 		return returnValue;
 	}

@@ -1,5 +1,5 @@
 
 function CollidableData()
-{	
+{
 	this.collisionNodesOccupied = [];
 }

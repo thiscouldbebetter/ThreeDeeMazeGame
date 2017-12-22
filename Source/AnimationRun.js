@@ -1,7 +1,7 @@
 
 function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 {
-	this.animationDefnGroup = animationDefnGroup;	
+	this.animationDefnGroup = animationDefnGroup;
 	this.animationDefnNameCurrent = null;
 	this.transformableAtRest = transformableAtRest;
 	this.transformable = transformable;
@@ -22,7 +22,7 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 	}
 
 	AnimationRun.prototype.frameCurrent = function(world)
-	{	
+	{
 		var returnValue = null;
 
 		var animationDefn = this.animationDefnCurrent();
@@ -43,7 +43,7 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 				break;
 			}
 		}
-		
+
 		var keyframe = keyframes[i];
 		var framesSinceKeyframe = framesSinceBeginningOfCycle - keyframe.frameIndex;
 
@@ -63,7 +63,7 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 	AnimationRun.prototype.updateForTimerTick = function(world)
 	{
 		this.transformable.overwriteWith(this.transformableAtRest);
-	
+
 		if (this.animationDefnNameCurrent != null)
 		{
 			var frameCurrent = this.frameCurrent(world);

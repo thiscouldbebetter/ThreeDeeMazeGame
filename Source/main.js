@@ -2,22 +2,46 @@
 
 function main()
 {
-	new Color_Instances();		
-
-	var mazeSizeInCells = new Coords(4, 4, 1);
-	var mazeCellSizeInPixels = new Coords(80, 80, 40);
-	
-	var world = World.buildRandom
+	var mediaLibrary = new MediaLibrary
 	(
-		mazeSizeInCells,
-		mazeCellSizeInPixels
+		// images
+		[
+			new Image("Title", "../Media/Title.png"),
+		],
+		// sounds
+		[
+			new Sound("Sound", "../Media/Sound.wav", false),
+			new Sound("Music", "../Media/Music.mp3", true),
+		],
+		// videos
+		[
+			new Video("Movie", "../Media/Movie.webm"),
+		],
+		// fonts
+		[
+			new Font("Font", "../Media/Font.ttf")
+		]
+	);
+
+	new Color_Instances();
+
+
+	var display = new Display3D
+	(
+		new Coords(320, 240, 2000), 
+		"Font", // fontName, 
+		10, // fontHeightInPixels, 
+		"White", // colorFore, 
+		"Gray", // colorBack
 	);
 
 	var universe = new Universe
 	(
 		"ThreeDeeMaze",
 		new TimerHelper(20),
-		world
+		display,
+		mediaLibrary,
+		null, //world
 	);
 
 	universe.initialize();

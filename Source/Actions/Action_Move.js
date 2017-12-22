@@ -26,12 +26,12 @@ function Action_Move(amountToMoveForwardRightDown)
 					this.amountToMoveForwardRightDown
 				)
 			)
-	
+
 			entityLoc.accel.add
 			(
 				this.acceleration
 			);
-	
+
 			var constraintAnimate = entity.constraints["Animate"];
 			if (constraintAnimate != null)
 			{

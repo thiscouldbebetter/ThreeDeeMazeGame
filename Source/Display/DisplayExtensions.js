@@ -41,7 +41,7 @@ function DisplayExtensions2D()
 		this.graphics.beginPath();
 
 		for (var i = 0; i < vertices.length; i++)
-		{			
+		{
 			transformCamera.transformCoords
 			(
 				this.drawPos.overwriteWith

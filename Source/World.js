@@ -18,7 +18,15 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 {
 	// static methods
 
-	World.buildRandom = function(mazeSizeInCells, mazeCellSizeInPixels)
+	World.new = function()
+	{
+		var mazeSizeInCells = new Coords(4, 4, 1);
+		var mazeCellSizeInPixels = new Coords(80, 80, 40);
+		var returnValue = World.random(mazeSizeInCells, mazeCellSizeInPixels);
+		return returnValue;
+	}
+
+	World.random = function(mazeSizeInCells, mazeCellSizeInPixels)
 	{
 		var textures = Texture.Instances;
 
@@ -391,7 +399,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		this.dateStarted = new Date();
 	}
 
-	World.prototype.update = function(universe)
+	World.prototype.updateForTimerTick = function(universe)
 	{
 		if (this.zoneNext != null)
 		{
@@ -596,7 +604,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			}
 		}
 
-		display.clear();
+		display.drawBackground();
 		display.drawFacesForCamera(facesToDraw, world.camera);
 		display.drawText(world.name, 10, new Coords(0, 10));
 		display.drawText(world.secondsElapsed(), 10, new Coords(0, 20));
@@ -610,7 +618,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 	World.prototype.draw3D = function(display)
 	{
-		display.clear();
+		display.drawBackground();
 
 		display.cameraSet(this.camera);
 
