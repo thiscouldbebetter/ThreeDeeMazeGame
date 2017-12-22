@@ -324,8 +324,8 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				var skeletonCloned = skeleton.clone();
 				entity.constraints.prepend
 				([
-					new Constraint_Pose(skeleton, skeletonCloned),
 					new Constraint_Animate(skeleton, skeletonCloned, animationDefnGroupBiped),
+					new Constraint_Pose(skeleton, skeletonCloned),
 				]);
 
 				entity.constraints.addLookups("name");
@@ -434,11 +434,8 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				var zoneActive = this.zonesActive[i];
 				zoneActive.initialize();
 				this.bodies.push(zoneActive.entity);
-
-				facesForZonesActive.append
-				(
-					zoneActive.entity.meshTransformed.faces
-				);
+				var facesForZone = zoneActive.entity.meshTransformed.faces();
+				facesForZonesActive.append(facesForZone);
 			}
 
 			this.spacePartitioningTreeForZonesActive = SpacePartitioningTree.fromFaces
@@ -492,7 +489,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		var entityForPlayer = this.bodies[0];
 
-		var zoneCurrentBounds = this.zoneCurrent.entity.meshTransformed.bounds;
+		var zoneCurrentBounds = this.zoneCurrent.entity.meshTransformed.geometry.bounds();
 
 		if (zoneCurrentBounds.containsPoint(entityForPlayer.loc.pos) == false)
 		{
@@ -500,7 +497,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			{
 				var zoneActive = this.zonesActive[z];
 				var zoneActiveMesh = zoneActive.entity.meshTransformed;
-				var zoneActiveBounds = zoneActiveMesh.bounds;
+				var zoneActiveBounds = zoneActiveMesh.geometry.bounds();
 				var isPlayerInZoneActive = zoneActiveBounds.containsPoint
 				(
 					entityForPlayer.loc.pos
@@ -582,7 +579,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 						if (isEntityStandingOnFace == true)
 						{
-							var moverFaces = entity.meshTransformed.faces;
+							var moverFaces = entity.meshTransformed.faces();
 							for (var f = 0; f < moverFaces.length; f++)
 							{
 								var moverFace = moverFaces[f];

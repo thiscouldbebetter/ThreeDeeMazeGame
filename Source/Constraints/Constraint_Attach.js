@@ -14,7 +14,7 @@ function Constraint_Attach(entityAttachedTo, offsetForwardRightDown)
 {
 	Constraint_Attach.prototype.constrainEntity = function(world, entityToConstrain)
 	{
-		this.transformOrient.applyToCoords
+		this.transformOrient.transformCoords
 		(
 			entityToConstrain.loc.pos.overwriteWith
 			(

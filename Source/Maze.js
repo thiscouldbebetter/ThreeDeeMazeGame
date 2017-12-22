@@ -200,24 +200,24 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 							neighborOffset
 						);
 
-						namesOfZonesAdjacent.push
-						(
-							neighborPosInCells.toString()
-						);
-						var zoneForConnectorName;
+						var zoneNeighborName = neighborPosInCells.toString();
+						namesOfZonesAdjacent.push(zoneNeighborName);
+
+						var zoneConnectorName;
 						if (n % 2 == 1)
 						{
-							zoneForConnectorName = 
+							zoneConnectorName = 
 								cellPos.toString() 
-								+ neighborPosInCells.toString();
+								+ zoneNeighborName;
 						}
 						else
 						{
-							zoneForConnectorName = 
-								neighborPosInCells.toString() 
+							zoneConnectorName = 
+								zoneNeighborName 
 								+ cellPos.toString();
 						}
-						namesOfZonesAdjacent.push(zoneForConnectorName);
+
+						namesOfZonesAdjacent.push(zoneConnectorName);
 					}
 				}
 
@@ -330,13 +330,11 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 		var zoneStart = returnValues[zoneStartName];
 		var meshStart = zoneStart.entity.meshTransformed;
 		meshStart.material = materialStart;
-		meshStart.recalculateDerivedValues();
 
 		var zoneGoalName = cellPosOfGoal.toString();
 		var zoneGoal = returnValues[zoneGoalName];
 		var meshGoal = zoneGoal.entity.meshTransformed;
 		meshGoal.material = materialGoal;
-		meshGoal.recalculateDerivedValues();
 
 		return returnValues;
 	}

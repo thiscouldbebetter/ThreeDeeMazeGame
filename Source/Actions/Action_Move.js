@@ -19,7 +19,7 @@ function Action_Move(amountToMoveForwardRightDown)
 		{
 			this.transformOrient.orientation = entityLoc.orientation;
 
-			this.transformOrient.applyToCoords
+			this.transformOrient.transformCoords
 			(
 				this.acceleration.overwriteWith
 				(
@@ -32,8 +32,12 @@ function Action_Move(amountToMoveForwardRightDown)
 				this.acceleration
 			);
 	
-			var animationRun = entity.constraints["Animate"].animationRun;
-			animationRun.animationDefnNameCurrent = "Walk";
+			var constraintAnimate = entity.constraints["Animate"];
+			if (constraintAnimate != null)
+			{
+				var animationRun = constraintAnimate.animationRun;
+				animationRun.animationDefnNameCurrent = "Walk";
+			}
 		}
 	}
 }

@@ -1,7 +1,9 @@
 
 function Constraint_Solid()
 {
-	this.collisions = [];
+	// Helper variables.
+
+	this._collisions = [];
 }
 
 {
@@ -14,6 +16,8 @@ function Constraint_Solid()
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;
+
+		var collisions = this._collisions;
 
 		while (true)
 		{
@@ -29,34 +33,34 @@ function Constraint_Solid()
 			(
 				[ entityPos, entityPosNext ]
 			);
-	
-			if (edgeForMovement.length == 0)
+
+			if (edgeForMovement.length() == 0)
 			{
 				break;
 			}
 			else
 			{
-				this.collisions.length = 0;
-	
+				collisions.length = 0;
+
 				Collision.addCollisionsOfEdgeAndWorldToList
 				(
 					edgeForMovement, 
 					world,
-					this.collisions
+					collisions
 				);
-	
-				if (this.collisions.length == 0)
+
+				if (collisions.length == 0)
 				{
 					break;
 				}
 				else
 				{
-					var collisionClosest = Collision.findClosest(this.collisions);
+					var collisionClosest = Collision.findClosest(collisions);
 					var faceCollidedWith = collisionClosest.colliders["Face"];
-	
-					var planeCollidedWith = faceCollidedWith.plane;
+
+					var planeCollidedWith = faceCollidedWith.plane();
 					var planeNormal = planeCollidedWith.normal;
-				
+
 					entityPos.overwriteWith
 					(
 						collisionClosest.pos
@@ -76,7 +80,7 @@ function Constraint_Solid()
 							entityAccel.dotProduct(planeNormal)
 						)
 					);
-				}		
+				}
 
 			} // end if (edgeForMovement.length > 0)
 

@@ -35,7 +35,8 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 	{
 		this.entity.resetMeshTransformed();
 
-		this.entity.meshTransformed.transform
+		var meshTransformed = this.entity.meshTransformed;
+		meshTransformed.transform
 		(
 			new Transform_Locate(this.entity.loc)
 		);

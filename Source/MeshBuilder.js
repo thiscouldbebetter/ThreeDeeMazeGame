@@ -230,7 +230,7 @@ function MeshBuilder()
 				wallNormal,
 				down
 			);
-			
+
 			meshForWall.transform
 			(
 				new Transform_Orient
@@ -273,8 +273,8 @@ function MeshBuilder()
 		{
 			var mesh = meshesForRoom[i];
 
-			var face = mesh.faces[0];
-			var faceNormal = face.plane.normal;
+			var face = mesh.geometry.faces()[0];
+			var faceNormal = face.plane().normal;
 
 			var faceOrientation;
 
@@ -322,7 +322,7 @@ function MeshBuilder()
 		).transform
 		(
 			new Transform_Translate(new Coords(0, 0, -z))
-		).recalculateDerivedValues();
+		);
 
 
 		return returnMesh;
@@ -330,7 +330,7 @@ function MeshBuilder()
 
 	MeshBuilder.prototype.room_Ceiling = function(material)
 	{
-		var returnMesh = new this.unitSquare
+		var returnMesh = this.unitSquare
 		(
 			material
 		).transform
@@ -351,11 +351,11 @@ function MeshBuilder()
 		);
 
 		return returnMesh;
-	}	
-	
+	}
+
 	MeshBuilder.prototype.room_Floor = function(material)
 	{
-		var returnMesh = new MeshBuilder().unitSquare
+		var returnMesh = this.unitSquare
 		(
 			material
 		).transform
@@ -376,7 +376,7 @@ function MeshBuilder()
 	{
 		var returnMesh = new Mesh
 		(
-			material,
+			new Coords(0, 0, 0), // center
 			// vertices
 			[
 				// wall
@@ -389,8 +389,14 @@ function MeshBuilder()
 			// vertexIndicesForFaces
 			[
 				//[ 3, 2, 1, 0 ],
-				[0, 1, 2, 3], 
-			],
+				new Mesh_FaceBuilder([0, 1, 2, 3]), 
+			]
+		);
+
+		returnMesh = new MeshTextured
+		(
+			returnMesh,
+			material,
 			// textureUVs
 			[
 				[ 
@@ -409,7 +415,7 @@ function MeshBuilder()
 	{
 		var returnMesh = new Mesh
 		(
-			material,
+			new Coords(0, 0, 0), // center
 			// vertices
 			[
 				// top
@@ -433,10 +439,16 @@ function MeshBuilder()
 			// vertexIndicesForFaces
 			[
 				// top, left, right
-				[ 3, 2, 1, 0 ], 
-				[ 7, 6, 5, 4 ],
-				[ 11, 10, 9, 8 ],
-			],
+				new Mesh_FaceBuilder([ 3, 2, 1, 0 ]), 
+				new Mesh_FaceBuilder([ 7, 6, 5, 4 ]),
+				new Mesh_FaceBuilder([ 11, 10, 9, 8 ]),
+			]
+		);
+
+		returnMesh = new MeshTextured
+		(
+			returnMesh,
+			material,
 			// textureUVs
 			[
 				// top
@@ -466,11 +478,11 @@ function MeshBuilder()
 		return returnMesh;
 	}
 
-	MeshBuilder.prototype.unitCube = function(material, hasTexture)
+	MeshBuilder.prototype.unitCube = function(material)
 	{
 		var returnMesh = new Mesh
 		(
-			material,
+			new Coords(0, 0, 0), // center
 			// vertices
 			[
 				// top
@@ -487,20 +499,22 @@ function MeshBuilder()
 			],
 			// vertexIndicesForFaces
 			[
-				[7, 3, 0, 4], // west
-				[5, 1, 2, 6], // east
+				new Mesh_FaceBuilder([7, 3, 0, 4]), // west
+				new Mesh_FaceBuilder([5, 1, 2, 6]), // east
 
-				[4, 0, 1, 5], // north
-				[6, 2, 3, 7], // south
+				new Mesh_FaceBuilder([4, 0, 1, 5]), // north
+				new Mesh_FaceBuilder([6, 2, 3, 7]), // south
 
-				[0, 3, 2, 1], // top
-				[5, 6, 7, 4], // bottom
+				new Mesh_FaceBuilder([0, 3, 2, 1]), // top
+				new Mesh_FaceBuilder([5, 6, 7, 4]), // bottom
 			]
 		);
-		
+
+		returnMesh = new MeshTextured(returnMesh, material);
+
 		return returnMesh;
 	}
-	
+
 	MeshBuilder.prototype.unitRing = function(material, numberOfVertices)
 	{
 		var vertices = [];
@@ -520,19 +534,21 @@ function MeshBuilder()
 
 		var returnMesh = new Mesh
 		(
-			material, 
+			new Coords(0, 0, 0), // center
 			vertices,
-			[ vertexIndicesForFace ]
+			[ new Mesh_FaceBuilder(vertexIndicesForFace) ]
 		);
+
+		returnMesh = new MeshTextured(returnMesh, material);
 
 		return returnMesh;
 	}
-	
+
 	MeshBuilder.prototype.unitSquare = function(material)
 	{
 		var returnMesh = new Mesh
 		(
-			material,
+			new Coords(0, 0, 0), // center
 			// vertices
 			[
 				// back 
@@ -543,9 +559,15 @@ function MeshBuilder()
 			],
 			// vertexIndicesForFaces
 			[
-				[3, 2, 1, 0]
+				new Mesh_FaceBuilder([3, 2, 1, 0])
 				//[0, 1, 2, 3]
-			],
+			]
+		);
+
+		returnMesh = new MeshTextured
+		(
+			returnMesh,
+			material,
 			// textureUVs
 			[
 				[
@@ -584,7 +606,7 @@ function MeshBuilder()
 	MeshBuilder.prototype.mergeMeshes = function(meshesToMerge, vertexGroupNames)
 	{
 		var verticesMerged = [];
-		var vertexIndicesForFacesMerged = [];
+		var faceBuildersMerged = [];
 		var textureUVsForFacesMerged = [];
 		var vertexGroups = [];
 
@@ -593,29 +615,20 @@ function MeshBuilder()
 		for (var m = 0; m < meshesToMerge.length; m++)
 		{
 			var meshToMerge = meshesToMerge[m];
+			var meshToMergeGeometry = meshToMerge.geometry;
+			var verticesToMerge = meshToMergeGeometry.vertices();
 
 			verticesMerged = verticesMerged.concat
 			(
-				meshToMerge.vertices
-				//Cloneable.cloneMany(meshToMerge.vertices)
+				verticesToMerge
 			);
 
-			for (var f = 0; f < meshToMerge.vertexIndicesForFaces.length; f++)
+			var faceBuildersToMerge = meshToMergeGeometry.faceBuilders;
+			for (var f = 0; f < faceBuildersToMerge.length; f++)
 			{
-				var vertexIndicesForFace = meshToMerge.vertexIndicesForFaces[f];
-				var vertexIndicesForFaceShifted = [];
-				for (var vi = 0; vi < vertexIndicesForFace.length; vi++)
-				{
-					var vertexIndex = vertexIndicesForFace[vi];
-					var vertexIndexShifted = vertexIndex + numberOfVerticesSoFar;
-
-					vertexIndicesForFaceShifted.push
-					(
-						vertexIndexShifted
-					);
-				}
-
-				vertexIndicesForFacesMerged.push(vertexIndicesForFaceShifted);
+				var faceBuilder = faceBuildersToMerge[f];
+				faceBuilder.vertexIndicesShift(numberOfVerticesSoFar);
+				faceBuildersMerged.push(faceBuilder);
 			}
 
 			var textureUVsForFaces = meshToMerge.textureUVsForFaceVertices;
@@ -632,7 +645,7 @@ function MeshBuilder()
 			if (vertexGroupNames != null)
 			{
 				var vertexIndicesInVertexGroup = [];
-				for (var v = 0; v < meshToMerge.vertices.length; v++)
+				for (var v = 0; v < verticesToMerge.length; v++)
 				{
 					vertexIndicesInVertexGroup.push(numberOfVerticesSoFar + v);
 				}
@@ -646,152 +659,25 @@ function MeshBuilder()
 				vertexGroups.push(vertexGroup);
 			}
 
-			numberOfVerticesSoFar += meshToMerge.vertices.length;
+			numberOfVerticesSoFar += verticesToMerge.length;
 		}
 
 		var returnMesh = new Mesh
 		(
-			meshesToMerge[0].material, 
+			new Coords(0, 0, 0), // center
 			verticesMerged,
-			vertexIndicesForFacesMerged,
+			faceBuildersMerged
+		);
+
+		returnMesh = new MeshTextured
+		(
+			returnMesh,
+			meshesToMerge[0].material,
 			textureUVsForFacesMerged,
 			vertexGroups
 		);
 
 		return returnMesh;
-	}
-
-	MeshBuilder.prototype.meshNormalsFlip = function(mesh)
-	{
-		return mesh.transform(new Transform_Scale(new Coords(-1, -1, -1)));
-	}
-
-	MeshBuilder.prototype.meshVerticesMergeIfWithinDistance = function(mesh, distanceToMergeWithin)
-	{
-		var vertices = mesh.vertices;
-
-		var verticesDuplicated = [];
-		var vertexIndexDuplicateToOriginalLookup = [];
-
-		var displacementBetweenVertices = new Coords(0, 0, 0);
-
-		for (var i = 0; i < vertices.length; i++)
-		{
-			var vertexToConsider = vertices[i];
-
-			for (j = 0; j < i; j++)
-			{
-				var vertexAlreadyConsidered = vertices[j];
-
-				displacementBetweenVertices.overwriteWith
-				(
-					vertexToConsider
-				).subtract
-				(
-					vertexAlreadyConsidered
-				);
-
-				var distanceBetweenVertices = displacementBetweenVertices.magnitude();
-
-				if (distanceBetweenVertices <= distanceToMergeWithin)
-				{
-					// if the original is not itself a duplicate
-					if (vertexIndexDuplicateToOriginalLookup[j] == null)
-					{
-						verticesDuplicated.push(vertexToConsider);
-						vertexIndexDuplicateToOriginalLookup[i] = j;
-						break;
-					}
-				}
-			}
-		}
-
-		var verticesMinusDuplicates = vertices.slice();
-
-		for (var i = 0; i < verticesDuplicated.length; i++)
-		{
-			var vertexDuplicated = verticesDuplicated[i];
-
-			verticesMinusDuplicates.splice
-			(
-				verticesMinusDuplicates.indexOf(vertexDuplicated),
-				1
-			);
-		}
-
-		for (var f = 0; f < mesh.vertexIndicesForFaces.length; f++)
-		{
-			var vertexIndices = mesh.vertexIndicesForFaces[f];
-
-			for (var vi = 0; vi < vertexIndices.length; vi++)
-			{
-				var vertexIndexToUpdate = vertexIndices[vi];
-				var vertexToUpdate = vertices[vertexIndexToUpdate];
-				var isVertexDuplicated = (verticesDuplicated.indexOf(vertexToUpdate) >= 0);
-				if (isVertexDuplicated == true)
-				{
-					var vertexIndexOriginal = vertexIndexDuplicateToOriginalLookup[vertexIndexToUpdate];
-					vertexToUpdate = vertices[vertexIndexOriginal];
-
-				}
-				var vertexIndexUpdated = verticesMinusDuplicates.indexOf
-				(
-					vertexToUpdate
-				);
-
-				vertexIndices[vi] = vertexIndexUpdated;
-			}
-		}
-
-		for (var g = 0; g < mesh.vertexGroups.length; g++)
-		{
-			var vertexGroup = mesh.vertexGroups[g];
-			var vertexIndices = vertexGroup.vertexIndices;
-
-			for (var vi = 0; vi < vertexIndices.length; vi++)
-			{
-				var vertexIndexToUpdate = vertexIndices[vi];
-				var vertexToUpdate = vertices[vertexIndexToUpdate];
-				var isVertexDuplicated = (verticesDuplicated.indexOf(vertexToUpdate) >= 0);
-				if (isVertexDuplicated == true)
-				{
-					var vertexIndexOriginal = vertexIndexDuplicateToOriginalLookup[vertexIndexToUpdate];
-					vertexToUpdate = vertices[vertexIndexOriginal];
-
-				}
-				var vertexIndexUpdated = verticesMinusDuplicates.indexOf
-				(
-					vertexToUpdate
-				);
-				vertexIndices[vi] = vertexIndexUpdated;
-			}
-		}
-
-		mesh.vertices = verticesMinusDuplicates;
-	}
-
-	MeshBuilder.prototype.removeFacesWithIndicesFromMesh = function(indicesOfFacesToRemove, meshToRemoveFrom)
-	{
-		var indicesOfFacesToRemoveSorted = indicesOfFacesToRemove.sortIntoOtherUsingCompareFunction
-		(
-			[], // arraySorted, 
-			function(index0, index1)
-			{
-				return index0 - index1;
-			}
-		)
-
-		for (var i = 0; i < indicesOfFacesToRemoveSorted.length; i++)
-		{
-			var indexOfFaceToRemove = indicesOfFacesToRemoveSorted[i];
-
-			meshToRemoveFrom.vertexIndicesForFaces.splice(indexOfFaceToRemove, 1);
-			meshToRemoveFrom.faces.splice(indexOfFaceToRemove, 1);
-		}
-
-		meshToRemoveFrom.recalculateDerivedValues();
-
-		return meshToRemoveFrom;
 	}
 
 	MeshBuilder.prototype.splitFaceByPlaneFrontAndBack = function(faceToDivide, planeToDivideOn)
@@ -806,9 +692,10 @@ function MeshBuilder()
 
 		var distanceOfVertexAbovePlane = 0;
 
-		for (var v = 0; v < faceToDivide.vertices.length; v++)
+		var faceToDivideVertices = faceToDivide.geometry.vertices;
+		for (var v = 0; v < faceToDivideVertices.length; v++)
 		{
-			var vertex = faceToDivide.vertices[v];
+			var vertex = faceToDivideVertices[v];
 
 			var distanceOfVertexAbovePlane = Collision.findDistanceOfPositionAbovePlane
 			(
@@ -828,9 +715,10 @@ function MeshBuilder()
 
 		var doAnyEdgesCollideWithPlaneSoFar = false;
 
-		for (var e = 0; e < faceToDivide.edges.length; e++)
+		var edges = faceToDivide.geometry.edges();
+		for (var e = 0; e < edges.length; e++)
 		{
-			var edge = faceToDivide.edges[e];
+			var edge = edges[e];
 			var vertex0 = edge.vertices[0];
 
 			verticesInFaceDivided.push
@@ -886,9 +774,9 @@ function MeshBuilder()
 
 				if (verticesInFace.length > 2)
 				{
-					var faceDivided = new Face
+					var faceDivided = new FaceTextured
 					(
-						verticesInFace, 
+						new Face(verticesInFace), 
 						faceToDivide.material
 					)
 

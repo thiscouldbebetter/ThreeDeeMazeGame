@@ -22,7 +22,8 @@ function DisplayExtensions2D()
 			camera.loc.pos
 		);
 
-		var faceNormalDotDisplacementFromCameraToVertex0 = faceToDraw.plane.normal.dotProduct
+		var faceNormal = faceToDraw.plane().normal;
+		var faceNormalDotDisplacementFromCameraToVertex0 = faceNormal.dotProduct
 		(
 			displacementFromCameraToVertex0
 		)
@@ -41,7 +42,7 @@ function DisplayExtensions2D()
 
 		for (var i = 0; i < vertices.length; i++)
 		{			
-			transformCamera.applyToCoords
+			transformCamera.transformCoords
 			(
 				this.drawPos.overwriteWith
 				(

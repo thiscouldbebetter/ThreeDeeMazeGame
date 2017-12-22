@@ -1,7 +1,7 @@
 
 function Constraint_Movable()
 {
-	// todo
+	this.transformLocate = new Transform_Locate();
 }
 
 {
@@ -16,8 +16,8 @@ function Constraint_Movable()
 		entityAccel.clear();
 		entityPos.add(entityVel);
 
-		var transformLocate = new Transform_Locate(entityLoc);
-		entityToConstrain.meshTransformed.transform(transformLocate);
-		entityToConstrain.meshTransformed.recalculateDerivedValues();
+		var mesh = entityToConstrain.meshTransformed.geometry;
+		this.transformLocate.loc = entityLoc;
+		mesh.transform(this.transformLocate);
 	}
 }

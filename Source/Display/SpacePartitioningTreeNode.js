@@ -3,7 +3,7 @@ function SpacePartitioningTreeNode(faces)
 {
 	var faceToDivideOn = faces[0];
 	this.faces = [ faceToDivideOn ];
-	var planeToDivideOn = faceToDivideOn.plane;
+	var planeToDivideOn = faceToDivideOn.geometry.plane();
 
 	if (faces.length == 1)
 	{
@@ -20,7 +20,9 @@ function SpacePartitioningTreeNode(faces)
 		for (var f = 1; f < faces.length; f++)
 		{
 			var faceOther = faces[f];
-			if (faceOther.plane.equals(faceToDivideOn.plane) == true)
+			var faceOtherGeometry = faceOther.geometry;
+			var planeOther = faceOtherGeometry.plane();
+			if (planeOther.equals(planeToDivideOn) == true)
 			{
 				this.faces.push(faceOther);
 			}
