@@ -36,7 +36,7 @@ function DisplayExtensions2D()
 		var transformCamera = new Transform_Camera(camera);
 
 		var material = faceToDraw.material;
-		this.graphics.fillStyle = material.colorFill.systemColor;
+		this.graphics.fillStyle = material.colorFill.systemColor();
 
 		this.graphics.beginPath();
 

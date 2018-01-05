@@ -55,7 +55,7 @@ function ImageHelper()
 
 				colorForPixel = Color.Instances._All[charForPixel];
 
-				graphics.fillStyle = colorForPixel.systemColor;
+				graphics.fillStyle = colorForPixel.systemColor();
 				graphics.fillRect
 				(
 					pixelPos.x, 
