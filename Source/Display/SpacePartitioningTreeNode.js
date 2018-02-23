@@ -77,11 +77,8 @@ function SpacePartitioningTreeNode(faces)
 		}
 		else
 		{
-			var distanceOfCameraAbovePlane = Collision.findDistanceOfPositionAbovePlane
-			(
-				cameraPos,
-				this.faces[0].plane
-			)
+			var distanceOfCameraAbovePlane =
+				this.faces[0].plane.distanceToPointAlongNormal(cameraPos);
 
 			var childIndexFirst = (distanceOfCameraAbovePlane > 0 ? 1 : 0);
 

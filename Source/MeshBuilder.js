@@ -702,10 +702,9 @@ function MeshBuilder()
 		{
 			var vertex = faceToDivideVertices[v];
 
-			var distanceOfVertexAbovePlane = Collision.findDistanceOfPositionAbovePlane
+			var distanceOfVertexAbovePlane = planeToDivideOn.distanceToPointAlongNormal
 			(
-				vertex,
-				planeToDivideOn
+				vertex
 			);
 
 			if (distanceOfVertexAbovePlane != 0)
@@ -720,6 +719,8 @@ function MeshBuilder()
 
 		var doAnyEdgesCollideWithPlaneSoFar = false;
 
+		var collisionHelper = new CollisionHelper();
+
 		var edges = faceToDivide.geometry.edges();
 		for (var e = 0; e < edges.length; e++)
 		{
@@ -731,21 +732,19 @@ function MeshBuilder()
 				vertex0
 			);
 
-			var distanceOfVertex0AbovePlane = Collision.findDistanceOfPositionAbovePlane
+			var distanceOfVertex0AbovePlane = planeToDivideOn.distanceToPointAlongNormal
 			(
-				vertex0,
-				planeToDivideOn
+				vertex0
 			);
 
-			var distanceOfVertex1AbovePlane = Collision.findDistanceOfPositionAbovePlane
+			var distanceOfVertex1AbovePlane = planeToDivideOn.distanceToPointAlongNormal
 			(
-				edge.vertices[1],
-				planeToDivideOn
+				edge.vertices[1]
 			);
 
 			if (distanceOfVertex0AbovePlane * distanceOfVertex1AbovePlane < 0)
 			{
-				var collision = Collision.findCollisionOfEdgeAndPlane
+				var collision = collisionHelper.collisionOfEdgeAndPlane
 				(
 					edge,
 					planeToDivideOn
