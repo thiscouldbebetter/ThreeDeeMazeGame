@@ -28,10 +28,10 @@ function main()
 
 	var display = new Display3D
 	(
-		new Coords(320, 240, 2000), 
-		"Font", // fontName, 
-		10, // fontHeightInPixels, 
-		"White", // colorFore, 
+		new Coords(320, 240, 2000),
+		"Font", // fontName,
+		10, // fontHeightInPixels,
+		"White", // colorFore,
 		"Gray", // colorBack
 	);
 

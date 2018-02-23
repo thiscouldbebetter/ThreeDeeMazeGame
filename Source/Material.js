@@ -17,7 +17,7 @@ function Material(name, colorStroke, colorFill, texture)
 
 		this.Default = new Material
 		(
-			"Default", 
+			"Default",
 			Color.Instances.Blue, // colorStroke
 			Color.Instances.Yellow, // colorFill
 			null // texture

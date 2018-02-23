@@ -12,7 +12,7 @@ function Texture(name, image)
 	{
 		this._TestPattern = new Texture
 		(
-			"TestPattern", 
+			"TestPattern",
 			ImageHelper.buildImageFromStrings
 			(
 				"TestPattern",
@@ -47,6 +47,32 @@ function Texture(name, image)
 			)
 		);
 
+		this.Door = new Texture
+		(
+			"Door",
+			ImageHelper.buildImageFromStrings
+			(
+				"Door",
+				[
+					"aaaaaaaaaaaaaaaa",
+					"aBBBBBBBBBBBBBBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBaaaaaaaaaaaaBa",
+					"aBBBBBBBBBBBBBBa",
+					"aaaaaaaaaaaaaaaa",
+				]
+			)
+		);
 
 		this.Goal = new Texture
 		(
@@ -122,11 +148,11 @@ function Texture(name, image)
 		//gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D
 		(
-			gl.TEXTURE_2D, 
-			0, 
-			gl.RGBA, 
-			gl.RGBA, 
-			gl.UNSIGNED_BYTE, 
+			gl.TEXTURE_2D,
+			0,
+			gl.RGBA,
+			gl.RGBA,
+			gl.UNSIGNED_BYTE,
 			this.image.systemImage
 		);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);

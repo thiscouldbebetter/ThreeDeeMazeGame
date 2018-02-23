@@ -18,19 +18,19 @@ function MeshBuilder()
 		var heightOver24 = heightInPixels / 24;
 		var heightOver36 = heightInPixels / 36;
 
-		var meshesForEntityParts = 
+		var meshesForEntityParts =
 		[
 			this.box
 			(
 				//"Pelvis",
-				material, 
-				new Coords(heightOver12, heightOver24, heightOver24), 
+				material,
+				new Coords(heightOver12, heightOver24, heightOver24),
 				new Coords(0, 0, -heightOver2)
 			),
 
 			this.box
 			(
-				//"Spine.1", 
+				//"Spine.1",
 				material,
 				new Coords(heightOver12, heightOver24, heightOver6),
 				new Coords(0, 0, 0 - heightOver2 - heightOver4)
@@ -38,7 +38,7 @@ function MeshBuilder()
 
 			this.box
 			(
-				//"Head", 
+				//"Head",
 				material,
 				new Coords(heightOver18, heightOver18, heightOver18),
 				new Coords(0, heightOver36, 0 - heightInPixels)
@@ -46,100 +46,100 @@ function MeshBuilder()
 
 			this.box
 			(
-				//"Thigh.L", 
+				//"Thigh.L",
 				material,
-				new Coords(heightOver36, heightOver36, heightOver8), 
+				new Coords(heightOver36, heightOver36, heightOver8),
 				new Coords(heightOver18, 0, 0 - heightOver2 + heightOver12)
 			),
 
 			this.box
 			(
-				//"Shin.L", 
+				//"Shin.L",
 				material,
-				new Coords(heightOver36, heightOver36, heightOver8), 
+				new Coords(heightOver36, heightOver36, heightOver8),
 				new Coords(heightOver18, 0, 0 - heightOver6)
 			),
 
 			this.box
 			(
-				//"Foot.L", 
+				//"Foot.L",
 				material,
-				new Coords(heightOver36, heightOver12, heightOver36), 
+				new Coords(heightOver36, heightOver12, heightOver36),
 				new Coords(heightOver18, heightOver12, 0 - heightOver36)
 			),
 
 			this.box
 			(
-				//"Bicep.L", 
+				//"Bicep.L",
 				material,
-				new Coords(heightOver36, heightOver36, heightOver12), 
+				new Coords(heightOver36, heightOver36, heightOver12),
 				new Coords(heightOver6, 0, 0 - heightOver2 - heightOver3)
 			),
 
 			this.box
 			(
-				//"Forearm.L", 
+				//"Forearm.L",
 				material,
-				new Coords(heightOver36, heightOver36, heightOver12), 
+				new Coords(heightOver36, heightOver36, heightOver12),
 				new Coords(heightOver6, 0, 0 - heightOver2 - heightOver4 + heightOver8)
 			),
 
 			this.box
 			(
-				//"Thigh.R", 
+				//"Thigh.R",
 				material,
-				new Coords(heightOver36, heightOver36, heightOver8), 
+				new Coords(heightOver36, heightOver36, heightOver8),
 				new Coords(0 - heightOver18, 0, 0 - heightOver2 + heightOver12)
 			),
 
 			this.box
 			(
-				//"Shin.R", 
+				//"Shin.R",
 				material,
-				new Coords(heightOver36, heightOver36, heightOver8), 
+				new Coords(heightOver36, heightOver36, heightOver8),
 				new Coords(0 - heightOver18, 0, 0 - heightOver6)
 			),
 
 			this.box
 			(
-				//"Foot.R", 
+				//"Foot.R",
 				material,
-				new Coords(heightOver36, heightOver12, heightOver36), 
+				new Coords(heightOver36, heightOver12, heightOver36),
 				new Coords(0 - heightOver18, heightOver12, 0 - heightOver36)
 			),
 
 			this.box
 			(
 				//"Bicep.R",
-				material, 
-				new Coords(heightOver36, heightOver36, heightOver12), 
+				material,
+				new Coords(heightOver36, heightOver36, heightOver12),
 				new Coords(0 - heightOver6, 0, 0 - heightOver2 - heightOver3)
 			),
 
 			this.box
 			(
-				//"Forearm.R", 
+				//"Forearm.R",
 				material,
-				new Coords(heightOver36, heightOver36, heightOver12), 
+				new Coords(heightOver36, heightOver36, heightOver12),
 				new Coords(0 - heightOver6, 0, 0 - heightOver2 - heightOver4 + heightOver8)
 			),
 		];
 
-		var vertexGroupNames = 
+		var vertexGroupNames =
 		[
 			"Pelvis",
-			"Spine.1", 
-			"Head", 
-			"Thigh.L", 
-			"Shin.L", 
-			"Foot.L", 
-			"Bicep.L", 
-			"Forearm.L", 
-			"Thigh.R", 
-			"Shin.R", 
-			"Foot.R", 
+			"Spine.1",
+			"Head",
+			"Thigh.L",
+			"Shin.L",
+			"Foot.L",
+			"Bicep.L",
+			"Forearm.L",
+			"Thigh.R",
+			"Shin.R",
+			"Foot.R",
 			"Bicep.R",
-			"Forearm.R", 
+			"Forearm.R",
 		];
 
 		var returnValue = this.mergeMeshes
@@ -304,7 +304,7 @@ function MeshBuilder()
 				(
 					new Coords
 					(
-						faceTangent.dotProduct(scaleFactors), 
+						faceTangent.dotProduct(scaleFactors),
 						faceDown.dotProduct(scaleFactors)
 					).absolute()
 				)
@@ -381,7 +381,7 @@ function MeshBuilder()
 			[
 				// wall
 				new Coords(0, 1, -1),
-				new Coords(0, -1, -1), 
+				new Coords(0, -1, -1),
 				new Coords(0, -1, 1),
 				new Coords(0, 1, 1),
 
@@ -389,7 +389,7 @@ function MeshBuilder()
 			// vertexIndicesForFaces
 			[
 				//[ 3, 2, 1, 0 ],
-				new Mesh_FaceBuilder([0, 1, 2, 3]), 
+				new Mesh_FaceBuilder([0, 1, 2, 3]),
 			]
 		);
 
@@ -399,11 +399,11 @@ function MeshBuilder()
 			material,
 			// textureUVs
 			[
-				[ 
-					new Coords(.2, 0), 
-					new Coords(0, 0), 
+				[
+					new Coords(.2, 0),
+					new Coords(0, 0),
 					new Coords(0, .2),
-					new Coords(.2, .2), 
+					new Coords(.2, .2),
 				],
 			]
 		);
@@ -413,66 +413,71 @@ function MeshBuilder()
 
 	MeshBuilder.prototype.room_WallWithDoorway = function(material)
 	{
+		var doorwayHeightOverWallHeight = 0.5;
+		var doorwayWidthOverWallHeight = doorwayHeightOverWallHeight / 2;
+
 		var returnMesh = new Mesh
 		(
 			new Coords(0, 0, 0), // center
 			// vertices
 			[
 				// top
-				new Coords(0, -.25, -1), 
-				new Coords(0, .25, -1),
-				new Coords(0, .25, -.5),
-				new Coords(0, -.25, -.5),
+				new Coords(0, -doorwayWidthOverWallHeight, -1),
+				new Coords(0, doorwayWidthOverWallHeight, -1),
+				new Coords(0, doorwayWidthOverWallHeight, -doorwayHeightOverWallHeight),
+				new Coords(0, -doorwayWidthOverWallHeight, -doorwayHeightOverWallHeight),
 
 				// left
-				new Coords(0, -1, -1), 
-				new Coords(0, -.25, -1),
-				new Coords(0, -.25, 1),
+				new Coords(0, -1, -1),
+				new Coords(0, -doorwayWidthOverWallHeight, -1),
+				new Coords(0, -doorwayWidthOverWallHeight, 1),
 				new Coords(0, -1, 1),
 
 				// right
-				new Coords(0, 1, -1), 
+				new Coords(0, 1, -1),
 				new Coords(0, 1, 1),
-				new Coords(0, .25, 1),
-				new Coords(0, .25, -1),
+				new Coords(0, doorwayWidthOverWallHeight, 1),
+				new Coords(0, doorwayWidthOverWallHeight, -1),
 			],
 			// vertexIndicesForFaces
 			[
 				// top, left, right
-				new Mesh_FaceBuilder([ 3, 2, 1, 0 ]), 
+				new Mesh_FaceBuilder([ 3, 2, 1, 0 ]),
 				new Mesh_FaceBuilder([ 7, 6, 5, 4 ]),
 				new Mesh_FaceBuilder([ 11, 10, 9, 8 ]),
 			]
 		);
 
+		var textureUVs =
+		[
+			// top
+			[
+				new Coords(0, .05),
+				new Coords(.05, .05),
+				new Coords(.05, 0),
+				new Coords(0, 0),
+			],
+			// left
+			[
+				new Coords(0, .2),
+				new Coords(.05, .2),
+				new Coords(.05, 0),
+				new Coords(0, 0),
+			],
+			// right
+			[
+				new Coords(0, 0),
+				new Coords(0, .2),
+				new Coords(.05, .2),
+				new Coords(.05, 0),
+			],
+		];
+
 		returnMesh = new MeshTextured
 		(
 			returnMesh,
 			material,
-			// textureUVs
-			[
-				// top
-				[ 
-					new Coords(0, .05),
-					new Coords(.05, .05),
-					new Coords(.05, 0),
-					new Coords(0, 0),
-				],
-				// left
-				[ 
-					new Coords(0, .2),
-					new Coords(.05, .2),
-					new Coords(.05, 0),
-					new Coords(0, 0), 
-				],
-				// right
-				[ 
-					new Coords(0, 0), 
-					new Coords(0, .2),
-					new Coords(.05, .2),
-					new Coords(.05, 0), 
-				],
-			]
+			textureUVs
 		);
 
 		return returnMesh;
@@ -486,13 +491,13 @@ function MeshBuilder()
 			// vertices
 			[
 				// top
-				new Coords(-1, -1, -1), 
+				new Coords(-1, -1, -1),
 				new Coords(1, -1, -1),
 				new Coords(1, 1, -1),
 				new Coords(-1, 1, -1),
 
 				// bottom
-				new Coords(-1, -1, 1), 
+				new Coords(-1, -1, 1),
 				new Coords(1, -1, 1),
 				new Coords(1, 1, 1),
 				new Coords(-1, 1, 1),
@@ -551,8 +556,8 @@ function MeshBuilder()
 			new Coords(0, 0, 0), // center
 			// vertices
 			[
-				// back 
-				new Coords(1, -1, 0), 
+				// back
+				new Coords(1, -1, 0),
 				new Coords(1, 1, 0),
 				new Coords(-1, 1, 0),
 				new Coords(-1, -1, 0),
@@ -684,7 +689,7 @@ function MeshBuilder()
 	{
 		var returnValues = [];
 
-		var verticesInFacesDivided = 
+		var verticesInFacesDivided =
 		[
 			[], // front
 			[], // back
@@ -742,7 +747,7 @@ function MeshBuilder()
 			{
 				var collision = Collision.findCollisionOfEdgeAndPlane
 				(
-					edge, 
+					edge,
 					planeToDivideOn
 				);
 
@@ -776,11 +781,11 @@ function MeshBuilder()
 				{
 					var faceDivided = new FaceTextured
 					(
-						new Face(verticesInFace), 
+						new Face(verticesInFace),
 						faceToDivide.material
 					)
 
-					returnValues.push 
+					returnValues.push
 					(
 						faceDivided
 					);

@@ -26,6 +26,231 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 	);
 }
 {
+	Zone.manyFromMaze = function
+	(
+		maze,
+		materialNormal,
+		cellPosOfStart,
+		materialStart,
+		cellPosOfGoal,
+		materialGoal
+	)
+	{
+		var returnValues = [];
+
+		var meshBuilder = new MeshBuilder();
+
+		var sizeInPixels = maze.sizeInPixels;
+		var cellSizeInPixels = maze.cellSizeInPixels;
+		var sizeInCells = maze.sizeInCells;
+		var neighborOffsets = maze.neighborOffsets;
+
+		var cellPos = new Coords(0, 0, 0);
+		var cellPosInPixels = new Coords();
+
+		for (var y = 0; y < sizeInCells.y; y++)
+		{
+			cellPos.y = y;
+
+			for (var x = 0; x < sizeInCells.x; x++)
+			{
+				cellPos.x = x;
+
+				Zone.manyFromMaze_Cell
+				(
+					maze, cellPos, cellPosInPixels, cellSizeInPixels, materialNormal, returnValues
+				);
+			}
+		}
+
+		var zoneStartName = cellPosOfStart.toString();
+		var zoneStart = returnValues[zoneStartName];
+		var meshStart = zoneStart.entity.meshTransformed;
+		meshStart.material = materialStart;
+
+		var zoneGoalName = cellPosOfGoal.toString();
+		var zoneGoal = returnValues[zoneGoalName];
+		var meshGoal = zoneGoal.entity.meshTransformed;
+		meshGoal.material = materialGoal;
+
+		return returnValues;
+	}
+
+	Zone.manyFromMaze_Cell = function
+	(
+		maze, cellPos, cellPosInPixels, cellSizeInPixels, materialNormal, returnValues
+	)
+	{
+		var cellSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(2);
+		var roomSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(8);
+		var meshBuilder = new MeshBuilder();
+
+		cellPosInPixels.overwriteWith(cellPos).multiply
+		(
+			cellSizeInPixels
+		);
+
+		var cellCurrent = maze.cellAtPos(cellPos);
+
+		var zoneForNodeName = cellPos.toString();
+
+		var tuple = Zone.fromMaze_Cell_Neighbors
+		(
+			maze, cellPos, cellCurrent, materialNormal
+		);
+
+		var zonesForConnectorsToNeighbors = tuple[0];
+		var zonesAdjacentNames = tuple[1];
+
+		var mesh = meshBuilder.room
+		(
+			materialNormal,
+			roomSizeInPixelsHalf.x,
+			roomSizeInPixelsHalf.y,
+			roomSizeInPixelsHalf.z,
+			maze.neighborOffsets,
+			cellCurrent.connectedToNeighbors
+		);
+
+		var zoneForNode = new Zone
+		(
+			zoneForNodeName,
+			cellPosInPixels.clone(), //pos,
+			zonesAdjacentNames,
+			[ mesh ]
+		);
+
+		returnValues.push(zoneForNode);
+		returnValues[zoneForNode.name] = zoneForNode;
+
+		for (var i = 0; i < zonesForConnectorsToNeighbors.length; i++)
+		{
+			var zoneForConnector = zonesForConnectorsToNeighbors[i];
+			returnValues.push(zoneForConnector);
+			returnValues[zoneForConnector.name] = zoneForConnector;
+		}
+	}
+
+	Zone.fromMaze_Cell_Neighbors = function(maze, cellPos, cellCurrent, materialNormal)
+	{
+		var zonesForConnectorsToNeighbors = [];
+		var zonesAdjacentNames = [];
+
+		var cellSizeInPixels = maze.cellSizeInPixels;
+		var cellSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(2);
+		var roomSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(8);
+		var hallWidthMultiplier = 0.5;
+		var meshBuilder = new MeshBuilder();
+
+		var zoneForNodeName = cellPos.toString();
+		var neighborOffsets = maze.neighborOffsets;
+		var faceIndicesToRemove = [ 4 ]; // Ceiling?
+		var namesOfZonesAdjacent = [];
+
+		var numberOfNeighbors = neighborOffsets.length;
+		for (var n = 0; n < numberOfNeighbors; n++)
+		{
+			if (cellCurrent.connectedToNeighbors[n] == true)
+			{
+				faceIndicesToRemove.push(n);
+
+				var neighborOffset = neighborOffsets[n];
+				var neighborPosInCells = cellPos.clone().add
+				(
+					neighborOffset
+				);
+
+				var zoneNeighborName = neighborPosInCells.toString();
+
+				var zoneConnectorName;
+				if (n % 2 == 1)
+				{
+					zoneConnectorName = zoneForNodeName + zoneNeighborName;
+				}
+				else
+				{
+					zoneConnectorName = zoneNeighborName + zoneForNodeName
+				}
+
+				zonesAdjacentNames.push(zoneConnectorName);
+
+				var isNeighborOdd = n % 2;
+				// Only create connectors for neighbors south and east,
+				// because north and west are handled by another node.
+				if (isNeighborOdd == true)
+				{
+					var neighborOffset = neighborOffsets[n];
+					var neighborPosInCells = cellPos.clone().add(neighborOffset);
+					var zoneForConnectorName = zoneForNodeName + zoneNeighborName;
+
+					var connectorPosInPixels = cellPos.clone().multiply
+					(
+						cellSizeInPixels
+					).clone().add
+					(
+						new Coords
+						(
+							cellSizeInPixelsHalf.x,
+							cellSizeInPixelsHalf.y,
+							0
+						).multiply
+						(
+							neighborOffset
+						)
+					);
+
+					var connectorSizeInPixels = new Coords
+					(
+						(
+							n == 1
+							? (cellSizeInPixelsHalf.x - roomSizeInPixelsHalf.x)
+							: (roomSizeInPixelsHalf.x * hallWidthMultiplier)
+						),
+						(
+							n == 3 ?
+							(cellSizeInPixelsHalf.y - roomSizeInPixelsHalf.y)
+							: (roomSizeInPixelsHalf.y * hallWidthMultiplier)
+						),
+						roomSizeInPixelsHalf.z
+					);
+
+					var mesh = meshBuilder.room
+					(
+						materialNormal,
+						connectorSizeInPixels.x,
+						connectorSizeInPixels.y,
+						connectorSizeInPixels.z,
+						neighborOffsets,
+						// connectedToNeighbors
+						[
+							(n == 1),
+							(n == 1),
+							(n != 1),
+							(n != 1)
+						]
+					);
+
+					var zoneForConnector = new Zone
+					(
+						zoneForConnectorName,
+						connectorPosInPixels,
+						// namesOfZonesAdjacent
+						[
+							zoneForNodeName,
+							zoneNeighborName,
+						],
+						[ mesh ]
+					);
+
+					zonesForConnectorsToNeighbors.push(zoneForConnector);
+				}
+			}
+
+		} // end for each neighbor
+
+		return [ zonesForConnectorsToNeighbors, zonesAdjacentNames ];
+	}
+
 	Zone.prototype.finalize = function()
 	{
 		// todo

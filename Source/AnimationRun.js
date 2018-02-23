@@ -27,8 +27,8 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 
 		var animationDefn = this.animationDefnCurrent();
 
-		var framesSinceBeginningOfCycle = 
-			world.timerTicksSoFar 
+		var framesSinceBeginningOfCycle =
+			world.timerTicksSoFar
 			% animationDefn.numberOfFramesTotal;
 
 		var i;
@@ -53,7 +53,7 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 
 		returnValue = keyframe.interpolateWith
 		(
-			keyframeNext, 
+			keyframeNext,
 			fractionOfProgressFromKeyframeToNext
 		);
 

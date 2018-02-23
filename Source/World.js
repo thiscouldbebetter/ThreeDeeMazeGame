@@ -72,6 +72,13 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			),
 			new Material
 			(
+				"Door",
+				Color.Instances.Black,
+				Color.Instances.Gray,
+				textures.Door
+			),
+			new Material
+			(
 				"Mover",
 				Color.Instances.Black,
 				Color.Instances.Gray,
@@ -118,6 +125,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		var ceilingHeight = maze.cellSizeInPixels.z;
 		var moverHeight = ceilingHeight / 7;
 		var chestHeight = moverHeight / 4;
+		var doorHeight = moverHeight / 2 * 1.33; // ?
 
 		var entityDefns =
 		[
@@ -131,6 +139,19 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 					materials["Chest"],
 					new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
 					new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
+				).textureUVsBuild()
+			),
+
+			new EntityDefn
+			(
+				"Door",
+				true, // isDrawable
+				true, // isMovable
+				meshBuilder.box
+				(
+					materials["Door"],
+					new Coords(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
+					new Coords(0, 0, -1).multiplyScalar(doorHeight) // pos
 				).textureUVsBuild()
 			),
 
@@ -172,12 +193,13 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			).absolute().sumOfDimensions();
 		}
 
-		zones = maze.convertToZones
+		zones = Zone.manyFromMaze
 		(
+			maze,
 			materials["Wall"],
-			cellPosOfStart, 
-			materials["Start"], 
-			cellPosOfGoal, 
+			cellPosOfStart,
+			materials["Start"],
+			cellPosOfGoal,
 			materials["Goal"]
 		);
 
@@ -185,7 +207,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		var entityForPlayer = new Entity
 		(
-			"Player", 
+			"Player",
 			entityDefns["Mover"],
 			new Location
 			(
@@ -207,7 +229,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		var entityForMoverOther = new Entity
 		(
-			"MoverOther", 
+			"MoverOther",
 			entityDefns["Mover"],
 			new Location
 			(
@@ -229,7 +251,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		var entityForChest = new Entity
 		(
-			"Chest", 
+			"Chest",
 			entityDefns["Chest"],
 			new Location
 			(
@@ -243,6 +265,28 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				new Orientation
 				(
 					new Coords(1, -1, 0),
+					new Coords(0, 0, 1)
+				),
+				nameOfZoneStart // venue
+			)
+		);
+
+		var entityForDoor = new Entity
+		(
+			"Door",
+			entityDefns["Door"],
+			new Location
+			(
+				cellPosOfStart.clone().add
+				(
+					new Coords(0, -1, 0).multiplyScalar(.125)
+				).multiply
+				(
+					maze.cellSizeInPixels
+				),
+				new Orientation
+				(
+					new Coords(1, 0, 0),
 					new Coords(0, 0, 1)
 				),
 				nameOfZoneStart // venue
@@ -263,6 +307,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				entityForPlayer,
 				entityForMoverOther,
 				entityForChest,
+				entityForDoor,
 			]
 		);
 
@@ -310,7 +355,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
 
-		var constraintsCommon = 
+		var constraintsCommon =
 		[
 			new Constraint_Gravity(.1),
 			new Constraint_Solid(),
@@ -345,13 +390,13 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		var followDivisor = 16;
 		var offsetOfCameraFromPlayer = new Coords
 		(
-			0 - focalLength, 
-			0, 
+			0 - focalLength,
+			0,
 			0 - focalLength
 		).divideScalar(followDivisor);
 
 		var cameraEntity = new Entity
-		( 
+		(
 			"EntityCamera",
 
 			new EntityDefn
@@ -381,12 +426,12 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		this.camera = new Camera
 		(
-			viewSizeInPixels, 
+			viewSizeInPixels,
 			focalLength,
 			cameraEntity.loc
 		);
 
-		cameraEntity.constraints = 
+		cameraEntity.constraints =
 		[
 			new Constraint_Follow(entityForPlayer, focalLength / followDivisor),
 			new Constraint_OrientToward(entityForPlayer),
@@ -405,7 +450,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		{
 			if (this.zoneNext.entity.meshTransformed.material.name == "Goal")
 			{
-				var messageWin = 
+				var messageWin =
 					"You reached the goal in "
 					+ this.secondsElapsed()
 					+ " seconds!  Press refresh for a new maze.";
@@ -543,7 +588,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		var cameraPos = world.camera.loc.pos;
 
-		var spacePartitioningTreeRoot = 
+		var spacePartitioningTreeRoot =
 			world.spacePartitioningTreeForZonesActive.nodeRoot;
 
 		spacePartitioningTreeRoot.addFacesBackToFrontForCameraPosToList
@@ -610,7 +655,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		display.drawText(world.secondsElapsed(), 10, new Coords(0, 20));
 		display.drawText
  		(
-			world.bodies[0].loc.pos.clone().floor().toString(), 
+			world.bodies[0].loc.pos.clone().floor().toString(),
 			10, // fontHeightInPixels
 			new Coords(0, 30)
 		);

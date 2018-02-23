@@ -11,7 +11,7 @@ function TreeHelper()
 			var nodeChild = node.children[i];
 			TreeHelper.addNodeAndAllDescendantsToList
 			(
-				nodeChild, 
+				nodeChild,
 				listToAddTo
 			);
 		}

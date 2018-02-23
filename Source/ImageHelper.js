@@ -30,7 +30,7 @@ function ImageHelper()
 	{
 		var sizeInPixels = new Coords
 		(
-			stringsForPixels[0].length, 
+			stringsForPixels[0].length,
 			stringsForPixels.length
 		);
 
@@ -58,9 +58,9 @@ function ImageHelper()
 				graphics.fillStyle = colorForPixel.systemColor();
 				graphics.fillRect
 				(
-					pixelPos.x, 
-					pixelPos.y, 
-					scaleFactor.x, 
+					pixelPos.x,
+					pixelPos.y,
+					scaleFactor.x,
 					scaleFactor.y
 				);
 			}
@@ -74,8 +74,8 @@ function ImageHelper()
 
 		var returnValue = Image.buildFromSystemImage
 		(
-			name, 
-			htmlImageFromCanvas, 
+			name,
+			htmlImageFromCanvas,
 			sizeInPixels
 		);
 

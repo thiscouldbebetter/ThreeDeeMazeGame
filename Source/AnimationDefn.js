@@ -4,7 +4,7 @@ function AnimationDefn(name, keyframes)
 	this.name = name;
 	this.keyframes = keyframes;
 
-	this.numberOfFramesTotal = 
+	this.numberOfFramesTotal =
 		this.keyframes[this.keyframes.length - 1].frameIndex
 		- this.keyframes[0].frameIndex;
 
@@ -66,16 +66,16 @@ function AnimationDefn(name, keyframes)
 						var transformPrev = keyframePrev.transforms[propertyName];
 						var transformNext = keyframeNext.transforms[propertyName];
 
-						var numberOfFramesFromPrevToNext = 
+						var numberOfFramesFromPrevToNext =
 							keyframeNext.frameIndex
 							- keyframePrev.frameIndex;
 
-						var numberOfFramesFromPrevToCurrent = 
+						var numberOfFramesFromPrevToCurrent =
 							keyframe.frameIndex
 							- keyframePrev.frameIndex;
 
-						var fractionOfProgressFromPrevToNext = 
-							numberOfFramesFromPrevToCurrent 
+						var fractionOfProgressFromPrevToNext =
+							numberOfFramesFromPrevToCurrent
 							/ numberOfFramesFromPrevToNext;
 
 						var transformNew = transformPrev.interpolateWith

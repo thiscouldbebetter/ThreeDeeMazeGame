@@ -82,7 +82,7 @@ function Collision(pos, distanceToCollision, colliders)
 
 			for (var d = 0; d < Coords.NumberOfDimensions; d++)
 			{
-				if 
+				if
 				(
 					boundsThis.max.dimension(d) < boundsOther.min.dimension(d)
 					|| boundsThis.min.dimension(d) > boundsOther.max.dimension(d)
@@ -135,7 +135,7 @@ function Collision(pos, distanceToCollision, colliders)
 		{
 			var isWithinFace = Collision.isPosWithinFace
 			(
-				collisionOfEdgeWithFacePlane.pos, 
+				collisionOfEdgeWithFacePlane.pos,
 				face
 			);
 
@@ -153,9 +153,9 @@ function Collision(pos, distanceToCollision, colliders)
 	{
 		var returnValue = null;
 
-		var distanceToCollision = 
+		var distanceToCollision =
 			(
-				plane.distanceFromOrigin 
+				plane.distanceFromOrigin
 				- plane.normal.dotProduct(edge.vertices[0])
 			)
 			/ plane.normal.dotProduct(edge.direction());
@@ -208,7 +208,7 @@ function Collision(pos, distanceToCollision, colliders)
 				edgeFromFace.vertices[0]
 			);
 
-			var displacementProjectedAlongEdgeTransverse = 
+			var displacementProjectedAlongEdgeTransverse =
 				displacementFromVertex0ToCollision.dotProduct
 				(
 					edgeFromFace.transverse(faceNormal)

@@ -29,7 +29,7 @@ function ActivityDefn(name, perform)
 			{
 				var inputHelper = universe.inputHelper;
 				var inputsActive = inputHelper.inputsActive;
-				var actionsFromActor = entity.actions; 
+				var actionsFromActor = entity.actions;
 
 				var actions = world.actions;
 				var mappings = world.inputToActionMappings;
@@ -42,9 +42,9 @@ function ActivityDefn(name, perform)
 					{
 						var actionName = mapping.actionName;
 						var action = actions[actionName];
-						var ticksToHold = 
+						var ticksToHold =
 						(
-							action.ticksToHold == null 
+							action.ticksToHold == null
 							? action.ticksSoFar // hold forever
 							: action.ticksToHold
 						);

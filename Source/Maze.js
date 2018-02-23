@@ -54,7 +54,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 
 					var numberOfCellsInNetworkMerged = this.generateRandom_ConnectCellToRandomNeighbor
 					(
-						cellPos, 
+						cellPos,
 						cellPosNeighbor
 					);
 
@@ -71,7 +71,7 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 
 	Maze.prototype.generateRandom_ConnectCellToRandomNeighbor = function
 	(
-		cellPos, 
+		cellPos,
 		cellPosNeighbor
 	)
 	{
@@ -112,9 +112,9 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 				{
 					cellCurrent.connectedToNeighbors[neighborOffsetIndex] = true;
 
-					var neighborOffsetIndexReversed = 
-						Math.floor(neighborOffsetIndex / 2) 
-						* 2 
+					var neighborOffsetIndexReversed =
+						Math.floor(neighborOffsetIndex / 2)
+						* 2
 						+ (1 - (neighborOffsetIndex % 2));
 
 					cellNeighbor.connectedToNeighbors[neighborOffsetIndexReversed] = true;
@@ -139,204 +139,6 @@ function Maze(cellSizeInPixels, sizeInCells, neighborOffsets)
 	{
 		var cellIndex = this.indexOfCellAtPos(cellPos);
 		return this.cells[cellIndex];
-	}
-
-	Maze.prototype.convertToZones = function
-	(
-		materialNormal, 
-		cellPosOfStart, 
-		materialStart, 
-		cellPosOfGoal, 
-		materialGoal
-	)
-	{
-		var returnValues = [];
-
-		var meshBuilder = new MeshBuilder();
-
-		var sizeInPixels = this.sizeInPixels;
-		var cellSizeInPixels = this.cellSizeInPixels;
-
-		var cellSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(2);
-
-		var roomSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(8);
-
-		var hallWidthMultiplier = .5;
-
-		var cellPos = new Coords(0, 0, 0);
-		var numberOfNeighbors = this.neighborOffsets.length;
-
-		for (var y = 0; y < this.sizeInCells.y; y++)
-		{
-			cellPos.y = y;
-
-			for (var x = 0; x < this.sizeInCells.x; x++)
-			{
-				cellPos.x = x;
-
-				var cellPosInPixels = cellPos.clone().multiply
-				(
-					cellSizeInPixels
-				);
-
-				var cellCurrent = this.cellAtPos(cellPos);
-
-				var zoneForNodeName = cellPos.toString();
-
-				var faceIndicesToRemove = [ 4 ];
-				var namesOfZonesAdjacent = [];
-
-				var connectedToNeighbors = cellCurrent.connectedToNeighbors;
-
-				for (var n = 0; n < numberOfNeighbors; n++)
-				{
-					if (cellCurrent.connectedToNeighbors[n] == true)
-					{
-						faceIndicesToRemove.push(n);
-
-						var neighborOffset = this.neighborOffsets[n];
-						var neighborPosInCells = cellPos.clone().add
-						(
-							neighborOffset
-						);
-
-						var zoneNeighborName = neighborPosInCells.toString();
-						namesOfZonesAdjacent.push(zoneNeighborName);
-
-						var zoneConnectorName;
-						if (n % 2 == 1)
-						{
-							zoneConnectorName = 
-								cellPos.toString() 
-								+ zoneNeighborName;
-						}
-						else
-						{
-							zoneConnectorName = 
-								zoneNeighborName 
-								+ cellPos.toString();
-						}
-
-						namesOfZonesAdjacent.push(zoneConnectorName);
-					}
-				}
-
-				var mesh = meshBuilder.room
-				(
-					//zoneForNodeName, 
-					materialNormal,
-					roomSizeInPixelsHalf.x,
-					roomSizeInPixelsHalf.y,
-					roomSizeInPixelsHalf.z,
-					this.neighborOffsets,
-					cellCurrent.connectedToNeighbors
-				);
-
-				var zoneForNode = new Zone
-				(
-					zoneForNodeName, 
-					cellPosInPixels, //pos, 
-					namesOfZonesAdjacent,
-					// meshes
-					[
-						mesh
-					]
-				);
-
-				returnValues.push(zoneForNode);
-				returnValues[zoneForNode.name] = zoneForNode;
-
-				for (var n = 1; n < numberOfNeighbors; n += 2)
-				{
-					var isConnectedToNeighbor = cellCurrent.connectedToNeighbors[n];
-
-					if (isConnectedToNeighbor == true)
-					{
-						var neighborOffset = this.neighborOffsets[n];
-						var neighborPosInCells = cellPos.clone().add(neighborOffset);
-						var zoneForConnectorName = 
-							cellPos.toString() 
-							+ neighborPosInCells.toString();
-
-						var connectorPosInPixels = cellPosInPixels.clone().add
-						(
-							new Coords
-							(
-								cellSizeInPixelsHalf.x, 
-								cellSizeInPixelsHalf.y, 
-								0
-							).multiply
-							(
-								neighborOffset
-							)
-						);
-
-						var connectorSizeInPixels = new Coords
-						(
-							(
-								n == 1 
-								? (cellSizeInPixelsHalf.x - roomSizeInPixelsHalf.x) 
-								: (roomSizeInPixelsHalf.x * hallWidthMultiplier)
-							),
-							(
-								n == 3 ? 
-								(cellSizeInPixelsHalf.y - roomSizeInPixelsHalf.y) 
-								: (roomSizeInPixelsHalf.y * hallWidthMultiplier)
-							),
-							roomSizeInPixelsHalf.z
-						);
-
-						var mesh = meshBuilder.room
-						(
-							//zoneForConnectorName, 
-							materialNormal,
-							connectorSizeInPixels.x,
-							connectorSizeInPixels.y,
-							connectorSizeInPixels.z,
-							this.neighborOffsets,
-							// connectedToNeighbors
-							[
-								(n == 1),
-								(n == 1),
-								(n != 1),
-								(n != 1)
-							]
-						);
-
-						var zoneForConnector = new Zone
-						(
-							zoneForConnectorName,
-							connectorPosInPixels,
-							// namesOfZonesAdjacent
-							[
-								zoneForNodeName,
-								neighborPosInCells.toString(),
-							],
-							// meshes
-							[
-								mesh
-							]
-						);
-
-						returnValues.push(zoneForConnector);
-						returnValues[zoneForConnector.name] = zoneForConnector;
-					}
-
-				} // end for each neighbor
-			}
-		}
-
-		var zoneStartName = cellPosOfStart.toString();
-		var zoneStart = returnValues[zoneStartName];
-		var meshStart = zoneStart.entity.meshTransformed;
-		meshStart.material = materialStart;
-
-		var zoneGoalName = cellPosOfGoal.toString();
-		var zoneGoal = returnValues[zoneGoalName];
-		var meshGoal = zoneGoal.entity.meshTransformed;
-		meshGoal.material = materialGoal;
-
-		return returnValues;
 	}
 
 	Maze.prototype.indexOfCellAtPos = function(cellPos)

@@ -47,7 +47,7 @@ function MeshTextured(geometry, material, textureUVsForFaceVertices, vertexGroup
 	{
 		var textureUVsForFaces = [];
 
-		var textureUVsForFace = 
+		var textureUVsForFace =
 		[
 			new Coords(0, 0), new Coords(1, 0), new Coords(1, 1), new Coords(1, 0)
 		];
@@ -74,7 +74,7 @@ function MeshTextured(geometry, material, textureUVsForFaceVertices, vertexGroup
 	{
 		Transform.applyTransformToCoordsArrays
 		(
-			transformToApply, 
+			transformToApply,
 			this.textureUVsForFaceVertices
 		);
 

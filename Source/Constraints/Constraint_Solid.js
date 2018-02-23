@@ -44,7 +44,7 @@ function Constraint_Solid()
 
 				Collision.addCollisionsOfEdgeAndWorldToList
 				(
-					edgeForMovement, 
+					edgeForMovement,
 					world,
 					collisions
 				);

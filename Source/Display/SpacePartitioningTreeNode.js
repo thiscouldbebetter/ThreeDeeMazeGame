@@ -11,7 +11,7 @@ function SpacePartitioningTreeNode(faces)
 	}
 	else
 	{
-		var faceSetsFrontAndBack = 
+		var faceSetsFrontAndBack =
 		[
 			[],
 			[]
@@ -49,7 +49,7 @@ function SpacePartitioningTreeNode(faces)
 		this.children = [];
 
 		for (var i = 0; i < faceSetsFrontAndBack.length; i++)
-		{ 
+		{
 			var faceSet = faceSetsFrontAndBack[i];
 			var childNode = null;
 			if (faceSet.length > 0)
@@ -63,7 +63,7 @@ function SpacePartitioningTreeNode(faces)
 
 {
 	SpacePartitioningTreeNode.prototype.addFacesBackToFrontForCameraPosToList = function
-	( 
+	(
 		cameraPos,
 		facesToAddTo
 	)
@@ -89,7 +89,7 @@ function SpacePartitioningTreeNode(faces)
 			if (nodeChild != null)
 			{
 				nodeChild.addFacesBackToFrontForCameraPosToList
-				( 
+				(
 					cameraPos,
 					facesToAddTo
 				);
