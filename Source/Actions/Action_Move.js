@@ -14,7 +14,7 @@ function Action_Move(amountToMoveForwardRightDown)
 	Action_Move.prototype.perform = function(universe, world, entity)
 	{
 		var entityLoc = entity.loc;
-		var isEntityOnGround = (entityLoc.pos.z >= -.01); // hack
+		var isEntityOnGround = entity.isGrounded(world)///(entityLoc.pos.z >= -.01); // hack
 		if (isEntityOnGround == true)
 		{
 			this.transformOrient.orientation = entityLoc.orientation;

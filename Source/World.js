@@ -472,11 +472,10 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 			this.zonesActive.push(this.zoneCurrent);
 
-			var namesOfZonesAdjacent = this.zoneCurrent.namesOfZonesAdjacent;
-			for (var i = 0; i < namesOfZonesAdjacent.length; i++)
+			var zonesAdjacent = this.zoneCurrent.zonesAdjacent(this);
+			for (var i = 0; i < zonesAdjacent.length; i++)
 			{
-				var nameOfZoneAdjacent = namesOfZonesAdjacent[i];
-				var zoneAdjacent = this.zones[nameOfZoneAdjacent];
+				var zoneAdjacent = zonesAdjacent[i];
 				this.zonesActive.push(zoneAdjacent);
 			}
 
@@ -681,4 +680,28 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			}
 		}
 	}
+
+	// collisions
+
+	World.prototype.collisionsWithEdge = function(edge, collisions)
+	{
+		if (collisions == null)
+		{
+			collisions = [];
+		}
+
+		var zonesActive = this.zonesActive;
+		for (var z = 0; z < zonesActive.length; z++)
+		{
+			var zone = zonesActive[z];
+
+			zone.collisionsWithEdge
+			(
+				edge, collisions
+			);
+		}
+
+		return collisions;
+	}
+
 }

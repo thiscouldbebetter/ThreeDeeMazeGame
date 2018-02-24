@@ -8,8 +8,9 @@ function Constraint_Gravity(accelerationPerTick)
 	Constraint_Gravity.prototype.constrainEntity = function(world, entityToConstrain)
 	{
 		var entityLoc = entityToConstrain.loc;
+		var isEntityGrounded = entityToConstrain.isGrounded(world);
 
-		if (entityLoc.pos.z < -.01)
+		if (isEntityGrounded == false) // entityLoc.pos.z < -.01)
 		{
 			entityLoc.accel.z += this.accelerationPerTick;
 		}
@@ -28,5 +29,7 @@ function Constraint_Gravity(accelerationPerTick)
 				}
 			}
 		}
+
+		entityToConstrain.ground(world);
 	}
 }

@@ -9,7 +9,9 @@ function Action_Jump(acceleration)
 	Action_Jump.prototype.perform = function(universe, world, entity)
 	{
 		var entityLoc = entity.loc;
-		if (entityLoc.pos.z >= -.01)
+		//var isEntityGrounded = (entityLoc.pos.z >= -.01);
+		var isEntityGrounded = entity.isGrounded(world);
+		if (isEntityGrounded == true)
 		{
 			entityLoc.accel.z -= this.acceleration;
 		}

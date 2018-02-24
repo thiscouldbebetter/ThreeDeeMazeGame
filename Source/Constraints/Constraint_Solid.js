@@ -42,10 +42,9 @@ function Constraint_Solid()
 			{
 				collisions.length = 0;
 
-				Collision.addCollisionsOfEdgeAndWorldToList
+				collisions = world.collisionsWithEdge
 				(
 					edgeForMovement,
-					world,
 					collisions
 				);
 

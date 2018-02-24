@@ -271,4 +271,40 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 	{
 		// todo
 	}
+
+	Zone.prototype.zonesAdjacent = function(world)
+	{
+		var returnValues = [];
+
+		var zones = world.zones;
+		var namesOfZonesAdjacent = this.namesOfZonesAdjacent;
+		for (var i = 0; i < namesOfZonesAdjacent.length; i++)
+		{
+			var nameOfZoneAdjacent = namesOfZonesAdjacent[i];
+			var zoneAdjacent = zones[nameOfZoneAdjacent];
+			returnValues.push(zoneAdjacent);
+		}
+
+		return returnValues;
+	}
+
+	// collisions
+
+	Zone.prototype.collisionsWithEdge = function(edge, collisions)
+	{
+		if (collisions == null)
+		{
+			collisions = [];
+		}
+
+		var zoneMesh = this.entity.meshTransformed.geometry;
+
+		Collision.addCollisionsOfEdgeAndMeshToList
+		(
+			edge, zoneMesh, collisions
+		);
+
+		return collisions;
+	}
+
 }
