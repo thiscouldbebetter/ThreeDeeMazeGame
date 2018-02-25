@@ -195,8 +195,14 @@ function MeshBuilder()
 		return returnMesh;
 	}
 
-	MeshBuilder.prototype.room = function(materialWall, x, y, z, neighborOffsets, connectedToNeighbors)
+	MeshBuilder.prototype.room = function
+	(
+		roomSize, neighborOffsets, connectedToNeighbors, materialsWallAndFloor
+	)
 	{
+		var materialWall = materialsWallAndFloor[0];
+		var materialFloor = materialsWallAndFloor[1];
+
 		var wallNormals = neighborOffsets;
 
 		if (connectedToNeighbors == null)
@@ -211,8 +217,6 @@ function MeshBuilder()
 		for (var i = 0; i < wallNormals.length; i++)
 		{
 			var wallNormal = wallNormals[i];
-
-			var scaleFactors = new Coords(x, y, z);
 
 			var meshForWall;
 
@@ -263,7 +267,7 @@ function MeshBuilder()
 			);
 		}
 
-		var meshForFloor = this.room_Floor(materialWall);
+		var meshForFloor = this.room_Floor(materialFloor);
 		meshesForRoom.push(meshForFloor);
 
 		//var meshForCeiling = this.room_Ceiling(material);
@@ -298,14 +302,14 @@ function MeshBuilder()
 			var faceTangent = faceOrientation.right;
 			var faceDown = faceOrientation.down;
 
-			mesh.transformTextureUVs
+			mesh.transformFaceTextures
 			(
 				new Transform_Scale
 				(
 					new Coords
 					(
-						faceTangent.dotProduct(scaleFactors),
-						faceDown.dotProduct(scaleFactors)
+						faceTangent.dotProduct(roomSize),
+						faceDown.dotProduct(roomSize)
 					).absolute()
 				)
 			)
@@ -318,10 +322,10 @@ function MeshBuilder()
 
 		returnMesh.transform
 		(
-			new Transform_Scale(scaleFactors)
+			new Transform_Scale(roomSize)
 		).transform
 		(
-			new Transform_Translate(new Coords(0, 0, -z))
+			new Transform_Translate(new Coords(0, 0, -roomSize.z))
 		);
 
 
@@ -345,7 +349,7 @@ function MeshBuilder()
 			(
 				new Coords(0, 0, -1)
 			)
-		).transformTextureUVs
+		).transformFaceTextures
 		(
 			new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(.2))
 		);
@@ -364,9 +368,9 @@ function MeshBuilder()
 			(
 				new Coords(0, 0, 1)
 			)
-		).transformTextureUVs
+		).transformFaceTextures
 		(
-			new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(.2))
+			new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(1))
 		);
 
 		return returnMesh;
@@ -396,15 +400,18 @@ function MeshBuilder()
 		returnMesh = new MeshTextured
 		(
 			returnMesh,
-			material,
-			// textureUVs
+			[ material ],
 			[
-				[
-					new Coords(.2, 0),
-					new Coords(0, 0),
-					new Coords(0, .2),
-					new Coords(.2, .2),
-				],
+				new MeshTexturedFaceTexture
+				(
+					material.name,
+					[
+						new Coords(.2, 0),
+						new Coords(0, 0),
+						new Coords(0, .2),
+						new Coords(.2, .2),
+					]
+				),
 			]
 		);
 
@@ -448,36 +455,50 @@ function MeshBuilder()
 			]
 		);
 
-		var textureUVs =
+		var materialName = material.name;
+
+		var faceTextures =
 		[
 			// top
-			[
-				new Coords(0, .05),
-				new Coords(.05, .05),
-				new Coords(.05, 0),
-				new Coords(0, 0),
-			],
+			new MeshTexturedFaceTexture
+			(
+				materialName,
+				[
+					new Coords(0, .05),
+					new Coords(.05, .05),
+					new Coords(.05, 0),
+					new Coords(0, 0),
+				]
+			),
 			// left
-			[
-				new Coords(0, .2),
-				new Coords(.05, .2),
-				new Coords(.05, 0),
-				new Coords(0, 0),
-			],
+			new MeshTexturedFaceTexture
+			(
+				materialName,
+				[
+					new Coords(0, .2),
+					new Coords(.05, .2),
+					new Coords(.05, 0),
+					new Coords(0, 0),
+				]
+			),
 			// right
-			[
-				new Coords(0, 0),
-				new Coords(0, .2),
-				new Coords(.05, .2),
-				new Coords(.05, 0),
-			],
+			new MeshTexturedFaceTexture
+			(
+				materialName,
+				[
+					new Coords(0, 0),
+					new Coords(0, .2),
+					new Coords(.05, .2),
+					new Coords(.05, 0),
+				]
+			),
 		];
 
 		returnMesh = new MeshTextured
 		(
 			returnMesh,
-			material,
-			textureUVs
+			[ material ],
+			faceTextures
 		);
 
 		return returnMesh;
@@ -515,7 +536,7 @@ function MeshBuilder()
 			]
 		);
 
-		returnMesh = new MeshTextured(returnMesh, material);
+		returnMesh = new MeshTextured(returnMesh, [ material ]);
 
 		return returnMesh;
 	}
@@ -544,7 +565,7 @@ function MeshBuilder()
 			[ new Mesh_FaceBuilder(vertexIndicesForFace) ]
 		);
 
-		returnMesh = new MeshTextured(returnMesh, material);
+		returnMesh = new MeshTextured(returnMesh, [ material ]);
 
 		return returnMesh;
 	}
@@ -572,15 +593,18 @@ function MeshBuilder()
 		returnMesh = new MeshTextured
 		(
 			returnMesh,
-			material,
-			// textureUVs
+			[ material ],
 			[
-				[
-					new Coords(0, 0),
-					new Coords(1, 0),
-					new Coords(1, 1),
-					new Coords(0, 1),
-				]
+				new MeshTexturedFaceTexture
+				(
+					material.name,
+					[
+						new Coords(0, 0),
+						new Coords(1, 0),
+						new Coords(1, 1),
+						new Coords(0, 1),
+					]
+				)
 			]
 		);
 
@@ -612,7 +636,7 @@ function MeshBuilder()
 	{
 		var verticesMerged = [];
 		var faceBuildersMerged = [];
-		var textureUVsForFacesMerged = [];
+		var faceTexturesMerged = [];
 		var vertexGroups = [];
 
 		var numberOfVerticesSoFar = 0;
@@ -636,14 +660,14 @@ function MeshBuilder()
 				faceBuildersMerged.push(faceBuilder);
 			}
 
-			var textureUVsForFaces = meshToMerge.textureUVsForFaceVertices;
-			if (textureUVsForFaces != null)
+			var faceTextures = meshToMerge.faceTextures;
+			if (faceTextures != null)
 			{
-				for (var f = 0; f < textureUVsForFaces.length; f++)
+				for (var f = 0; f < faceTextures.length; f++)
 				{
-					var textureUVsForFace = textureUVsForFaces[f];
-					var textureUVsForFaceCloned = textureUVsForFace.clone();
-					textureUVsForFacesMerged.push(textureUVsForFaceCloned);
+					var faceTexture = faceTextures[f];
+					var faceTextureCloned = faceTexture.clone();
+					faceTexturesMerged.push(faceTextureCloned);
 				}
 			}
 
@@ -674,11 +698,27 @@ function MeshBuilder()
 			faceBuildersMerged
 		);
 
+		var materialsMerged = [];
+		for (var i = 0; i < meshesToMerge.length; i++)
+		{
+			var meshToMergeMaterials = meshesToMerge[i].materials;
+			for (var m = 0; m < meshToMergeMaterials.length; m++)
+			{
+				var material = meshToMergeMaterials[m];
+				var materialName = material.name;
+				if (materialsMerged[materialName] == null)
+				{
+					materialsMerged.push(material);
+					materialsMerged[materialName] = material;
+				}
+			}
+		}
+
 		returnMesh = new MeshTextured
 		(
 			returnMesh,
-			meshesToMerge[0].material,
-			textureUVsForFacesMerged,
+			materialsMerged,
+			faceTexturesMerged,
 			vertexGroups
 		);
 

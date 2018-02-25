@@ -28,8 +28,6 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 	World.random = function(mazeSizeInCells, mazeCellSizeInPixels)
 	{
-		var textures = Texture.Instances;
-
 		var amountToMoveForward = .4;
 		var amountToMoveBackward = amountToMoveForward / 2;
 		var amountToYaw = 0.1;
@@ -61,51 +59,156 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			new InputToActionMapping( "_ ", actions[8].name ),
 		];
 
-		var materials =
+		var pixelsGrayWithDarkBorder = 
 		[
-			new Material
+			"aaaaaaaaaaaaaaaa",
+			"aAAAAAAAAAAAAAAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAaaaaaaaaaaaaAa",
+			"aAAAAAAAAAAAAAAa",
+			"aaaaaaaaaaaaaaaa",
+		];
+
+		var pixelsGrayWithColoredBorders = [];
+		var colorCodesForBorders = [ "R", "B" ];
+		for (var c = 0; c < colorCodesForBorders.length; c++)
+		{
+			var colorCodeForBorder = colorCodesForBorders[c];
+			var pixelsGrayWithColoredBorder = 
+				pixelsGrayWithDarkBorder.join(",").split("A").join(colorCodeForBorder).split(",");
+			pixelsGrayWithColoredBorders[colorCodeForBorder] = pixelsGrayWithColoredBorder;
+		}
+
+		var textures = 
+		[
+			new Texture
 			(
 				"Chest",
-				Color.Instances.Black,
-				Color.Instances.Gray,
-				textures.Chest
+				ImageHelper.buildImageFromStrings
+				(
+					"Chest",
+					pixelsGrayWithColoredBorders["R"]
+				)
 			),
-			new Material
+
+			new Texture
 			(
 				"Door",
-				Color.Instances.Black,
-				Color.Instances.Gray,
-				textures.Door
+				ImageHelper.buildImageFromStrings
+				(
+					"Door",
+					pixelsGrayWithColoredBorders["B"]
+				)
 			),
-			new Material
+
+			new Texture
 			(
-				"Mover",
-				Color.Instances.Black,
-				Color.Instances.Gray,
-				textures._TestPattern
+				"Floor",
+				ImageHelper.buildImageFromStrings
+				(
+					"Floor",
+					pixelsGrayWithDarkBorder
+				)
 			),
-			new Material
+
+			new Texture
 			(
 				"Goal",
-				Color.Instances.Blue,
-				Color.Instances.GrayLight,
-				textures.Goal
+				ImageHelper.buildImageFromStrings
+				(
+					"Goal",
+					[
+						"@"
+					]
+				)
 			),
-			new Material
+
+			new Texture
+			(
+				"Mover",
+				ImageHelper.buildImageFromStrings
+				(
+					"Mover",
+					[
+						"@"
+					]
+				)
+			),
+
+			new Texture
 			(
 				"Start",
-				Color.Instances.Blue,
-				Color.Instances.GrayDark,
-				textures.Start
+				ImageHelper.buildImageFromStrings
+				(
+					"Start",
+					[
+						"A"
+					]
+				)
 			),
-			new Material
+
+			new Texture
 			(
 				"Wall",
-				Color.Instances.Blue,
-				Color.Instances.Gray,
-				textures.Wall
+				ImageHelper.buildImageFromStrings
+				(
+					"Wall",
+					[
+						"AAAAAAAAAAAAAAAA",
+
+						"AaaaAaaaAaaaAaaa",
+						"AaaaAaaaAaaaAaaa",
+						"AaaaAaaaAaaaAaaa",
+
+						"AAAAAAAAAAAAAAAA",
+
+						"aaAaaaAaaaAaaaAa",
+						"aaAaaaAaaaAaaaAa",
+						"aaAaaaAaaaAaaaAa",
+
+						"AAAAAAAAAAAAAAAA",
+
+						"AaaaAaaaAaaaAaaa",
+						"AaaaAaaaAaaaAaaa",
+						"AaaaAaaaAaaaAaaa",
+
+						"AAAAAAAAAAAAAAAA",
+
+						"aaAaaaAaaaAaaaAa",
+						"aaAaaaAaaaAaaaAa",
+						"aaAaaaAaaaAaaaAa",
+
+					]
+				)
 			),
 		].addLookups("name");
+
+		var materials = [];
+
+		for (var t = 0; t < textures.length; t++)
+		{
+			var texture = textures[t];
+			var materialForTexture = new Material
+			(
+				texture.name,
+				Color.Instances.Black,
+				Color.Instances.Gray,
+				texture
+			);
+			materials.push(materialForTexture);
+		}
+
+		materials.addLookups("name");
 
 		var meshBuilder = new MeshBuilder();
 
@@ -139,7 +242,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 					materials["Chest"],
 					new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
 					new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
-				).textureUVsBuild()
+				).faceTexturesBuild()
 			),
 
 			new EntityDefn
@@ -152,7 +255,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 					materials["Door"],
 					new Coords(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
 					new Coords(0, 0, -1).multiplyScalar(doorHeight) // pos
-				).textureUVsBuild()
+				).faceTexturesBuild()
 			),
 
 			new EntityDefn
@@ -164,7 +267,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				(
 					materials["Mover"],
 					moverHeight
-				)
+				).faceTexturesBuild()
 			),
 		].addLookups("name");
 
@@ -196,7 +299,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		zones = Zone.manyFromMaze
 		(
 			maze,
-			materials["Wall"],
+			[ materials["Wall"], materials["Floor"] ],
 			cellPosOfStart,
 			materials["Start"],
 			cellPosOfGoal,
@@ -448,7 +551,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 	{
 		if (this.zoneNext != null)
 		{
-			if (this.zoneNext.entity.meshTransformed.material.name == "Goal")
+			if (this.zoneNext.entity.meshTransformed.materials[0].name == "Goal")
 			{
 				var messageWin =
 					"You reached the goal in "
