@@ -59,7 +59,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			new InputToActionMapping( "_ ", actions[8].name ),
 		];
 
-		var pixelsGrayWithDarkBorder = 
+		var pixelsGrayWithDarkBorder =
 		[
 			"aaaaaaaaaaaaaaaa",
 			"aAAAAAAAAAAAAAAa",
@@ -80,16 +80,16 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		];
 
 		var pixelsGrayWithColoredBorders = [];
-		var colorCodesForBorders = [ "R", "B" ];
+		var colorCodesForBorders = [ "R", "G", "B" ];
 		for (var c = 0; c < colorCodesForBorders.length; c++)
 		{
 			var colorCodeForBorder = colorCodesForBorders[c];
-			var pixelsGrayWithColoredBorder = 
+			var pixelsGrayWithColoredBorder =
 				pixelsGrayWithDarkBorder.join(",").split("A").join(colorCodeForBorder).split(",");
 			pixelsGrayWithColoredBorders[colorCodeForBorder] = pixelsGrayWithColoredBorder;
 		}
 
-		var textures = 
+		var textures =
 		[
 			new Texture
 			(
@@ -127,9 +127,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				ImageHelper.buildImageFromStrings
 				(
 					"Goal",
-					[
-						"@"
-					]
+					pixelsGrayWithColoredBorders["G"]
 				)
 			),
 
@@ -151,9 +149,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 				ImageHelper.buildImageFromStrings
 				(
 					"Start",
-					[
-						"A"
-					]
+					pixelsGrayWithColoredBorders["R"]
 				)
 			),
 
@@ -299,7 +295,8 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		zones = Zone.manyFromMaze
 		(
 			maze,
-			[ materials["Wall"], materials["Floor"] ],
+			materials["Wall"],
+			materials["Floor"],
 			cellPosOfStart,
 			materials["Start"],
 			cellPosOfGoal,

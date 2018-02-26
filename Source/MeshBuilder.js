@@ -197,12 +197,9 @@ function MeshBuilder()
 
 	MeshBuilder.prototype.room = function
 	(
-		roomSize, neighborOffsets, connectedToNeighbors, materialsWallAndFloor
+		roomSize, neighborOffsets, connectedToNeighbors, materialWall, materialFloor
 	)
 	{
-		var materialWall = materialsWallAndFloor[0];
-		var materialFloor = materialsWallAndFloor[1];
-
 		var wallNormals = neighborOffsets;
 
 		if (connectedToNeighbors == null)

@@ -29,7 +29,8 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 	Zone.manyFromMaze = function
 	(
 		maze,
-		materialsWallAndFloor,
+		materialWall,
+		materialFloor,
 		cellPosOfStart,
 		materialStart,
 		cellPosOfGoal,
@@ -56,40 +57,40 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 			{
 				cellPos.x = x;
 
+				var materialForRoomFloor;
+				if (cellPos.equals(cellPosOfStart) == true)
+				{
+					materialForRoomFloor = materialStart;
+				}
+				else if (cellPos.equals(cellPosOfGoal) == true)
+				{
+					materialForRoomFloor =  materialGoal;
+				}
+				else
+				{
+					materialForRoomFloor = materialFloor;
+				}
+
 				Zone.manyFromMaze_Cell
 				(
-					maze, cellPos, cellPosInPixels, cellSizeInPixels, 
-					materialsWallAndFloor, returnValues
+					maze, cellPos, cellPosInPixels, cellSizeInPixels,
+					materialWall, materialForRoomFloor, materialFloor, returnValues
 				);
 			}
 		}
-
-		/*
-		// Can't do this anymore, because the old material names
-		// are already stored in .faceTextures.
-		var zoneStartName = cellPosOfStart.toString();
-		var zoneStart = returnValues[zoneStartName];
-		var meshStart = zoneStart.entity.meshTransformed;
-		meshStart.materials = [ materialStart ].addLookups("name");
-		meshStart._faces = null;
-
-		var zoneGoalName = cellPosOfGoal.toString();
-		var zoneGoal = returnValues[zoneGoalName];
-		var meshGoal = zoneGoal.entity.meshTransformed;
-		meshGoal.materials = [ materialGoal ].addLookups("name");
-		meshGoal._faces = null;
-		*/
 
 		return returnValues;
 	}
 
 	Zone.manyFromMaze_Cell = function
 	(
-		maze, 
-		cellPos, 
-		cellPosInPixels, 
-		cellSizeInPixels, 
-		materialsWallAndFloor, 
+		maze,
+		cellPos,
+		cellPosInPixels,
+		cellSizeInPixels,
+		materialWall,
+		materialRoomFloor,
+		materialConnectorFloor,
 		returnValues
 	)
 	{
@@ -106,9 +107,9 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 
 		var zoneForNodeName = cellPos.toString();
 
-		var tuple = Zone.fromMaze_Cell_Neighbors
+		var tuple = Zone.manyFromMaze_Cell_Neighbors
 		(
-			maze, cellPos, cellCurrent, materialsWallAndFloor
+			maze, cellPos, cellCurrent, materialWall, materialConnectorFloor
 		);
 
 		var zonesForConnectorsToNeighbors = tuple[0];
@@ -119,7 +120,8 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 			roomSizeInPixelsHalf,
 			maze.neighborOffsets,
 			cellCurrent.connectedToNeighbors,
-			materialsWallAndFloor
+			materialWall,
+			materialRoomFloor
 		);
 
 		var zoneForNode = new Zone
@@ -141,11 +143,13 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 		}
 	}
 
-	Zone.fromMaze_Cell_Neighbors = function
+	Zone.manyFromMaze_Cell_Neighbors = function
 	(
-		maze, cellPos, cellCurrent, materialsWallAndFloor
+		maze, cellPos, cellCurrent, materialWall, materialFloor
 	)
 	{
+		var materialsWallAndFloor = [ materialWall, materialFloor ];
+
 		var zonesForConnectorsToNeighbors = [];
 		var zonesAdjacentNames = [];
 
@@ -228,7 +232,7 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 					);
 
 					var mesh = meshBuilder.room
-					(	
+					(
 						connectorSizeInPixels,
 						neighborOffsets,
 						// connectedToNeighbors
@@ -238,7 +242,7 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 							(n != 1),
 							(n != 1)
 						],
-						materialsWallAndFloor
+						materialWall, materialFloor
 					);
 
 					var zoneForConnector = new Zone
