@@ -1,5 +1,5 @@
 
-function World(name, actions, inputToActionMappings, materials, entityDefns, sizeInPixels, zones, bodies)
+function World(name, actions, inputToActionMappings, materials, entityDefns, sizeInPixels, zones, entityForPlayer)
 {
 	this.name = name;
 	this.actions = actions.addLookups("name");
@@ -8,7 +8,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 	this.entityDefns = entityDefns;
 	this.sizeInPixels = sizeInPixels;
 	this.zones = zones;
-	this.bodies = bodies;
+	this.entityForPlayer = entityForPlayer;
 
 	this.zones.addLookups("name");
 
@@ -304,6 +304,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		);
 
 		var nameOfZoneStart = cellPosOfStart.toString();
+		var zoneStart = zones[nameOfZoneStart];
 
 		var entityForPlayer = new Entity
 		(
@@ -393,6 +394,16 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			)
 		);
 
+		zoneStart.entities.addMany
+		(
+			[
+				entityForPlayer,
+				entityForMoverOther,
+				entityForChest,
+				entityForDoor,
+			]
+		);
+
 		var returnValue = new World
 		(
 			"Maze-" + maze.sizeInCells.x + "x" + maze.sizeInCells.y,
@@ -402,13 +413,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			entityDefns,
 			maze.sizeInPixels,
 			zones,
-			// bodies
-			[
-				entityForPlayer,
-				entityForMoverOther,
-				entityForChest,
-				entityForDoor,
-			]
+			entityForPlayer
 		);
 
 		return returnValue;
@@ -439,14 +444,23 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 	{
 		this.meshesToDraw = [];
 
-		var entityForPlayer = this.bodies[0];
+		// todo - hack
+		var zoneStart;
+		for (var i = 0; i < this.zones.length; i++)
+		{
+			var zone = this.zones[i];
+			if (zone.entities[0].meshTransformed.materials[1].name == "Start")
+			{
+				zoneStart = zone;
+				break;
+			}
+		}
 
-		var zoneName = entityForPlayer.loc.venue;
-		this.zoneNext = this.zones[zoneName];
+		this.zoneNext = zoneStart;
 		this.zonesActive = [];
 
 		var activityDefns = new ActivityDefn_Instances();
-		entityForPlayer.activity = new Activity(activityDefns.UserInputAccept);
+		this.entityForPlayer.activity = new Activity(activityDefns.UserInputAccept);
 
 		var skeleton = SkeletonHelper.biped
 		(
@@ -463,25 +477,31 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			new Constraint_Movable(),
 		];
 
-		for (var i = 0; i < this.bodies.length; i++)
+		for (var z = 0; z < this.zones.length; z++)
 		{
-			var entity = this.bodies[i];
+			var zone = this.zones[z];
+			var entities = zone.entities;
 
-			entity.constraints = constraintsCommon.slice();
-
-			var entityDefnName = entity.defn.name;
-			if (entityDefnName == "Mover") // hack
+			for (var i = 1; i < entities.length; i++)
 			{
-				entity.actions = [];
+				var entity = entities[i];
 
-				var skeletonCloned = skeleton.clone();
-				entity.constraints.prepend
-				([
-					new Constraint_Animate(skeleton, skeletonCloned, animationDefnGroupBiped),
-					new Constraint_Pose(skeleton, skeletonCloned),
-				]);
+				entity.constraints = constraintsCommon.slice();
 
-				entity.constraints.addLookups("name");
+				var entityDefnName = entity.defn.name;
+				if (entityDefnName == "Mover") // hack
+				{
+					entity.actions = [];
+
+					var skeletonCloned = skeleton.clone();
+					entity.constraints.prepend
+					([
+						new Constraint_Animate(skeleton, skeletonCloned, animationDefnGroupBiped),
+						new Constraint_Pose(skeleton, skeletonCloned),
+					]);
+
+					entity.constraints.addLookups("name");
+				}
 			}
 		}
 
@@ -509,7 +529,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 			new Location
 			(
-				this.zoneNext.entity.loc.pos.clone().add
+				this.zoneNext.entities[0].loc.pos.clone().add
 				(
 					offsetOfCameraFromPlayer
 				),
@@ -533,11 +553,11 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		cameraEntity.constraints =
 		[
-			new Constraint_Follow(entityForPlayer, focalLength / followDivisor),
-			new Constraint_OrientToward(entityForPlayer),
+			new Constraint_Follow(this.entityForPlayer, focalLength / followDivisor),
+			new Constraint_OrientToward(this.entityForPlayer),
 		].addLookups("name");
 
-		this.bodies.push(cameraEntity);
+		zoneStart.entities.push(cameraEntity);
 
 		this.cameraEntity = cameraEntity;
 
@@ -548,7 +568,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 	{
 		if (this.zoneNext != null)
 		{
-			if (this.zoneNext.entity.meshTransformed.materials[0].name == "Goal")
+			if (this.zoneNext.entities[0].meshTransformed.materials[0].name == "Goal")
 			{
 				var messageWin =
 					"You reached the goal in "
@@ -562,8 +582,6 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			{
 				var zoneActive = this.zonesActive[i];
 				zoneActive.finalize();
-				var zoneActiveEntityIndex = this.bodies.indexOf(zoneActive.entity);
-				this.bodies.splice(zoneActiveEntityIndex, 1);
 			}
 
 			this.zoneCurrent = this.zoneNext;
@@ -585,8 +603,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			{
 				var zoneActive = this.zonesActive[i];
 				zoneActive.initialize();
-				this.bodies.push(zoneActive.entity);
-				var facesForZone = zoneActive.entity.meshTransformed.faces();
+				var facesForZone = zoneActive.entities[0].meshTransformed.faces();
 				facesForZonesActive.append(facesForZone);
 			}
 
@@ -601,62 +618,31 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		for (var z = 0; z < this.zonesActive.length; z++)
 		{
 			var zoneActive = this.zonesActive[z];
-			zoneActive.update(universe, this);
-		}
-
-		for (var b = 0; b < this.bodies.length; b++)
-		{
-			var entity = this.bodies[b];
-
-			if (entity.activity != null)
-			{
-				entity.activity.perform(universe, this, entity);
-			}
-
-			if (entity.actions != null)
-			{
-				for (var a = 0; a < entity.actions.length; a++)
-				{
-					var action = entity.actions[a];
-					action.perform(universe, this, entity);
-				}
-
-				entity.actions.length = 0;
-			}
-
-			var entityConstraints = entity.constraints;
-
-			if (entityConstraints != null)
-			{
-				entity.resetMeshTransformed();
-				for (var c = 0; c < entityConstraints.length; c++)
-				{
-					var constraint = entityConstraints[c];
-					constraint.constrainEntity(this, entity);
-				}
-			}
+			zoneActive.updateForTimerTick(universe, this);
 		}
 
 		this.draw(universe.display);
 
-		var entityForPlayer = this.bodies[0];
+		var zoneCurrentBounds = this.zoneCurrent.entities[0].meshTransformed.geometry.bounds();
 
-		var zoneCurrentBounds = this.zoneCurrent.entity.meshTransformed.geometry.bounds();
-
-		if (zoneCurrentBounds.containsPoint(entityForPlayer.loc.pos) == false)
+		if (zoneCurrentBounds.containsPoint(this.entityForPlayer.loc.pos) == false)
 		{
 			for (var z = 0; z < this.zonesActive.length; z++)
 			{
 				var zoneActive = this.zonesActive[z];
-				var zoneActiveMesh = zoneActive.entity.meshTransformed;
+				var zoneActiveMesh = zoneActive.entities[0].meshTransformed;
 				var zoneActiveBounds = zoneActiveMesh.geometry.bounds();
 				var isPlayerInZoneActive = zoneActiveBounds.containsPoint
 				(
-					entityForPlayer.loc.pos
+					this.entityForPlayer.loc.pos
 				);
 				if (isPlayerInZoneActive == true)
 				{
 					this.zoneNext = zoneActive;
+					this.zoneCurrent.entities.remove(this.entityForPlayer);
+					this.zoneCurrent.entities.remove(this.cameraEntity);
+					this.zoneNext.entities.push(this.entityForPlayer);
+					this.zoneNext.entities.push(this.cameraEntity);
 					break;
 				}
 			}
@@ -696,10 +682,10 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			facesToDraw
 		);
 
-		var bodies = world.bodies;
-		for (var b = 0; b < bodies.length; b++)
+		var entities = world.entities;
+		for (var b = 0; b < entities.length; b++)
 		{
-			var entity = bodies[b];
+			var entity = entities[b];
 			var entityDefn = entity.defn;
 
 			if (entityDefn.isDrawable == true)
@@ -752,12 +738,6 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		display.drawFacesForCamera(facesToDraw, world.camera);
 		display.drawText(world.name, 10, new Coords(0, 10));
 		display.drawText(world.secondsElapsed(), 10, new Coords(0, 20));
-		display.drawText
- 		(
-			world.bodies[0].loc.pos.clone().floor().toString(),
-			10, // fontHeightInPixels
-			new Coords(0, 30)
-		);
 	}
 
 	World.prototype.draw3D = function(display)
@@ -768,15 +748,19 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 
 		display.lightingSet(null); // todo
 
-		var bodies = this.bodies;
-
-		for (var b = 0; b < bodies.length; b++)
+		for (var z = 0; z < this.zonesActive.length; z++)
 		{
-			var body = bodies[b];
-			var bodyMesh = body.meshTransformed;
-			if (bodyMesh != null)
+			var zone = this.zonesActive[z];
+			var entities = zone.entities;
+
+			for (var b = 0; b < entities.length; b++)
 			{
-				display.drawMeshWithOrientation(bodyMesh, body.loc.orientation);
+				var entity = entities[b];
+				var entityMesh = entity.meshTransformed;
+				if (entityMesh != null)
+				{
+					display.drawMeshWithOrientation(entityMesh, entity.loc.orientation);
+				}
 			}
 		}
 	}

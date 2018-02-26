@@ -5,7 +5,7 @@ function Action_Stop()
 }
 
 {
-	Action_Stop.prototype.perform = function(universe, world, entity)
+	Action_Stop.prototype.perform = function(universe, world, zone, entity)
 	{
 		var entityLoc = entity.loc;
 		entityLoc.vel.clear();

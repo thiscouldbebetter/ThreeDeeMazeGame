@@ -16,7 +16,7 @@ function ActivityDefn(name, perform)
 		this.DoNothing = new ActivityDefn
 		(
 			"Do Nothing",
-			function perform(universe, world, entity, activity)
+			function perform(universe, world, zone, entity, activity)
 			{
 				// do nothing
 			}
@@ -25,7 +25,7 @@ function ActivityDefn(name, perform)
 		this.UserInputAccept = new ActivityDefn
 		(
 			"Accept User Input",
-			function perform(universe, world, entity, activity)
+			function perform(universe, world, zone, entity, activity)
 			{
 				var inputHelper = universe.inputHelper;
 				var inputsActive = inputHelper.inputsActive;

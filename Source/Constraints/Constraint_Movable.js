@@ -5,7 +5,7 @@ function Constraint_Movable()
 }
 
 {
-	Constraint_Movable.prototype.constrainEntity = function(world, entityToConstrain)
+	Constraint_Movable.prototype.constrainEntity = function(world, zone, entityToConstrain)
 	{
 		var entityLoc = entityToConstrain.loc;
 		var entityPos = entityLoc.pos;

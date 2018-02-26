@@ -6,7 +6,7 @@ function Constraint_Pose(skeletonAtRest, skeletonPosed)
 }
 
 {
-	Constraint_Pose.prototype.constrainEntity = function(world, entityToConstrain)
+	Constraint_Pose.prototype.constrainEntity = function(world, zone, entityToConstrain)
 	{
 		var meshAtRest = entityToConstrain.defn.mesh;
 		var meshPosed = entityToConstrain.meshTransformed;

@@ -5,7 +5,7 @@ function Constraint_Gravity(accelerationPerTick)
 }
 
 {
-	Constraint_Gravity.prototype.constrainEntity = function(world, entityToConstrain)
+	Constraint_Gravity.prototype.constrainEntity = function(world, zone, entityToConstrain)
 	{
 		var entityLoc = entityToConstrain.loc;
 		var isEntityGrounded = entityToConstrain.isGrounded(world);

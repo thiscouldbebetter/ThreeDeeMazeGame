@@ -10,7 +10,7 @@ function Action_Turn(amountToTurnRightAndDown)
 }
 
 {
-	Action_Turn.prototype.perform = function(universe, world, entity)
+	Action_Turn.prototype.perform = function(universe, world, zone, entity)
 	{
 		var entityOrientation = entity.loc.orientation;
 		this.orientationTemp.overwriteWith(entityOrientation);

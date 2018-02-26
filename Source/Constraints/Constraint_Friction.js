@@ -7,7 +7,7 @@ function Constraint_Friction(speedMax, frictionPerTick, epsilon)
 }
 
 {
-	Constraint_Friction.prototype.constrainEntity = function(world, entityToConstrain)
+	Constraint_Friction.prototype.constrainEntity = function(world, zone, entityToConstrain)
 	{
 		var vel = entityToConstrain.loc.vel;
 		var velZ = vel.z;

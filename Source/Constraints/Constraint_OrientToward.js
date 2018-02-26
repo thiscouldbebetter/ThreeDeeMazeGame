@@ -10,7 +10,7 @@ function Constraint_OrientToward(targetEntity)
 }
 
 {
-	Constraint_OrientToward.prototype.constrainEntity = function(world, entityToConstrain)
+	Constraint_OrientToward.prototype.constrainEntity = function(world, zone, entityToConstrain)
 	{
 		var entityOrientationForward = this.targetEntity.loc.pos.clone().subtract
 		(

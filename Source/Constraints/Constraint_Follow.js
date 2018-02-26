@@ -7,7 +7,7 @@ function Constraint_Follow(entityToFollow, distanceToKeep)
 }
 
 {
-	Constraint_Follow.prototype.constrainEntity = function(world, entityToConstrain)
+	Constraint_Follow.prototype.constrainEntity = function(world, zone, entityToConstrain)
 	{
 		var entityToConstrainLoc = entityToConstrain.loc;
 		var entityToConstrainPos = entityToConstrainLoc.pos;

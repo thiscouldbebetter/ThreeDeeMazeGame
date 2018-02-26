@@ -12,7 +12,7 @@ function Constraint_Attach(entityAttachedTo, offsetForwardRightDown)
 }
 
 {
-	Constraint_Attach.prototype.constrainEntity = function(world, entityToConstrain)
+	Constraint_Attach.prototype.constrainEntity = function(world, zone, entityToConstrain)
 	{
 		this.transformOrient.transformCoords
 		(

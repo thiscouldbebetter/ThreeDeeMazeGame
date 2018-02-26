@@ -32,7 +32,7 @@ function main()
 		"Font", // fontName,
 		10, // fontHeightInPixels,
 		"White", // colorFore,
-		"Gray", // colorBack
+		"Black", // colorBack
 	);
 
 	var universe = new Universe

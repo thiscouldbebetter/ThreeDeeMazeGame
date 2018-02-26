@@ -13,6 +13,37 @@ function Entity(name, defn, loc)
 }
 
 {
+	// static methods
+
+	Entity.fromMesh = function(name, pos, mesh)
+	{
+		var returnValue = new Entity
+		(
+			name,
+			new EntityDefn
+			(
+				name,
+				true, // isDrawable
+				false, // isMovable
+				mesh
+			),
+			new Location
+			(
+				pos,
+				new Orientation
+				(
+					new Coords(1, 0, 0),
+					new Coords(0, 0, 1)
+				),
+				name // venue
+			)
+		);
+
+		return returnValue;
+	}
+
+	// instance methods
+
 	Entity.prototype.ground = function(world)
 	{
 		// hack
@@ -33,7 +64,7 @@ function Entity(name, defn, loc)
 		for (var i = 0; i < zonesToCheck.length; i++)
 		{
 			var zone = zonesToCheck[i];
-			var zoneMesh = zone.entity.meshTransformed.geometry;
+			var zoneMesh = zone.entities[0].meshTransformed.geometry;
 			var collisions =
 				//new CollisionHelper().collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh);
 				Collision.addCollisionsOfEdgeAndMeshToList(edgeForFootprint, zoneMesh, []);

@@ -7,7 +7,7 @@ function Action_DoNothing()
 }
 
 {
-	Action_DoNothing.prototype.perform = function(universe, world, entity)
+	Action_DoNothing.prototype.perform = function(universe, world, zone, entity)
 	{
 		// do nothing
 	}

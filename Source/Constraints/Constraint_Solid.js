@@ -9,7 +9,7 @@ function Constraint_Solid()
 {
 	Constraint_Solid.prototype.constrainEntity = function
 	(
-		world, entityToConstrain
+		world, zone, entityToConstrain
 	)
 	{
 		var entityLoc = entityToConstrain.loc;

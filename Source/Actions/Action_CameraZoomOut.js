@@ -8,7 +8,7 @@ function Action_CameraZoomOut(distanceToZoomOut)
 }
 
 {
-	Action_CameraZoomOut.prototype.perform = function(universe, world, entity)
+	Action_CameraZoomOut.prototype.perform = function(universe, world, zone, entity)
 	{
 		var entityForCamera = world.cameraEntity;
 		var constraintAttach = entityForCamera.constraints["Attach"];

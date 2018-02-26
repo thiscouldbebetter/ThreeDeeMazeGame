@@ -1,29 +1,10 @@
 
-function Zone(name, pos, namesOfZonesAdjacent, meshes)
+function Zone(name, pos, namesOfZonesAdjacent, entities)
 {
 	this.name = name;
+	this.pos = pos;
 	this.namesOfZonesAdjacent = namesOfZonesAdjacent;
-	this.entity = new Entity
-	(
-		this.name,
-		new EntityDefn
-		(
-			this.name,
-			true, // isDrawable
-			false, // isMovable
-			meshes[0] // hack
-		),
-		new Location
-		(
-			pos,
-			new Orientation
-			(
-				new Coords(1, 0, 0),
-				new Coords(0, 0, 1)
-			),
-			this.name // venue
-		)
-	);
+	this.entities = entities;
 }
 {
 	Zone.manyFromMaze = function
@@ -129,7 +110,7 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 			zoneForNodeName,
 			cellPosInPixels.clone(), //pos,
 			zonesAdjacentNames,
-			[ mesh ]
+			[ Entity.fromMesh(this.name, cellPosInPixels.clone(), mesh) ]
 		);
 
 		returnValues.push(zoneForNode);
@@ -254,7 +235,7 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 							zoneForNodeName,
 							zoneNeighborName,
 						],
-						[ mesh ]
+						[ Entity.fromMesh(this.name, connectorPosInPixels.clone(), mesh) ]
 					);
 
 					zonesForConnectorsToNeighbors.push(zoneForConnector);
@@ -273,18 +254,50 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 
 	Zone.prototype.initialize = function()
 	{
-		this.entity.resetMeshTransformed();
+		var entity = this.entities[0];
+		entity.resetMeshTransformed();
 
-		var meshTransformed = this.entity.meshTransformed;
+		var meshTransformed = entity.meshTransformed;
 		meshTransformed.transform
 		(
-			new Transform_Locate(this.entity.loc)
+			new Transform_Locate(entity.loc)
 		);
 	}
 
-	Zone.prototype.update = function()
+	Zone.prototype.updateForTimerTick = function(universe, world)
 	{
-		// todo
+		for (var b = 0; b < this.entities.length; b++)
+		{
+			var entity = this.entities[b];
+
+			if (entity.activity != null)
+			{
+				entity.activity.perform(universe, world, this, entity);
+			}
+
+			if (entity.actions != null)
+			{
+				for (var a = 0; a < entity.actions.length; a++)
+				{
+					var action = entity.actions[a];
+					action.perform(universe, world, this, entity);
+				}
+
+				entity.actions.length = 0;
+			}
+
+			var entityConstraints = entity.constraints;
+
+			if (entityConstraints != null)
+			{
+				entity.resetMeshTransformed();
+				for (var c = 0; c < entityConstraints.length; c++)
+				{
+					var constraint = entityConstraints[c];
+					constraint.constrainEntity(world, this, entity);
+				}
+			}
+		}
 	}
 
 	Zone.prototype.zonesAdjacent = function(world)
@@ -312,7 +325,7 @@ function Zone(name, pos, namesOfZonesAdjacent, meshes)
 			collisions = [];
 		}
 
-		var zoneMesh = this.entity.meshTransformed.geometry;
+		var zoneMesh = this.entities[0].meshTransformed.geometry;
 
 		Collision.addCollisionsOfEdgeAndMeshToList
 		(
