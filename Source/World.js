@@ -41,7 +41,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			new Action_Turn(new Coords(0 - amountToYaw, 0, 0)),
 			new Action_Move(new Coords(-amountToMoveBackward, 0, 0)),
 			new Action_Move(new Coords(amountToMoveForward, 0, 0)),
-			new Action_Stop(),
+			new Action_CameraReset(),
 			new Action_Move(new Coords(0, 0 - amountToStrafe, 0)),
 			new Action_Jump(.6),
 		];
