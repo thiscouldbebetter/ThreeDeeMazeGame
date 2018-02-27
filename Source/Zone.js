@@ -88,9 +88,11 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 
 		var zoneForNodeName = cellPos.toString();
 
+		var doorSize = new Coords(1, 1, 0).multiplyScalar(0);//cellSizeInPixels.z / 50);
+
 		var tuple = Zone.manyFromMaze_Cell_Neighbors
 		(
-			maze, cellPos, cellCurrent, materialWall, materialConnectorFloor
+			maze, doorSize, cellPos, cellCurrent, materialWall, materialConnectorFloor
 		);
 
 		var zonesForConnectorsToNeighbors = tuple[0];
@@ -99,6 +101,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		var mesh = meshBuilder.room
 		(
 			roomSizeInPixelsHalf,
+			doorSize,
 			maze.neighborOffsets,
 			cellCurrent.connectedToNeighbors,
 			materialWall,
@@ -126,7 +129,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 
 	Zone.manyFromMaze_Cell_Neighbors = function
 	(
-		maze, cellPos, cellCurrent, materialWall, materialFloor
+		maze, doorSize, cellPos, cellCurrent, materialWall, materialFloor
 	)
 	{
 		var materialsWallAndFloor = [ materialWall, materialFloor ];
@@ -215,6 +218,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 					var mesh = meshBuilder.room
 					(
 						connectorSizeInPixels,
+						doorSize,
 						neighborOffsets,
 						// connectedToNeighbors
 						[

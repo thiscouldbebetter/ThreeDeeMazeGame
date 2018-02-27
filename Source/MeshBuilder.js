@@ -183,7 +183,7 @@ function MeshBuilder()
 
 	MeshBuilder.prototype.room = function
 	(
-		roomSize, neighborOffsets, connectedToNeighbors, materialWall, materialFloor
+		roomSize, doorSize, neighborOffsets, connectedToNeighbors, materialWall, materialFloor
 	)
 	{
 		var wallNormals = neighborOffsets;
@@ -205,11 +205,11 @@ function MeshBuilder()
 
 			if (connectedToNeighbors[i] == true)
 			{
-				meshForWall = this.room_WallWithDoorway(roomSize, wallNormal, materialWall);
+				meshForWall = this.room_WallWithDoorway(roomSize, doorSize, wallNormal, materialWall);
 			}
 			else
 			{
-				meshForWall = this.room_Wall(roomSize, wallNormal, materialWall);
+				meshForWall = this.room_Wall(roomSize, doorSize, wallNormal, materialWall);
 			}
 
 			meshesForRoom.push
@@ -218,7 +218,7 @@ function MeshBuilder()
 			);
 		}
 
-		var meshForFloor = this.room_Floor(roomSize, materialFloor);
+		var meshForFloor = this.room_Floor(roomSize, doorSize, materialFloor);
 		meshesForRoom.push(meshForFloor);
 
 		var returnMesh = this.mergeMeshes
@@ -229,23 +229,27 @@ function MeshBuilder()
 		return returnMesh;
 	}
 
-	MeshBuilder.prototype.room_Floor = function(roomSize, material)
+	MeshBuilder.prototype.room_Floor = function(roomSize, doorSize, material)
 	{
+		var roomSizeMinusWallThickness = roomSize.clone().subtract
+		(
+			doorSize.clone().clearZ()
+		);
+
 		var returnMesh = this.unitSquare
 		(
 			material
 		).transform
 		(
-			new Transform_Scale(roomSize)
+			new Transform_Scale(roomSizeMinusWallThickness)
 		).transformFaceTextures
 		(
 			new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(5))
-		);
-
+		)
 		return returnMesh;
 	}
 
-	MeshBuilder.prototype.room_Wall = function(roomSize, normal, material)
+	MeshBuilder.prototype.room_Wall = function(roomSize, doorSize, normal, material)
 	{
 		var down = new Coords(0, 0, 1);
 		var tangent = normal.clone().crossProduct(down);
@@ -286,12 +290,17 @@ function MeshBuilder()
 			]
 		);
 
+		var roomSizeMinusWallThickness = roomSize.clone().subtract
+		(
+			doorSize.clone().clearZ()
+		);
+
 		returnMesh.transform
 		(
 			new Transform_Translate(normal.clone())
 		).transform
 		(
-			new Transform_Scale(roomSize)
+			new Transform_Scale(roomSizeMinusWallThickness)
 		).transformFaceTextures
 		(
 			new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(2))
@@ -300,36 +309,42 @@ function MeshBuilder()
 		return returnMesh;
 	}
 
-	MeshBuilder.prototype.room_WallWithDoorway = function(roomSize, normal, material)
+	MeshBuilder.prototype.room_WallWithDoorway = function(roomSize, doorSize, normal, material)
 	{
 		var down = new Coords(0, 0, 1);
 		var tangent = normal.clone().crossProduct(down);
 		var up = down.clone().invert().multiplyScalar(2);
 		var upTwoThirds = up.clone().multiplyScalar(2/3);
 
-		var returnMesh = new Mesh
+		var wallWidth = 2;
+		var wallWidthHalf = wallWidth / 2;
+		var doorWidth = 2/3;
+		var doorWidthHalf = doorWidth / 2;
+		var wallMinusDoorWidthHalf = wallWidthHalf - doorWidthHalf;
+		var wallMinusDoorWidthHalfReversed = 1 - wallMinusDoorWidthHalf;
+
+		var meshGeometryForWall = new Mesh
 		(
 			new Coords(0, 0, 0), // center
 			// vertices
 			[
 				// left
-				tangent.clone().multiplyScalar(-1),
-				tangent.clone().multiplyScalar(-1/3),
-				tangent.clone().multiplyScalar(-1/3).add(up),
-				tangent.clone().multiplyScalar(-1).add(up),
+				tangent.clone().multiplyScalar(-wallWidthHalf),
+				tangent.clone().multiplyScalar(-doorWidthHalf),
+				tangent.clone().multiplyScalar(-doorWidthHalf).add(up),
+				tangent.clone().multiplyScalar(-wallWidthHalf).add(up),
 
 				// right
-				tangent.clone().multiplyScalar(1/3),
-				tangent.clone().multiplyScalar(1),
-				tangent.clone().multiplyScalar(1).add(up),
-				tangent.clone().multiplyScalar(1/3).add(up),
+				tangent.clone().multiplyScalar(doorWidthHalf),
+				tangent.clone().multiplyScalar(wallWidthHalf),
+				tangent.clone().multiplyScalar(wallWidthHalf).add(up),
+				tangent.clone().multiplyScalar(doorWidthHalf).add(up),
 
 				// top
-				tangent.clone().multiplyScalar(-1/3).add(upTwoThirds),
-				tangent.clone().multiplyScalar(1/3).add(upTwoThirds),
-				tangent.clone().multiplyScalar(1/3).add(up),
-				tangent.clone().multiplyScalar(-1/3).add(up),
-
+				tangent.clone().multiplyScalar(-doorWidthHalf).add(upTwoThirds),
+				tangent.clone().multiplyScalar(doorWidthHalf).add(upTwoThirds),
+				tangent.clone().multiplyScalar(doorWidthHalf).add(up),
+				tangent.clone().multiplyScalar(-doorWidthHalf).add(up),
 			],
 			// faceBuilders
 			[
@@ -339,54 +354,150 @@ function MeshBuilder()
 			]
 		);
 
-		returnMesh = new MeshTextured
+		var meshTexturedForWall = new MeshTextured
 		(
-			returnMesh,
+			meshGeometryForWall,
 			[ material ],
 			[
+				// left
 				new MeshTexturedFaceTexture
 				(
 					material.name,
 					[
 						new Coords(0, 0),
-						new Coords(1/3, 0),
-						new Coords(1/3, 1),
+						new Coords(wallMinusDoorWidthHalf, 0),
+						new Coords(wallMinusDoorWidthHalf, 1),
 						new Coords(0, 1),
 					]
 				),
+
+				// right
 				new MeshTexturedFaceTexture
 				(
 					material.name,
 					[
-						new Coords(2/3, 0),
+						new Coords(wallMinusDoorWidthHalfReversed, 0),
 						new Coords(1, 0),
 						new Coords(1, 1),
-						new Coords(2/3, 1),
+						new Coords(wallMinusDoorWidthHalfReversed, 1),
 					]
 				),
+
+				// top
 				new MeshTexturedFaceTexture
 				(
 					material.name,
 					[
-						new Coords(1/3, 0),
-						new Coords(2/3, 0),
-						new Coords(2/3, 1/3),
-						new Coords(1/3, 1/3),
+						new Coords(wallMinusDoorWidthHalf, 0),
+						new Coords(wallMinusDoorWidthHalfReversed, 0),
+						new Coords(wallMinusDoorWidthHalfReversed, 1/3),
+						new Coords(wallMinusDoorWidthHalf, 1/3),
 					]
 				),
 			]
 		);
 
-		returnMesh.transform
+		var roomSizeMinusWallThickness = roomSize.clone().subtract
+		(
+			doorSize.clone().clearZ()
+		);
+
+		meshTexturedForWall.transform
 		(
 			new Transform_Translate(normal.clone())
 		).transform
 		(
-			new Transform_Scale(roomSize)
+			new Transform_Scale(roomSizeMinusWallThickness)
 		).transformFaceTextures
 		(
 			new Transform_Scale(new Coords(1, 1, 1).multiplyScalar(2))
 		);
+
+		/*
+		var threshold = normal.clone().multiply(doorSize).divide(roomSize);
+
+		var meshGeometryForDoorframe = new Mesh
+		(
+			new Coords(0, 0, 0), // center
+			// vertices
+			[
+				// bottom
+				tangent.clone().multiplyScalar(-1/3),
+				tangent.clone().multiplyScalar(1/3),
+				tangent.clone().multiplyScalar(1/3).add(threshold),
+				tangent.clone().multiplyScalar(-1/3).add(threshold),
+
+				// left
+				tangent.clone().multiplyScalar(-1/3),
+				tangent.clone().multiplyScalar(-1/3).add(threshold),
+				tangent.clone().multiplyScalar(-1/3).add(threshold).add(upTwoThirds),
+				tangent.clone().multiplyScalar(-1/3).add(upTwoThirds),
+
+				// right
+				tangent.clone().multiplyScalar(1/3),
+				tangent.clone().multiplyScalar(1/3).add(threshold),
+				tangent.clone().multiplyScalar(1/3).add(threshold).add(upTwoThirds),
+				tangent.clone().multiplyScalar(1/3).add(upTwoThirds),
+			],
+			// faces
+			[
+				new Mesh_FaceBuilder([3, 2, 1, 0]), // bottom
+				new Mesh_FaceBuilder([7, 6, 5, 4]), // left
+				new Mesh_FaceBuilder([11, 10, 9, 8]), // right
+
+			]
+		);
+
+		var meshTexturedForDoorframe = new MeshTextured
+		(
+			meshGeometryForDoorframe,
+			[ material ],
+			[
+				// bottom
+				new MeshTexturedFaceTexture
+				(
+					material.name,
+					[
+						new Coords(0, 0),
+						new Coords(1, 0),
+						new Coords(1, 1),
+						new Coords(0, 1),
+					]
+				),
+
+				// left
+				new MeshTexturedFaceTexture
+				(
+					material.name,
+					[
+						new Coords(0, 0),
+						new Coords(1, 0),
+						new Coords(1, 1),
+						new Coords(0, 1),
+					]
+				),
+
+				// right
+				new MeshTexturedFaceTexture
+				(
+					material.name,
+					[
+						new Coords(0, 0),
+						new Coords(1, 0),
+						new Coords(1, 1),
+						new Coords(0, 1),
+					]
+				),
+			]
+		);
+
+		var returnMesh = this.mergeMeshes
+		(
+			[meshTexturedForWall, meshTexturedForDoorframe]
+		);
+		*/
+
+		returnMesh = meshTexturedForWall;
 
 		return returnMesh;
 	}
