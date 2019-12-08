@@ -28,7 +28,7 @@ function ActivityDefn(name, perform)
 			function perform(universe, world, zone, entity, activity)
 			{
 				var inputHelper = universe.inputHelper;
-				var inputsActive = inputHelper.inputsActive;
+				var inputsActive = inputHelper.inputsPressed; //Active;
 				var actionsFromActor = entity.actions;
 
 				var actions = world.actions;
@@ -37,7 +37,12 @@ function ActivityDefn(name, perform)
 				for (var i = 0; i < inputsActive.length; i++)
 				{
 					var inputActive = inputsActive[i];
-					var mapping = mappings[inputActive];
+if (inputActive.name.startsWith("Mouse"))
+{
+	continue;
+}
+
+					var mapping = mappings[inputActive.name];
 					if (mapping != null)
 					{
 						var actionName = mapping.actionName;

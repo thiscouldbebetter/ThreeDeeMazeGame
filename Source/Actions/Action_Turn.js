@@ -6,7 +6,7 @@ function Action_Turn(amountToTurnRightAndDown)
 
 	this.name = "Turn" + this.amountToTurnRightAndDown.toString();
 
-	this.orientationTemp = Orientation.Instances.ForwardXDownZ.clone();
+	this.orientationTemp = Orientation.Instances().ForwardXDownZ.clone();
 }
 
 {

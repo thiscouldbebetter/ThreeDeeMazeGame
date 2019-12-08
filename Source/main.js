@@ -20,11 +20,10 @@ function main()
 		// fonts
 		[
 			new Font("Font", "../Media/Font.ttf")
-		]
+		],
+		// textStrings
+		[]
 	);
-
-	new Color_Instances();
-
 
 	var display = new Display3D
 	(

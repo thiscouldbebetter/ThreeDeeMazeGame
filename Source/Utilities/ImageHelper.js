@@ -8,7 +8,7 @@ function ImageHelper()
 	{
 		return ImageHelper.buildImageFromStringsScaled
 		(
-			name, Coords.Instances.Ones, stringsForPixels
+			name, Coords.Instances().Ones, stringsForPixels
 		);
 	}
 
@@ -43,6 +43,8 @@ function ImageHelper()
 		var pixelPos = new Coords(0, 0);
 		var colorForPixel;
 
+		var colors = Color.Instances()._All;
+
 		for (var y = 0; y < sizeInPixels.y; y++)
 		{
 			var stringForPixelRow = stringsForPixels[y];
@@ -53,7 +55,7 @@ function ImageHelper()
 				var charForPixel = stringForPixelRow[x];
 				pixelPos.x = x * scaleFactor.x;
 
-				colorForPixel = Color.Instances._All[charForPixel];
+				colorForPixel = colors[charForPixel];
 
 				graphics.fillStyle = colorForPixel.systemColor();
 				graphics.fillRect
