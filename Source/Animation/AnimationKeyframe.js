@@ -3,7 +3,7 @@ function AnimationKeyframe(frameIndex, transforms)
 {
 	this.frameIndex = frameIndex;
 	this.transforms = transforms;
-	this.transforms.addLookups("propertyName");
+	this.transforms.addLookups( function(x) { return x.propertyName; } );
 }
 
 {

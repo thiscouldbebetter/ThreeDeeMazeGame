@@ -2,15 +2,15 @@
 function World(name, actions, inputToActionMappings, materials, entityDefns, sizeInPixels, zones, entityForPlayer)
 {
 	this.name = name;
-	this.actions = actions.addLookups("name");
-	this.inputToActionMappings = inputToActionMappings.addLookups("inputName");
+	this.actions = actions.addLookupsByName();
+	this.inputToActionMappings = inputToActionMappings.addLookups( function(x) { return x.inputName; } );
 	this.materials = materials;
 	this.entityDefns = entityDefns;
 	this.sizeInPixels = sizeInPixels;
 	this.zones = zones;
 	this.entityForPlayer = entityForPlayer;
 
-	this.zones.addLookups("name");
+	this.zones.addLookupsByName();
 
 	this.timerTicksSoFar = 0;
 }
@@ -187,7 +187,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 					]
 				)
 			),
-		].addLookups("name");
+		].addLookupsByName();
 
 		var materials = [];
 
@@ -204,7 +204,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			materials.push(materialForTexture);
 		}
 
-		materials.addLookups("name");
+		materials.addLookupsByName();
 
 		var meshBuilder = new MeshBuilder();
 
@@ -265,7 +265,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 					moverHeight
 				).faceTexturesBuild()
 			),
-		].addLookups("name");
+		].addLookupsByName();
 
 		var cellPosOfStart = new Coords().randomize().multiply
 		(
@@ -500,7 +500,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 						new Constraint_Pose(skeleton, skeletonCloned),
 					]);
 
-					entity.constraints.addLookups("name");
+					entity.constraints.addLookupsByName();
 				}
 			}
 		}
@@ -555,7 +555,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		[
 			new Constraint_Follow(this.entityForPlayer, focalLength / followDivisor),
 			new Constraint_OrientToward(this.entityForPlayer),
-		].addLookups("name");
+		].addLookupsByName();
 
 		zoneStart.entities.push(cameraEntity);
 
