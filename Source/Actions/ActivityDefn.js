@@ -32,15 +32,11 @@ function ActivityDefn(name, perform)
 				var actionsFromActor = entity.actions;
 
 				var actions = world.actions;
-				var mappings = world.inputToActionMappings;
+				var mappings = world.actionToInputsMappings;
 
 				for (var i = 0; i < inputsActive.length; i++)
 				{
 					var inputActive = inputsActive[i];
-if (inputActive.name.startsWith("Mouse"))
-{
-	continue;
-}
 
 					var mapping = mappings[inputActive.name];
 					if (mapping != null)

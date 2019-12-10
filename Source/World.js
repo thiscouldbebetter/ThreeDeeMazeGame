@@ -1,9 +1,9 @@
 
-function World(name, actions, inputToActionMappings, materials, entityDefns, sizeInPixels, zones, entityForPlayer)
+function World(name, actions, actionToInputsMappings, materials, entityDefns, sizeInPixels, zones, entityForPlayer)
 {
 	this.name = name;
 	this.actions = actions.addLookupsByName();
-	this.inputToActionMappings = inputToActionMappings.addLookups( function(x) { return x.inputName; } );
+	this.actionToInputsMappings = actionToInputsMappings.addLookups( function(x) { return x.inputNames[0]; } );
 	this.materials = materials;
 	this.entityDefns = entityDefns;
 	this.sizeInPixels = sizeInPixels;
@@ -46,17 +46,17 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 			new Action_Jump(.6),
 		];
 
-		var inputToActionMappings =
+		var actionToInputsMappings =
 		[
-			new InputToActionMapping( "a", actions[0].name ),
-			new InputToActionMapping( "e", actions[1].name ),
-			new InputToActionMapping( "c", actions[2].name ),
-			new InputToActionMapping( "d", actions[3].name ),
-			new InputToActionMapping( "s", actions[4].name ),
-			new InputToActionMapping( "w", actions[5].name ),
-			new InputToActionMapping( "x", actions[6].name ),
-			new InputToActionMapping( "z", actions[7].name ),
-			new InputToActionMapping( "_", actions[8].name ),
+			new ActionToInputsMapping( actions[0].name, [ "a" ] ),
+			new ActionToInputsMapping( actions[1].name, [ "e" ] ),
+			new ActionToInputsMapping( actions[2].name, [ "c" ] ),
+			new ActionToInputsMapping( actions[3].name, [ "d" ] ),
+			new ActionToInputsMapping( actions[4].name, [ "s" ] ),
+			new ActionToInputsMapping( actions[5].name, [ "w" ] ),
+			new ActionToInputsMapping( actions[6].name, [ "x" ] ),
+			new ActionToInputsMapping( actions[7].name, [ "z" ] ),
+			new ActionToInputsMapping( actions[8].name, [ "_" ] ),
 		];
 
 		var pixelsGrayWithDarkBorder =
@@ -408,7 +408,7 @@ function World(name, actions, inputToActionMappings, materials, entityDefns, siz
 		(
 			"Maze-" + maze.sizeInCells.x + "x" + maze.sizeInCells.y,
 			actions,
-			inputToActionMappings,
+			actionToInputsMappings,
 			materials,
 			entityDefns,
 			maze.sizeInPixels,

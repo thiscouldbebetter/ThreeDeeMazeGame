@@ -37,6 +37,7 @@ function main()
 	var universe = new Universe
 	(
 		"ThreeDeeMaze",
+		"0.0.0",
 		new TimerHelper(20),
 		display,
 		mediaLibrary,

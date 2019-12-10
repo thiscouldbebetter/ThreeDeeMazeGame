@@ -2,9 +2,9 @@
 
 function Collision(pos, distanceToCollision, colliders)
 {
-	this.pos = pos;
+	this.pos = pos || new Coords();
 	this.distanceToCollision = distanceToCollision;
-	this.colliders = colliders;
+	this.colliders = colliders || [];
 }
 
 {
