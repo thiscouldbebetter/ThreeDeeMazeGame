@@ -7,9 +7,9 @@ function Constraint_Friction(speedMax, frictionPerTick, epsilon)
 }
 
 {
-	Constraint_Friction.prototype.constrainEntity = function(world, zone, entityToConstrain)
+	Constraint_Friction.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
-		var vel = entityToConstrain.loc.vel;
+		var vel = entityToConstrain.Locatable.loc.vel;
 		var velZ = vel.z;
 		var speed = vel.magnitude();
 		if (speed > this.speedMax)

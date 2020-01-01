@@ -7,12 +7,12 @@ function Constraint_Solid()
 }
 
 {
-	Constraint_Solid.prototype.constrainEntity = function
+	Constraint_Solid.prototype.constrain = function
 	(
-		world, zone, entityToConstrain
+		universe, world, zone, entityToConstrain
 	)
 	{
-		var entityLoc = entityToConstrain.loc;
+		var entityLoc = entityToConstrain.Locatable.loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;
@@ -54,7 +54,8 @@ function Constraint_Solid()
 				}
 				else
 				{
-					var collisionClosest = Collision.findClosest(collisions);
+					var collisionClosest =
+						Collision.collisionHelper.collisionClosest(collisions);
 					var faceCollidedWith = collisionClosest.colliders["Face"];
 
 					var planeCollidedWith = faceCollidedWith.plane();

@@ -1,11 +1,10 @@
 
-function World(name, actions, actionToInputsMappings, materials, entityDefns, sizeInPixels, zones, entityForPlayer)
+function World(name, actions, actionToInputsMappings, materials, sizeInPixels, zones, entityForPlayer)
 {
 	this.name = name;
 	this.actions = actions.addLookupsByName();
 	this.actionToInputsMappings = actionToInputsMappings.addLookups( function(x) { return x.inputNames[0]; } );
 	this.materials = materials;
-	this.entityDefns = entityDefns;
 	this.sizeInPixels = sizeInPixels;
 	this.zones = zones;
 	this.entityForPlayer = entityForPlayer;
@@ -18,15 +17,16 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 {
 	// static methods
 
-	World.new = function()
+	World.new = function(universe)
 	{
 		var mazeSizeInCells = new Coords(4, 4, 1);
 		var mazeCellSizeInPixels = new Coords(80, 80, 40);
-		var returnValue = World.random(mazeSizeInCells, mazeCellSizeInPixels);
+		var randomizer = universe.randomizer;
+		var returnValue = World.random(mazeSizeInCells, mazeCellSizeInPixels, randomizer);
 		return returnValue;
 	}
 
-	World.random = function(mazeSizeInCells, mazeCellSizeInPixels)
+	World.random = function(mazeSizeInCells, mazeCellSizeInPixels, randomizer)
 	{
 		var amountToMoveForward = .4;
 		var amountToMoveBackward = amountToMoveForward / 2;
@@ -89,12 +89,15 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			pixelsGrayWithColoredBorders[colorCodeForBorder] = pixelsGrayWithColoredBorder;
 		}
 
+		var colors = Color.Instances()._All;
+		var imageBuilder = new ImageBuilder(colors);
+
 		var textures =
 		[
 			new Texture
 			(
 				"Chest",
-				ImageHelper.buildImageFromStrings
+				imageBuilder.buildImageFromStrings
 				(
 					"Chest",
 					pixelsGrayWithColoredBorders["R"]
@@ -104,7 +107,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			new Texture
 			(
 				"Door",
-				ImageHelper.buildImageFromStrings
+				imageBuilder.buildImageFromStrings
 				(
 					"Door",
 					pixelsGrayWithColoredBorders["B"]
@@ -114,7 +117,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			new Texture
 			(
 				"Floor",
-				ImageHelper.buildImageFromStrings
+				imageBuilder.buildImageFromStrings
 				(
 					"Floor",
 					pixelsGrayWithDarkBorder
@@ -124,7 +127,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			new Texture
 			(
 				"Goal",
-				ImageHelper.buildImageFromStrings
+				imageBuilder.buildImageFromStrings
 				(
 					"Goal",
 					pixelsGrayWithColoredBorders["G"]
@@ -134,7 +137,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			new Texture
 			(
 				"Mover",
-				ImageHelper.buildImageFromStrings
+				imageBuilder.buildImageFromStrings
 				(
 					"Mover",
 					[
@@ -146,7 +149,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			new Texture
 			(
 				"Start",
-				ImageHelper.buildImageFromStrings
+				imageBuilder.buildImageFromStrings
 				(
 					"Start",
 					pixelsGrayWithColoredBorders["R"]
@@ -156,7 +159,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			new Texture
 			(
 				"Wall",
-				ImageHelper.buildImageFromStrings
+				imageBuilder.buildImageFromStrings
 				(
 					"Wall",
 					[
@@ -219,53 +222,33 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 				new Coords(0, -1, 0), // north
 				new Coords(0, 1, 0), // south
 			]
-		).generateRandom();
+		).generateRandom(randomizer);
 
 		var ceilingHeight = maze.cellSizeInPixels.z;
 		var moverHeight = ceilingHeight / 7;
 		var chestHeight = moverHeight / 4;
 		var doorHeight = moverHeight / 2 * 1.33; // ?
 
-		var entityDefns =
-		[
-			new EntityDefn
-			(
-				"Chest",
-				true, // isDrawable
-				true, // isMovable
-				meshBuilder.box
-				(
-					materials["Chest"],
-					new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
-					new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
-				).faceTexturesBuild()
-			),
+		var meshDefns = {};
+		meshDefns["Chest"] = meshBuilder.box
+		(
+			materials["Chest"],
+			new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
+			new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
+		).faceTexturesBuild();
 
-			new EntityDefn
-			(
-				"Door",
-				true, // isDrawable
-				true, // isMovable
-				meshBuilder.box
-				(
-					materials["Door"],
-					new Coords(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
-					new Coords(0, 0, -1).multiplyScalar(doorHeight) // pos
-				).faceTexturesBuild()
-			),
+		meshDefns["Door"] = meshBuilder.box
+		(
+			materials["Door"],
+			new Coords(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
+			new Coords(0, 0, -1).multiplyScalar(doorHeight) // pos
+		).faceTexturesBuild();
 
-			new EntityDefn
-			(
-				"Mover",
-				true, // isDrawable
-				true, // isMovable
-				meshBuilder.biped
-				(
-					materials["Mover"],
-					moverHeight
-				).faceTexturesBuild()
-			),
-		].addLookupsByName();
+		meshDefns["Mover"] = meshBuilder.biped
+		(
+			materials["Mover"],
+			moverHeight
+		).faceTexturesBuild();
 
 		var cellPosOfStart = new Coords().randomize().multiply
 		(
@@ -306,103 +289,123 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 		var nameOfZoneStart = cellPosOfStart.toString();
 		var zoneStart = zones[nameOfZoneStart];
 
+		var loc = new Location
+		(
+			cellPosOfStart.clone().multiply
+			(
+				maze.cellSizeInPixels
+			).add
+			(
+				new Coords(0, 0, -10)
+			),
+			new Orientation
+			(
+				new Coords(0, 1, 0),
+				new Coords(0, 0, 1)
+			),
+			nameOfZoneStart // venue
+		);
+		var locatable = new Locatable(loc);
 		var entityForPlayer = new Entity
 		(
 			"Player",
-			entityDefns["Mover"],
-			new Location
-			(
-				cellPosOfStart.clone().multiply
-				(
-					maze.cellSizeInPixels
-				).add
-				(
-					new Coords(0, 0, -10)
-				),
-				new Orientation
-				(
-					new Coords(0, 1, 0),
-					new Coords(0, 0, 1)
-				),
-				nameOfZoneStart // venue
-			)
+			[
+				new Collidable(meshDefns["Mover"]),
+				new Drawable(new VisualMesh()),
+				locatable,
+				new Movable()
+			]
 		);
 
+		loc = new Location
+		(
+			cellPosOfStart.clone().add
+			(
+				new Coords(1, 1, 0).multiplyScalar(.1)
+			).multiply
+			(
+				maze.cellSizeInPixels
+			),
+			new Orientation
+			(
+				new Coords(0, 1, 0),
+				new Coords(0, 0, 1)
+			),
+			nameOfZoneStart // venue
+		);
+		locatable = new Locatable(loc);
 		var entityForMoverOther = new Entity
 		(
 			"MoverOther",
-			entityDefns["Mover"],
-			new Location
-			(
-				cellPosOfStart.clone().add
-				(
-					new Coords(1, 1, 0).multiplyScalar(.1)
-				).multiply
-				(
-					maze.cellSizeInPixels
-				),
-				new Orientation
-				(
-					new Coords(0, 1, 0),
-					new Coords(0, 0, 1)
-				),
-				nameOfZoneStart // venue
-			)
+			[
+				new Collidable(meshDefns["Mover"]),
+				new Drawable(new VisualMesh()),
+				locatable,
+				new Movable()
+			]
 		);
 
+		loc = new Location
+		(
+			cellPosOfStart.clone().add
+			(
+				new Coords(1, -1, 0).multiplyScalar(.05)
+			).multiply
+			(
+				maze.cellSizeInPixels
+			),
+			new Orientation
+			(
+				new Coords(1, -1, 0),
+				new Coords(0, 0, 1)
+			),
+			nameOfZoneStart // venue
+		);
+		locatable = new Locatable(loc);
 		var entityForChest = new Entity
 		(
 			"Chest",
-			entityDefns["Chest"],
-			new Location
-			(
-				cellPosOfStart.clone().add
-				(
-					new Coords(1, -1, 0).multiplyScalar(.05)
-				).multiply
-				(
-					maze.cellSizeInPixels
-				),
-				new Orientation
-				(
-					new Coords(1, -1, 0),
-					new Coords(0, 0, 1)
-				),
-				nameOfZoneStart // venue
-			)
+			[
+				new Collidable(meshDefns["Chest"]),
+				new Drawable(new VisualMesh()),
+				locatable
+			]
 		);
 
+		loc = new Location
+		(
+			cellPosOfStart.clone().add
+			(
+				new Coords(0, -1, 0).multiplyScalar(.125)
+			).multiply
+			(
+				maze.cellSizeInPixels
+			),
+			new Orientation
+			(
+				new Coords(1, 0, 0),
+				new Coords(0, 0, 1)
+			),
+			nameOfZoneStart // venue
+		);
+		locatable = new Locatable(loc);
 		var entityForDoor = new Entity
 		(
 			"Door",
-			entityDefns["Door"],
-			new Location
-			(
-				cellPosOfStart.clone().add
-				(
-					new Coords(0, -1, 0).multiplyScalar(.125)
-				).multiply
-				(
-					maze.cellSizeInPixels
-				),
-				new Orientation
-				(
-					new Coords(1, 0, 0),
-					new Coords(0, 0, 1)
-				),
-				nameOfZoneStart // venue
-			)
+			[
+				new Collidable(meshDefns["Door"]),
+				new Drawable(new VisualMesh()),
+				locatable
+			]
 		);
 
 		zoneStart.entities.addMany
-		(
-			[
-				entityForPlayer,
-				entityForMoverOther,
-				entityForChest,
-				entityForDoor,
-			]
-		);
+		([
+			entityForPlayer,
+			entityForMoverOther,
+			entityForChest,
+			entityForDoor,
+		]);
 
 		var returnValue = new World
 		(
@@ -410,7 +413,6 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			actions,
 			actionToInputsMappings,
 			materials,
-			entityDefns,
 			maze.sizeInPixels,
 			zones,
 			entityForPlayer
@@ -449,7 +451,8 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 		for (var i = 0; i < this.zones.length; i++)
 		{
 			var zone = this.zones[i];
-			if (zone.entities[0].meshTransformed.materials[1].name == "Start")
+			var zoneEntity = zone.entities[0];
+			if (zoneEntity.Collidable.collider.materials[1].name == "Start")
 			{
 				zoneStart = zone;
 				break;
@@ -469,7 +472,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 
 		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
 
-		var constraintsCommon =
+		var constraintsCommon = 
 		[
 			new Constraint_Gravity(.1),
 			new Constraint_Solid(),
@@ -488,8 +491,7 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 
 				entity.constraints = constraintsCommon.slice();
 
-				var entityDefnName = entity.defn.name;
-				if (entityDefnName == "Mover") // hack
+				if (entity.Movable != null) // hack
 				{
 					entity.actions = [];
 
@@ -515,40 +517,36 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			0 - focalLength
 		).divideScalar(followDivisor);
 
+		var loc = new Location
+		(
+			this.zoneNext.entities[0].Locatable.loc.pos.clone().add
+			(
+				offsetOfCameraFromPlayer
+			),
+
+			new Orientation
+			(
+				new Coords(1, 0, 1), // forward
+				new Coords(0, 0, 1) // down
+			),
+
+			this.zoneNext.name
+		);
+
+		var locatable = new Locatable(loc);
 		var cameraEntity = new Entity
 		(
 			"EntityCamera",
-
-			new EntityDefn
-			(
-				"Camera",
-				false, // isDrawable
-				true, // isMovable
-				null // mesh
-			),
-
-			new Location
-			(
-				this.zoneNext.entities[0].loc.pos.clone().add
-				(
-					offsetOfCameraFromPlayer
-				),
-
-				new Orientation
-				(
-					new Coords(1, 0, 1), // forward
-					new Coords(0, 0, 1) // down
-				),
-
-				this.zoneNext.name
-			)
+			[
+				locatable
+			]
 		);
 
 		this.camera = new Camera
 		(
 			viewSizeInPixels,
 			focalLength,
-			cameraEntity.loc
+			cameraEntity.Locatable.loc
 		);
 
 		cameraEntity.constraints =
@@ -568,7 +566,8 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 	{
 		if (this.zoneNext != null)
 		{
-			if (this.zoneNext.entities[0].meshTransformed.materials[0].name == "Goal")
+			var zoneNextEntity = this.zoneNext.entities[0];
+			if (zoneNextEntity.Collidable.collider.materials[0].name == "Goal")
 			{
 				var messageWin =
 					"You reached the goal in "
@@ -603,7 +602,8 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			{
 				var zoneActive = this.zonesActive[i];
 				zoneActive.initialize();
-				var facesForZone = zoneActive.entities[0].meshTransformed.faces();
+				var zoneActiveEntity = zoneActive.entities[0];
+				var facesForZone = zoneActiveEntity.Collidable.collider.faces();
 				facesForZonesActive.append(facesForZone);
 			}
 
@@ -621,20 +621,22 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			zoneActive.updateForTimerTick(universe, this);
 		}
 
-		this.draw(universe.display);
+		this.draw(universe);
 
-		var zoneCurrentBounds = this.zoneCurrent.entities[0].meshTransformed.geometry.bounds();
+		var zoneCurrentEntity = this.zoneCurrent.entities[0];
+		var zoneCurrentBounds = zoneCurrentEntity.Collidable.collider.geometry.box();
 
-		if (zoneCurrentBounds.containsPoint(this.entityForPlayer.loc.pos) == false)
+		if (zoneCurrentBounds.containsPoint(this.entityForPlayer.Locatable.loc.pos) == false)
 		{
 			for (var z = 0; z < this.zonesActive.length; z++)
 			{
 				var zoneActive = this.zonesActive[z];
-				var zoneActiveMesh = zoneActive.entities[0].meshTransformed;
-				var zoneActiveBounds = zoneActiveMesh.geometry.bounds();
+				var zoneActiveEntity = zoneActive.entities[0];
+				var zoneActiveMesh = zoneActiveEntity.Collidable.collider;
+				var zoneActiveBounds = zoneActiveMesh.geometry.box();
 				var isPlayerInZoneActive = zoneActiveBounds.containsPoint
 				(
-					this.entityForPlayer.loc.pos
+					this.entityForPlayer.Locatable.loc.pos
 				);
 				if (isPlayerInZoneActive == true)
 				{
@@ -653,25 +655,27 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 
 	// drawable
 
-	World.prototype.draw = function(display)
+	World.prototype.draw = function(universe)
 	{
+		var display = universe.display;
 		var displayTypeName = display.constructor.name;
-		if (displayTypeName == "Display")
+		if (displayTypeName == Display.name)
 		{
-			this.draw2D(display);
+			this.draw2D(universe);
 		}
-		else if (displayTypeName == "Display3D")
+		else if (displayTypeName == Display3D.name)
 		{
-			this.draw3D(display);
+			this.draw3D(universe);
 		}
 	}
 
-	World.prototype.draw2D = function(display)
+	World.prototype.draw2D = function(universe)
 	{
+		var display = universe.display;
 		var world  = this;
 		var facesToDraw = [];
 
-		var cameraPos = world.camera.loc.pos;
+		var cameraPos = world.camera.Locatable.loc.pos;
 
 		var spacePartitioningTreeRoot =
 			world.spacePartitioningTreeForZonesActive.nodeRoot;
@@ -686,50 +690,42 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 		for (var b = 0; b < entities.length; b++)
 		{
 			var entity = entities[b];
-			var entityDefn = entity.defn;
 
-			if (entityDefn.isDrawable == true)
+			if (entity.Drawable != null && entity.Movable != null)
 			{
-				if (entityDefn.isMovable == true)
+				// hack
+				// Find the floor the mover is standing on,
+				// and draw the mover immediately after that floor.
+
+				var entityPos = entity.Locatable.loc.pos;
+				var edgeForFootprint = new Edge
+				([
+					entityPos,
+					entityPos.clone().add(new Coords(0, 0, 100))
+				]);
+
+				for (var g = facesToDraw.length - 1; g >= 0; g--)
 				{
-					// hack
-					// Find the floor the mover is standing on,
-					// and draw the mover immediately after that floor.
+					var face = facesToDraw[g];
+					var collisionForFootprint =
+						Collision.collisionHelper.collisionOfEdgeAndFace(edgeForFootprint, face);
 
-					var edgeForFootprint = new Edge
-					(
-						[
-							entity.loc.pos,
-							entity.loc.pos.clone().add(new Coords(0, 0, 100))
-						]
-					);
+					var isEntityStandingOnFace = (collisionForFootprint != null && collisionForFootprint.isActive);
 
-					for (var g = facesToDraw.length - 1; g >= 0; g--)
+					if (isEntityStandingOnFace)
 					{
-						var face = facesToDraw[g];
-						var collisionForFootprint = Collision.findCollisionOfEdgeAndFace
-						(
-							edgeForFootprint,
-							face
-						);
-
-						var isEntityStandingOnFace = (collisionForFootprint != null);
-
-						if (isEntityStandingOnFace == true)
+						var moverFaces = entity.Collidable.collider.faces();
+						for (var f = 0; f < moverFaces.length; f++)
 						{
-							var moverFaces = entity.meshTransformed.faces();
-							for (var f = 0; f < moverFaces.length; f++)
-							{
-								var moverFace = moverFaces[f];
-								facesToDraw.splice
-								(
-									g + 1, 0, moverFace
-								)
-							}
-							break;
+							var moverFace = moverFaces[f];
+							facesToDraw.splice
+							(
+								g + 1, 0, moverFace
+							)
 						}
-
+						break;
 					}
+
 				}
 			}
 		}
@@ -740,8 +736,9 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 		display.drawText(world.secondsElapsed(), 10, new Coords(0, 20));
 	}
 
-	World.prototype.draw3D = function(display)
+	World.prototype.draw3D = function(universe)
 	{
+		var display = universe.display;
 		display.drawBackground();
 
 		display.cameraSet(this.camera);
@@ -756,10 +753,11 @@ function World(name, actions, actionToInputsMappings, materials, entityDefns, si
 			for (var b = 0; b < entities.length; b++)
 			{
 				var entity = entities[b];
-				var entityMesh = entity.meshTransformed;
-				if (entityMesh != null)
+				var drawable = entity.Drawable;
+				if (drawable != null)
 				{
-					display.drawMeshWithOrientation(entityMesh, entity.loc.orientation);
+					var entityVisual = drawable.visual;
+					entityVisual.draw(universe, this, display, drawable, entity);
 				}
 			}
 		}

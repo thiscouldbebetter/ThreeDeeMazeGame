@@ -7,7 +7,7 @@ function Action_Stop()
 {
 	Action_Stop.prototype.perform = function(universe, world, zone, entity)
 	{
-		var entityLoc = entity.loc;
+		var entityLoc = entity.Locatable.loc;
 		entityLoc.vel.clear();
 		entityLoc.accel.clear();
 	}

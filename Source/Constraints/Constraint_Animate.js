@@ -15,7 +15,7 @@ function Constraint_Animate(transformableAtRest, transformableTransformed, anima
 }
 
 {
-	Constraint_Animate.prototype.constrainEntity = function(world, zone, entityToConstrain)
+	Constraint_Animate.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
 		this.animationRun.updateForTimerTick(world);
 	}

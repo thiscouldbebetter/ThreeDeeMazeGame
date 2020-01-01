@@ -10,19 +10,21 @@ function Constraint_OrientToward(targetEntity)
 }
 
 {
-	Constraint_OrientToward.prototype.constrainEntity = function(world, zone, entityToConstrain)
+	Constraint_OrientToward.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
-		var entityOrientationForward = this.targetEntity.loc.pos.clone().subtract
+		var entityToConstrainLoc = entityToConstrain.Locatable.loc;
+		var targetLoc = this.targetEntity.Locatable.loc;
+		var entityOrientationForward = targetLoc.pos.clone().subtract
 		(
-			entityToConstrain.loc.pos
+			entityToConstrainLoc.pos
 		).normalize();
 
-		entityToConstrain.loc.orientation.overwriteWith
+		entityToConstrainLoc.orientation.overwriteWith
 		(
 			new Orientation
 			(
 				entityOrientationForward,
-				this.targetEntity.loc.orientation.down
+				targetLoc.orientation.down
 			)
 		);
 	}

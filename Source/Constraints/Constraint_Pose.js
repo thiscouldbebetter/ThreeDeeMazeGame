@@ -6,10 +6,11 @@ function Constraint_Pose(skeletonAtRest, skeletonPosed)
 }
 
 {
-	Constraint_Pose.prototype.constrainEntity = function(world, zone, entityToConstrain)
+	Constraint_Pose.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
-		var meshAtRest = entityToConstrain.defn.mesh;
-		var meshPosed = entityToConstrain.meshTransformed;
+		var collidable = entityToConstrain.Collidable;
+		var meshAtRest = collidable.colliderAtRest;
+		var meshPosed = collidable.collider;
 
 		var transformPose = new Transform_MeshPoseWithSkeleton
 		(

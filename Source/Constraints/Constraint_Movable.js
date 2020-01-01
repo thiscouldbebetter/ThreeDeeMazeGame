@@ -5,9 +5,9 @@ function Constraint_Movable()
 }
 
 {
-	Constraint_Movable.prototype.constrainEntity = function(world, zone, entityToConstrain)
+	Constraint_Movable.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
-		var entityLoc = entityToConstrain.loc;
+		var entityLoc = entityToConstrain.Locatable.loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;
@@ -16,11 +16,13 @@ function Constraint_Movable()
 		entityAccel.clear();
 		entityPos.add(entityVel);
 
-		if (entityToConstrain.meshTransformed != null)
+		var collidable = entityToConstrain.Collidable;
+		if (collidable != null)
 		{
-			var mesh = entityToConstrain.meshTransformed.geometry;
+			var meshTransformed = collidable.collider;
+			var mesh = meshTransformed.geometry;
 			this.transformLocate.loc = entityLoc;
 			mesh.transform(this.transformLocate);
 		}
-	}
+	};
 }

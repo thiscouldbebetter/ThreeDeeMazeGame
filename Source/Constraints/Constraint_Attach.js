@@ -7,22 +7,22 @@ function Constraint_Attach(entityAttachedTo, offsetForwardRightDown)
 
 	this.transformOrient = new Transform_Orient
 	(
-		this.entityAttachedTo.loc.orientation
+		this.entityAttachedTo.Locatable.loc.orientation
 	);
 }
 
 {
-	Constraint_Attach.prototype.constrainEntity = function(world, zone, entityToConstrain)
+	Constraint_Attach.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
 		this.transformOrient.transformCoords
 		(
-			entityToConstrain.loc.pos.overwriteWith
+			entityToConstrain.Locatable.loc.pos.overwriteWith
 			(
 				this.offsetForwardRightDown
 			)
 		).add
 		(
-			this.entityAttachedTo.loc.pos
+			this.entityAttachedTo.Locatable.loc.pos
 		);
 	}
 }

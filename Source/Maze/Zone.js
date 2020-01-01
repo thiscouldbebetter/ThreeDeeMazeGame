@@ -105,12 +105,22 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 			materialRoomFloor
 		);
 
+		var zoneEntity = new Entity
+		(
+			this.name,
+			[
+				new Collidable(mesh),
+				new Drawable(new VisualMesh()),
+				new Locatable(new Location(cellPosInPixels.clone()))
+			]
+		);
+
 		var zoneForNode = new Zone
 		(
 			zoneForNodeName,
 			cellPosInPixels.clone(), //pos,
 			zonesAdjacentNames,
-			[ Entity.fromMesh(this.name, cellPosInPixels.clone(), mesh) ]
+			[ zoneEntity ]
 		);
 
 		returnValues.push(zoneForNode);
@@ -226,6 +236,16 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 						materialWall, materialFloor
 					);
 
+					var zoneEntity = new Entity
+					(
+						this.name,
+						[
+							new Collidable(mesh),
+							new Drawable(new VisualMesh()),
+							new Locatable(new Location(connectorPosInPixels.clone()))
+						]
+					);
+
 					var zoneForConnector = new Zone
 					(
 						zoneForConnectorName,
@@ -235,7 +255,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 							zoneForNodeName,
 							zoneNeighborName,
 						],
-						[ Entity.fromMesh(this.name, connectorPosInPixels.clone(), mesh) ]
+						[ zoneEntity ]
 					);
 
 					zonesForConnectorsToNeighbors.push(zoneForConnector);
@@ -257,10 +277,10 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		var entity = this.entities[0];
 		entity.resetMeshTransformed();
 
-		var meshTransformed = entity.meshTransformed;
+		var meshTransformed = entity.Collidable.collider;
 		meshTransformed.transform
 		(
-			new Transform_Locate(entity.loc)
+			new Transform_Locate(entity.Locatable.loc)
 		);
 	}
 
@@ -294,7 +314,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 				for (var c = 0; c < entityConstraints.length; c++)
 				{
 					var constraint = entityConstraints[c];
-					constraint.constrainEntity(world, this, entity);
+					constraint.constrain(universe, world, this, entity);
 				}
 			}
 		}
@@ -325,7 +345,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 			collisions = [];
 		}
 
-		var zoneMesh = this.entities[0].meshTransformed.geometry;
+		var zoneMesh = this.entities[0].Collidable.collider.geometry;
 
 		Collision.addCollisionsOfEdgeAndMeshToList
 		(

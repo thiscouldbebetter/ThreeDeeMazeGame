@@ -13,7 +13,7 @@ function Action_Move(amountToMoveForwardRightDown)
 {
 	Action_Move.prototype.perform = function(universe, world, zone, entity)
 	{
-		var entityLoc = entity.loc;
+		var entityLoc = entity.Locatable.loc;
 		var isEntityOnGround = entity.isGrounded(world);
 		if (isEntityOnGround == true)
 		{

@@ -1,56 +1,15 @@
-
-function Entity(name, defn, loc)
+function EntityExtensions()
 {
-	this.name = name;
-	this.defn = defn;
-	this.loc = loc;
-
-	if (this.defn.mesh != null)
-	{
-		this.meshTransformed = this.defn.mesh.clone();
-		this.collidableData = new CollidableData();
-	}
+	// Extension class.
 }
-
 {
-	// static methods
-
-	Entity.fromMesh = function(name, pos, mesh)
-	{
-		var returnValue = new Entity
-		(
-			name,
-			new EntityDefn
-			(
-				name,
-				true, // isDrawable
-				false, // isMovable
-				mesh
-			),
-			new Location
-			(
-				pos,
-				new Orientation
-				(
-					new Coords(1, 0, 0),
-					new Coords(0, 0, 1)
-				),
-				name // venue
-			)
-		);
-
-		return returnValue;
-	}
-
-	// instance methods
-
 	Entity.prototype.ground = function(world)
 	{
 		// hack
 
 		var meshBeingStoodOn = null;
 
-		var pos = this.loc.pos;
+		var pos = this.Locatable.loc.pos;
 		var edgeLength = 100;
 		var gravityDirection = new Coords(0, 0, edgeLength);
 		var edgeForFootprint = new Edge
@@ -64,7 +23,8 @@ function Entity(name, defn, loc)
 		for (var i = 0; i < zonesToCheck.length; i++)
 		{
 			var zone = zonesToCheck[i];
-			var zoneMesh = zone.entities[0].meshTransformed.geometry;
+			var zoneEntity = zone.entities[0];
+			var zoneMesh = zoneEntity.Collidable.collider.geometry;
 			var collisions =
 				//new CollisionHelper().collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh);
 				Collision.addCollisionsOfEdgeAndMeshToList(edgeForFootprint, zoneMesh, []);
@@ -83,22 +43,23 @@ function Entity(name, defn, loc)
 		}
 
 		return meshBeingStoodOn;
-	}
+	};
 
 	Entity.prototype.isGrounded = function(world)
 	{
 		return (this.ground(world) != null);
-	}
-
+	};
 
 	Entity.prototype.resetMeshTransformed = function()
 	{
-		if (this.meshTransformed != null)
+		var collidable = this.Collidable;
+		if (collidable != null)
 		{
-			this.meshTransformed.overwriteWith
+			var meshTransformed = collidable.collider;
+			meshTransformed.overwriteWith
 			(
-				this.defn.mesh
+				collidable.colliderAtRest
 			);
 		}
-	}
+	};
 }

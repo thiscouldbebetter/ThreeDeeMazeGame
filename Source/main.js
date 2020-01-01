@@ -37,12 +37,17 @@ function main()
 	var universe = new Universe
 	(
 		"ThreeDeeMaze",
-		"0.0.0",
+		"0.0.0", // version
 		new TimerHelper(20),
 		display,
 		mediaLibrary,
-		null, //world
+		null //world
 	);
 
-	universe.initialize();
+	Collision.collisionHelper = universe.collisionHelper;
+
+	universe.initialize
+	(
+		function() { universe.start(); }
+	);
 }
