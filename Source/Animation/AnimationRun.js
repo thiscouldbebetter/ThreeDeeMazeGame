@@ -1,34 +1,32 @@
 
-function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
+function Transform_Animate(animationDefnGroup)
 {
 	this.animationDefnGroup = animationDefnGroup;
-	this.animationDefnNameCurrent = null;
-	this.transformableAtRest = transformableAtRest;
-	this.transformable = transformable;
+	this.animatable = new Animatable(); // hack
 }
 
 {
-	AnimationRun.prototype.animationDefnCurrent = function()
+	Transform_Animate.prototype.animationDefnCurrent = function()
 	{
 		var returnValue = null;
 
-		if (this.animationDefnNameCurrent != null)
+		if (this.animatable.animationDefnNameCurrent != null)
 		{
 			var animationDefns = this.animationDefnGroup.animationDefns;
-			returnValue = animationDefns[this.animationDefnNameCurrent];
+			returnValue = animationDefns[this.animatable.animationDefnNameCurrent];
 		}
 
 		return returnValue;
-	}
+	};
 
-	AnimationRun.prototype.frameCurrent = function(world)
+	Transform_Animate.prototype.frameCurrent = function(animatable)//world)
 	{
 		var returnValue = null;
 
 		var animationDefn = this.animationDefnCurrent();
 
 		var framesSinceBeginningOfCycle =
-			world.timerTicksSoFar
+			this.animatable.timerTicksSoFar // world.timerTicksSoFar
 			% animationDefn.numberOfFramesTotal;
 
 		var i;
@@ -58,23 +56,21 @@ function AnimationRun(animationDefnGroup, transformableAtRest, transformable)
 		);
 
 		return returnValue;
-	}
+	};
 
-	AnimationRun.prototype.updateForTimerTick = function(world)
+	Transform_Animate.prototype.transform = function(transformable)
 	{
-		this.transformable.overwriteWith(this.transformableAtRest);
-
-		if (this.animationDefnNameCurrent != null)
+		if (this.animatable.animationDefnNameCurrent != null)
 		{
-			var frameCurrent = this.frameCurrent(world);
+			var frameCurrent = this.frameCurrent();
 
 			var transforms = frameCurrent.transforms;
 
 			for (var i = 0; i < transforms.length; i++)
 			{
 				var transformToApply = transforms[i];
-				transformToApply.transform(this.transformable);
+				transformToApply.transform(transformable);
 			}
 		}
-	}
+	};
 }

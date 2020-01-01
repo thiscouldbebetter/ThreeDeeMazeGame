@@ -23,11 +23,13 @@ function Constraint_Friction(speedMax, frictionPerTick, epsilon)
 		else
 		{
 			vel.clear();
-			var constraintAnimate = entityToConstrain.constraints["Animate"];
-			if (constraintAnimate != null)
+			var animatable = entityToConstrain.Animatable;
+			if (animatable != null)
 			{
-				var animationRun = constraintAnimate.animationRun;
-				animationRun.animationDefnNameCurrent = null;
+				if (animatable.animationDefnNameCurrent == "Walk")
+				{
+					animatable.animationDefnNameCurrent = null;
+				}
 			}
 		}
 		vel.z = velZ;

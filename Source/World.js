@@ -289,6 +289,13 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		var nameOfZoneStart = cellPosOfStart.toString();
 		var zoneStart = zones[nameOfZoneStart];
 
+		var skeleton = SkeletonHelper.biped
+		(
+			6 // hack - figureHeightInPixels
+		);
+
+		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
+
 		var loc = new Location
 		(
 			cellPosOfStart.clone().multiply
@@ -306,12 +313,50 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			nameOfZoneStart // venue
 		);
 		var locatable = new Locatable(loc);
+		var mesh = meshDefns["Mover"];
+		var visual = new VisualMesh(mesh.clone());
+		var transformPose = new Transform_MeshPoseWithSkeleton
+		(
+			mesh,
+			skeleton,
+			BoneInfluence.buildManyForBonesAndVertexGroups
+			(
+				skeleton.bonesAll,
+				mesh.vertexGroups
+			)
+		);
+		visual = new VisualTransform
+		(
+			new Transform_Multiple
+			([
+				new Transform_Overwrite(mesh),
+				transformPose,
+				new Transform_Orient(loc.orientation),
+				new Transform_Translate(loc.pos)
+			]),
+			visual
+		);
+		var transformAnimate = new Transform_Animate(animationDefnGroupBiped);
+		visual = new VisualGroup
+		([
+			new VisualTransform
+			(
+				new Transform_Multiple
+				([
+					new Transform_Overwrite(skeleton),
+					transformAnimate
+				]),
+				new VisualInvisible(transformPose.skeletonPosed)
+			),
+			visual
+		]);
 		var entityForPlayer = new Entity
 		(
 			"Player",
 			[
-				new Collidable(meshDefns["Mover"]),
-				new Drawable(new VisualMesh()),
+				transformAnimate.animatable, // hack
+				new Collidable(mesh),
+				new Drawable(visual),
 				locatable,
 				new Movable()
 			]
@@ -334,12 +379,23 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			nameOfZoneStart // venue
 		);
 		locatable = new Locatable(loc);
+		var mesh = meshDefns["Mover"];
+		var visual = new VisualTransform
+		(
+			new Transform_Multiple
+			([
+				new Transform_Overwrite(mesh),
+				new Transform_Orient(loc.orientation),
+				new Transform_Translate(loc.pos)
+			]),
+			new VisualMesh(mesh.clone())
+		);
 		var entityForMoverOther = new Entity
 		(
 			"MoverOther",
 			[
-				new Collidable(meshDefns["Mover"]),
-				new Drawable(new VisualMesh()),
+				new Collidable(mesh),
+				new Drawable(visual),
 				locatable,
 				new Movable()
 			]
@@ -362,12 +418,23 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			nameOfZoneStart // venue
 		);
 		locatable = new Locatable(loc);
+		mesh = meshDefns["Chest"];
+		var visual = new VisualTransform
+		(
+			new Transform_Multiple
+			([
+				new Transform_Overwrite(mesh),
+				new Transform_Orient(loc.orientation),
+				new Transform_Translate(loc.pos)
+			]),
+			new VisualMesh(mesh.clone())
+		);
 		var entityForChest = new Entity
 		(
 			"Chest",
 			[
-				new Collidable(meshDefns["Chest"]),
-				new Drawable(new VisualMesh()),
+				new Collidable(mesh),
+				new Drawable(visual),
 				locatable
 			]
 		);
@@ -389,12 +456,23 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			nameOfZoneStart // venue
 		);
 		locatable = new Locatable(loc);
+		mesh = meshDefns["Door"];
+		var visual = new VisualTransform
+		(
+			new Transform_Multiple
+			([
+				new Transform_Overwrite(mesh),
+				new Transform_Orient(loc.orientation),
+				new Transform_Translate(loc.pos)
+			]),
+			new VisualMesh(mesh.clone())
+		);
 		var entityForDoor = new Entity
 		(
 			"Door",
 			[
-				new Collidable(meshDefns["Door"]),
-				new Drawable(new VisualMesh()),
+				new Collidable(mesh),
+				new Drawable(visual),
 				locatable
 			]
 		);
@@ -494,15 +572,6 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 				if (entity.Movable != null) // hack
 				{
 					entity.actions = [];
-
-					var skeletonCloned = skeleton.clone();
-					entity.constraints.prepend
-					([
-						new Constraint_Animate(skeleton, skeletonCloned, animationDefnGroupBiped),
-						new Constraint_Pose(skeleton, skeletonCloned),
-					]);
-
-					entity.constraints.addLookupsByName();
 				}
 			}
 		}

@@ -32,12 +32,7 @@ function Action_Move(amountToMoveForwardRightDown)
 				this.acceleration
 			);
 
-			var constraintAnimate = entity.constraints["Animate"];
-			if (constraintAnimate != null)
-			{
-				var animationRun = constraintAnimate.animationRun;
-				animationRun.animationDefnNameCurrent = "Walk";
-			}
+			entity.Animatable.animationStart("Walk");
 		}
 	}
 }

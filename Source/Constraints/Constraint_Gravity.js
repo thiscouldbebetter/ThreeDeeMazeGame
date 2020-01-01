@@ -19,13 +19,12 @@ function Constraint_Gravity(accelerationPerTick)
 			entityLoc.vel.z = 0;
 			entityLoc.pos.z = -.01;
 
-			var constraintAnimate = entityToConstrain.constraints["Animate"];
-			if (constraintAnimate != null)
+			var animatable = entityToConstrain.Animatable;
+			if (animatable != null)
 			{
-				var animationRun = constraintAnimate.animationRun;
-				if (animationRun.animationDefnNameCurrent == "Jump")
+				if (animatable.animationDefnNameCurrent == "Jump")
 				{
-					animationRun.animationDefnNameCurrent = "Walk";
+					animatable.animationStart("Walk");
 				}
 			}
 		}

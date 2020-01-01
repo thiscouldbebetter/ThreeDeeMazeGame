@@ -105,13 +105,24 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 			materialRoomFloor
 		);
 
+		var loc = new Location(cellPosInPixels.clone());
+		var visual = new VisualTransform
+		(
+			new Transform_Multiple
+			([
+				new Transform_Overwrite(mesh),
+				new Transform_Orient(loc.orientation),
+				new Transform_Translate(loc.pos)
+			]),
+			new VisualMesh(mesh.clone())
+		);
 		var zoneEntity = new Entity
 		(
 			this.name,
 			[
 				new Collidable(mesh),
-				new Drawable(new VisualMesh()),
-				new Locatable(new Location(cellPosInPixels.clone()))
+				new Drawable(visual),
+				new Locatable(loc)
 			]
 		);
 
@@ -236,13 +247,24 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 						materialWall, materialFloor
 					);
 
+					var loc = new Location(connectorPosInPixels.clone());
+					var visual = new VisualTransform
+					(
+						new Transform_Multiple
+						([
+							new Transform_Overwrite(mesh),
+							new Transform_Orient(loc.orientation),
+							new Transform_Translate(loc.pos)
+						]),
+						new VisualMesh(mesh.clone())
+					);
 					var zoneEntity = new Entity
 					(
 						this.name,
 						[
 							new Collidable(mesh),
-							new Drawable(new VisualMesh()),
-							new Locatable(new Location(connectorPosInPixels.clone()))
+							new Drawable(visual),
+							new Locatable(loc)
 						]
 					);
 
@@ -304,6 +326,11 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 				}
 
 				entity.actions.length = 0;
+			}
+
+			if (entity.Animatable != null)
+			{
+				entity.Animatable.updateForTimerTick(universe, world, this, entity);
 			}
 
 			var entityConstraints = entity.constraints;

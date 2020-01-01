@@ -14,8 +14,6 @@ function Action_Jump(acceleration)
 		{
 			entityLoc.accel.z -= this.acceleration;
 		}
-
-		var animationRun = entity.constraints["Animate"].animationRun;
-		animationRun.animationDefnNameCurrent = "Jump";
+		entity.Animatable.animationStart("Jump");
 	}
 }

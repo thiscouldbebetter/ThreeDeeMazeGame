@@ -1,15 +1,31 @@
-function VisualMesh()
+function VisualMesh(mesh)
 {
-	// todo
+	this.mesh = mesh;
 }
 {
+	// Cloneable.
+
+	VisualMesh.prototype.clone = function()
+	{
+		return new VisualMesh(this.mesh.clone());
+	};
+
+	VisualMesh.prototype.overwriteWith = function(other)
+	{
+		this.mesh.overwriteWith(other.mesh);
+	};
+
+	// Transformable.
+
+	VisualMesh.prototype.transform = function(transformToApply)
+	{
+		transformToApply.transform(this.mesh);
+	};
+
+	// Visual.
+
 	VisualMesh.prototype.draw = function(universe, world, display, drawable, entity)
 	{
-		var entityCollidable = entity.Collidable;
-		if (entityCollidable != null)
-		{
-			var entityMesh = entity.Collidable.collider;
-			display.drawMeshWithOrientation(entityMesh, entity.Locatable.loc.orientation);
-		}
+		display.drawMeshWithOrientation(this.mesh, entity.Locatable.loc.orientation);
 	};
 }
