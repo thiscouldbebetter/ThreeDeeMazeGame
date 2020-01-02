@@ -1,15 +1,15 @@
-function EntityExtensions()
+function Groundable()
 {
-	// Extension class.
+	// Do nothing.
 }
 {
-	Entity.prototype.ground = function(world)
+	Groundable.prototype.ground = function(universe, world, place, entity)
 	{
 		// hack
 
 		var meshBeingStoodOn = null;
 
-		var pos = this.Locatable.loc.pos;
+		var pos = entity.Locatable.loc.pos;
 		var edgeLength = 100;
 		var gravityDirection = new Coords(0, 0, edgeLength);
 		var edgeForFootprint = new Edge
@@ -26,12 +26,11 @@ function EntityExtensions()
 			var zoneEntity = zone.entities[0];
 			var zoneMesh = zoneEntity.Collidable.collider.geometry;
 			var collisions =
-				//new CollisionHelper().collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh);
-				Collision.addCollisionsOfEdgeAndMeshToList(edgeForFootprint, zoneMesh, []);
-			if (collisions.length > 0)
+				universe.collisionHelper.collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh);
+			if (collisions.some(x => x.isActive))
 			{
 				var collision = collisions[0];
-				var meshBelowEntity = collision.colliders["Mesh"];
+				var meshBelowEntity = collision.colliders.Mesh;
 				if (collision.distanceToCollision <= edgeLength)
 				{
 					meshBeingStoodOn = meshBelowEntity;
@@ -45,21 +44,8 @@ function EntityExtensions()
 		return meshBeingStoodOn;
 	};
 
-	Entity.prototype.isGrounded = function(world)
+	Groundable.prototype.isGrounded = function(universe, world, place, entity)
 	{
-		return (this.ground(world) != null);
-	};
-
-	Entity.prototype.resetMeshTransformed = function()
-	{
-		var collidable = this.Collidable;
-		if (collidable != null)
-		{
-			var meshTransformed = collidable.collider;
-			meshTransformed.overwriteWith
-			(
-				collidable.colliderAtRest
-			);
-		}
+		return (this.ground(universe, world, place, entity) != null);
 	};
 }

@@ -5,12 +5,12 @@ function Constraint_Gravity(accelerationPerTick)
 }
 
 {
-	Constraint_Gravity.prototype.constrain = function(universe, world, zone, entityToConstrain)
+	Constraint_Gravity.prototype.constrain = function(universe, world, place, entityToConstrain)
 	{
 		var entityLoc = entityToConstrain.Locatable.loc;
-		var isEntityGrounded = entityToConstrain.isGrounded(world);
+		var isEntityGrounded = entityToConstrain.Groundable.isGrounded(universe, world, place, entityToConstrain);
 
-		if (isEntityGrounded == false) // entityLoc.pos.z < -.01)
+		if (isEntityGrounded == false)
 		{
 			entityLoc.accel.z += this.accelerationPerTick;
 		}
@@ -29,6 +29,6 @@ function Constraint_Gravity(accelerationPerTick)
 			}
 		}
 
-		entityToConstrain.ground(world);
+		entityToConstrain.Groundable.ground(universe, world, place, entityToConstrain);
 	}
 }

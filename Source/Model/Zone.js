@@ -5,6 +5,13 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 	this.pos = pos;
 	this.namesOfZonesAdjacent = namesOfZonesAdjacent;
 	this.entities = entities;
+
+	var entity = this.entities[0];
+	var meshTransformed = entity.Collidable.collider;
+	meshTransformed.transform
+	(
+		new Transform_Locate(entity.Locatable.loc)
+	);
 }
 {
 	Zone.manyFromMaze = function
@@ -287,24 +294,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		} // end for each neighbor
 
 		return [ zonesForConnectorsToNeighbors, zonesAdjacentNames ];
-	}
-
-	Zone.prototype.finalize = function()
-	{
-		// todo
-	}
-
-	Zone.prototype.initialize = function()
-	{
-		var entity = this.entities[0];
-		entity.resetMeshTransformed();
-
-		var meshTransformed = entity.Collidable.collider;
-		meshTransformed.transform
-		(
-			new Transform_Locate(entity.Locatable.loc)
-		);
-	}
+	};
 
 	Zone.prototype.updateForTimerTick = function(universe, world)
 	{
@@ -312,20 +302,26 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		{
 			var entity = this.entities[b];
 
-			if (entity.activity != null)
+			var actor = entity.Actor;
+			if (actor != null)
 			{
-				entity.activity.perform(universe, world, this, entity);
-			}
-
-			if (entity.actions != null)
-			{
-				for (var a = 0; a < entity.actions.length; a++)
+				var activity = actor.activity;
+				if (activity != null)
 				{
-					var action = entity.actions[a];
-					action.perform(universe, world, this, entity);
+					activity(universe, world, this, entity);
 				}
 
-				entity.actions.length = 0;
+				var actions = actor.actions;
+				if (actions != null)
+				{
+					for (var a = 0; a < actions.length; a++)
+					{
+						var action = actions[a];
+						action.perform(universe, world, this, entity);
+					}
+
+					actions.length = 0;
+				}
 			}
 
 			if (entity.Animatable != null)
@@ -337,7 +333,6 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 
 			if (entityConstraints != null)
 			{
-				entity.resetMeshTransformed();
 				for (var c = 0; c < entityConstraints.length; c++)
 				{
 					var constraint = entityConstraints[c];
@@ -365,7 +360,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 
 	// collisions
 
-	Zone.prototype.collisionsWithEdge = function(edge, collisions)
+	Zone.prototype.collisionsWithEdge = function(universe, edge, collisions)
 	{
 		if (collisions == null)
 		{
@@ -374,7 +369,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 
 		var zoneMesh = this.entities[0].Collidable.collider.geometry;
 
-		Collision.addCollisionsOfEdgeAndMeshToList
+		universe.collisionHelper.collisionsOfEdgeAndMesh
 		(
 			edge, zoneMesh, collisions
 		);

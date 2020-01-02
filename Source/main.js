@@ -44,8 +44,6 @@ function main()
 		null //world
 	);
 
-	Collision.collisionHelper = universe.collisionHelper;
-
 	universe.initialize
 	(
 		function() { universe.start(); }

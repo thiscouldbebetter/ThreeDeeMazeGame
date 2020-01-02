@@ -44,18 +44,17 @@ function Constraint_Solid()
 
 				collisions = world.collisionsWithEdge
 				(
-					edgeForMovement,
-					collisions
+					universe, edgeForMovement, collisions
 				);
 
-				if (collisions.length == 0)
+				if (collisions.some(x => x.isActive) == false)
 				{
 					break;
 				}
 				else
 				{
 					var collisionClosest =
-						Collision.collisionHelper.collisionClosest(collisions);
+						universe.collisionHelper.collisionClosest(collisions);
 					var faceCollidedWith = collisionClosest.colliders["Face"];
 
 					var planeCollidedWith = faceCollidedWith.plane();

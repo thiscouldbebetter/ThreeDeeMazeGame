@@ -350,13 +350,25 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			),
 			visual
 		]);
+		var drawable = new Drawable(visual);
+		
+		var activities = new ActivityInstances();
+		var actor = new Actor
+		(
+			activities.UserInputAccept
+		);
+
+		var groundable = new Groundable();
+
 		var entityForPlayer = new Entity
 		(
 			"Player",
 			[
+				actor,
 				transformAnimate.animatable, // hack
 				new Collidable(mesh),
-				new Drawable(visual),
+				drawable,
+				groundable,
 				locatable,
 				new Movable()
 			]
@@ -396,6 +408,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			[
 				new Collidable(mesh),
 				new Drawable(visual),
+				groundable,
 				locatable,
 				new Movable()
 			]
@@ -435,6 +448,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			[
 				new Collidable(mesh),
 				new Drawable(visual),
+				groundable,
 				locatable
 			]
 		);
@@ -473,6 +487,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			[
 				new Collidable(mesh),
 				new Drawable(visual),
+				groundable,
 				locatable
 			]
 		);
@@ -540,9 +555,6 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		this.zoneNext = zoneStart;
 		this.zonesActive = [];
 
-		var activityDefns = new ActivityDefn_Instances();
-		this.entityForPlayer.activity = new Activity(activityDefns.UserInputAccept);
-
 		var skeleton = SkeletonHelper.biped
 		(
 			6 // hack - figureHeightInPixels
@@ -568,11 +580,6 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 				var entity = entities[i];
 
 				entity.constraints = constraintsCommon.slice();
-
-				if (entity.Movable != null) // hack
-				{
-					entity.actions = [];
-				}
 			}
 		}
 
@@ -605,9 +612,10 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		var locatable = new Locatable(loc);
 		var cameraEntity = new Entity
 		(
-			"EntityCamera",
+			"Camera",
 			[
-				locatable
+				locatable,
+				new Groundable()
 			]
 		);
 
@@ -646,12 +654,6 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 				alert(messageWin);
 			}
 
-			for (var i = 0; i < this.zonesActive.length; i++)
-			{
-				var zoneActive = this.zonesActive[i];
-				zoneActive.finalize();
-			}
-
 			this.zoneCurrent = this.zoneNext;
 
 			this.zonesActive.length = 0;
@@ -670,7 +672,6 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			for (var i = 0; i < this.zonesActive.length; i++)
 			{
 				var zoneActive = this.zonesActive[i];
-				zoneActive.initialize();
 				var zoneActiveEntity = zoneActive.entities[0];
 				var facesForZone = zoneActiveEntity.Collidable.collider.faces();
 				facesForZonesActive.append(facesForZone);
@@ -777,7 +778,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 				{
 					var face = facesToDraw[g];
 					var collisionForFootprint =
-						Collision.collisionHelper.collisionOfEdgeAndFace(edgeForFootprint, face);
+						universe.collisionHelper.collisionOfEdgeAndFace(edgeForFootprint, face);
 
 					var isEntityStandingOnFace = (collisionForFootprint != null && collisionForFootprint.isActive);
 
@@ -834,7 +835,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 	// collisions
 
-	World.prototype.collisionsWithEdge = function(edge, collisions)
+	World.prototype.collisionsWithEdge = function(universe, edge, collisions)
 	{
 		if (collisions == null)
 		{
@@ -848,7 +849,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 			zone.collisionsWithEdge
 			(
-				edge, collisions
+				universe, edge, collisions
 			);
 		}
 

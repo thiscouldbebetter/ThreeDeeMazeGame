@@ -37,9 +37,18 @@
 <script type="text/javascript" src="Framework/Source/Display/VertexGroup.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/WebGLContext.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Display/Animation/Animatable.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Animation/AnimationDefn.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Animation/AnimationDefnGroup.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Animation/AnimationKeyframe.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Animation/Transform_Animate.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualGroup.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualImageFromLibrary.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualImageScaled.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Visuals/VisualInvisible.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Visuals/VisualMesh.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Visuals/VisualTransform.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Camera.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>
@@ -69,12 +78,13 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/MeshBuilder.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_DimensionsSwap.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Camera.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_DimensionsSwap.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Locate.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Multiple.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Orient.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_OrientForCamera.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Overwrite.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Perspective.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Scale.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Translate.js"></script>
@@ -100,6 +110,7 @@
 <script type="text/javascript" src="Framework/Source/Media/VideoHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Video.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Model/Actor.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Collidable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Drawable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
@@ -132,15 +143,7 @@
 <script type="text/javascript" src="Actions/Action_Jump.js"></script>
 <script type="text/javascript" src="Actions/Action_Stop.js"></script>
 <script type="text/javascript" src="Actions/Action_Turn.js"></script>
-<script type="text/javascript" src="Actions/Activity.js"></script>
-<script type="text/javascript" src="Actions/ActivityDefn.js"></script>
-
-<script type="text/javascript" src="Animation/AnimationDefn.js"></script>
-<script type="text/javascript" src="Animation/AnimationDefnGroup.js"></script>
-<script type="text/javascript" src="Animation/AnimationKeyframe.js"></script>
-<script type="text/javascript" src="Animation/AnimationRun.js"></script>
-
-<script type="text/javascript" src="Collisions/Collision.js"></script>
+<script type="text/javascript" src="Actions/ActivityInstances.js"></script>
 
 <script type="text/javascript" src="Constraints/Constraint_Attach.js"></script>
 <script type="text/javascript" src="Constraints/Constraint_Follow.js"></script>
@@ -150,20 +153,15 @@
 <script type="text/javascript" src="Constraints/Constraint_OrientToward.js"></script>
 <script type="text/javascript" src="Constraints/Constraint_Solid.js"></script>
 
-<script type="text/javascript" src="Display/Animatable.js"></script>
 <script type="text/javascript" src="Display/DisplayExtensions.js"></script>
 <script type="text/javascript" src="Display/SpacePartitioningTree.js"></script>
 <script type="text/javascript" src="Display/SpacePartitioningTreeNode.js"></script>
-<script type="text/javascript" src="Display/Transform_Overwrite.js"></script>
-<script type="text/javascript" src="Display/VisualInvisible.js"></script>
-<script type="text/javascript" src="Display/VisualMesh.js"></script>
-<script type="text/javascript" src="Display/VisualTransform.js"></script>
 
-<script type="text/javascript" src="Maze/Zone.js"></script>
+<script type="text/javascript" src="Model/Groundable.js"></script>
+<script type="text/javascript" src="Model/Zone.js"></script>
 
 <script type="text/javascript" src="Utilities/TreeHelper.js"></script>
 
-<script type="text/javascript" src="EntityExtensions.js"></script>
 <script type="text/javascript" src="World.js"></script>
 
 <script type="text/javascript">

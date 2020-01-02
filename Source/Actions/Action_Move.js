@@ -11,11 +11,11 @@ function Action_Move(amountToMoveForwardRightDown)
 }
 
 {
-	Action_Move.prototype.perform = function(universe, world, zone, entity)
+	Action_Move.prototype.perform = function(universe, world, place, entity)
 	{
 		var entityLoc = entity.Locatable.loc;
-		var isEntityOnGround = entity.isGrounded(world);
-		if (isEntityOnGround == true)
+		var isEntityOnGround = entity.Groundable.isGrounded(universe, world, place, entity);
+		if (isEntityOnGround)
 		{
 			this.transformOrient.orientation = entityLoc.orientation;
 
