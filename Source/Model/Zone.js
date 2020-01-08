@@ -251,7 +251,10 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 							(n != 1),
 							(n != 1)
 						],
-						materialWall, materialFloor
+						materialWall,
+						materialFloor,
+						1 / hallWidthMultiplier, // doorwayWidthScaleFactor
+						.1 // wallThickness
 					);
 
 					var loc = new Location(connectorPosInPixels.clone());

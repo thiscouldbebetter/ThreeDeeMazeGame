@@ -351,7 +351,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			visual
 		]);
 		var drawable = new Drawable(visual);
-		
+
 		var activities = new ActivityInstances();
 		var actor = new Actor
 		(
@@ -562,7 +562,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
 
-		var constraintsCommon = 
+		var constraintsCommon =
 		[
 			new Constraint_Gravity(.1),
 			new Constraint_Solid(),
