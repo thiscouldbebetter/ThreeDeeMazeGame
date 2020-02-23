@@ -9,7 +9,7 @@ function Constraint_Friction(speedMax, frictionPerTick, epsilon)
 {
 	Constraint_Friction.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
-		var vel = entityToConstrain.Locatable.loc.vel;
+		var vel = entityToConstrain.locatable.loc.vel;
 		var velZ = vel.z;
 		var speed = vel.magnitude();
 		if (speed > this.speedMax)
@@ -23,7 +23,7 @@ function Constraint_Friction(speedMax, frictionPerTick, epsilon)
 		else
 		{
 			vel.clear();
-			var animatable = entityToConstrain.Animatable;
+			var animatable = entityToConstrain.animatable;
 			if (animatable != null)
 			{
 				if (animatable.animationDefnNameCurrent == "Walk")

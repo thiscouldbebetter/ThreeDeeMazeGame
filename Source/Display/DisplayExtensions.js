@@ -19,7 +19,7 @@ function DisplayExtensions2D()
 
 		var displacementFromCameraToVertex0 = vertices[0].clone().subtract
 		(
-			camera.Locatable.loc.pos
+			camera.locatable.loc.pos
 		);
 
 		var faceNormal = faceToDraw.plane().normal;

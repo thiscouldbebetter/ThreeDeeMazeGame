@@ -12,8 +12,8 @@ function Constraint_OrientToward(targetEntity)
 {
 	Constraint_OrientToward.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
-		var entityToConstrainLoc = entityToConstrain.Locatable.loc;
-		var targetLoc = this.targetEntity.Locatable.loc;
+		var entityToConstrainLoc = entityToConstrain.locatable.loc;
+		var targetLoc = this.targetEntity.locatable.loc;
 		var entityOrientationForward = targetLoc.pos.clone().subtract
 		(
 			entityToConstrainLoc.pos

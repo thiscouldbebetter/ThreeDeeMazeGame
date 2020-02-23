@@ -12,7 +12,7 @@ function Action_Turn(amountToTurnRightAndDown)
 {
 	Action_Turn.prototype.perform = function(universe, world, zone, entity)
 	{
-		var entityOrientation = entity.Locatable.loc.orientation;
+		var entityOrientation = entity.locatable.loc.orientation;
 		this.orientationTemp.overwriteWith(entityOrientation);
 
 		entityOrientation.overwriteWith

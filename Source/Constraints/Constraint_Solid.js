@@ -12,7 +12,7 @@ function Constraint_Solid()
 		universe, world, zone, entityToConstrain
 	)
 	{
-		var entityLoc = entityToConstrain.Locatable.loc;
+		var entityLoc = entityToConstrain.locatable.loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;

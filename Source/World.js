@@ -545,7 +545,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		{
 			var zone = this.zones[i];
 			var zoneEntity = zone.entities[0];
-			if (zoneEntity.Collidable.collider.materials[1].name == "Start")
+			if (zoneEntity.collidable.collider.materials[1].name == "Start")
 			{
 				zoneStart = zone;
 				break;
@@ -595,7 +595,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 		var loc = new Location
 		(
-			this.zoneNext.entities[0].Locatable.loc.pos.clone().add
+			this.zoneNext.entities[0].locatable.loc.pos.clone().add
 			(
 				offsetOfCameraFromPlayer
 			),
@@ -623,7 +623,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		(
 			viewSizeInPixels,
 			focalLength,
-			cameraEntity.Locatable.loc
+			cameraEntity.locatable.loc
 		);
 
 		cameraEntity.constraints =
@@ -644,7 +644,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		if (this.zoneNext != null)
 		{
 			var zoneNextEntity = this.zoneNext.entities[0];
-			if (zoneNextEntity.Collidable.collider.materials[0].name == "Goal")
+			if (zoneNextEntity.collidable.collider.materials[0].name == "Goal")
 			{
 				var messageWin =
 					"You reached the goal in "
@@ -673,7 +673,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			{
 				var zoneActive = this.zonesActive[i];
 				var zoneActiveEntity = zoneActive.entities[0];
-				var facesForZone = zoneActiveEntity.Collidable.collider.faces();
+				var facesForZone = zoneActiveEntity.collidable.collider.faces();
 				facesForZonesActive.append(facesForZone);
 			}
 
@@ -694,19 +694,19 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		this.draw(universe);
 
 		var zoneCurrentEntity = this.zoneCurrent.entities[0];
-		var zoneCurrentBounds = zoneCurrentEntity.Collidable.collider.geometry.box();
+		var zoneCurrentBounds = zoneCurrentEntity.collidable.collider.geometry.box();
 
-		if (zoneCurrentBounds.containsPoint(this.entityForPlayer.Locatable.loc.pos) == false)
+		if (zoneCurrentBounds.containsPoint(this.entityForPlayer.locatable.loc.pos) == false)
 		{
 			for (var z = 0; z < this.zonesActive.length; z++)
 			{
 				var zoneActive = this.zonesActive[z];
 				var zoneActiveEntity = zoneActive.entities[0];
-				var zoneActiveMesh = zoneActiveEntity.Collidable.collider;
+				var zoneActiveMesh = zoneActiveEntity.collidable.collider;
 				var zoneActiveBounds = zoneActiveMesh.geometry.box();
 				var isPlayerInZoneActive = zoneActiveBounds.containsPoint
 				(
-					this.entityForPlayer.Locatable.loc.pos
+					this.entityForPlayer.locatable.loc.pos
 				);
 				if (isPlayerInZoneActive == true)
 				{
@@ -745,7 +745,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		var world  = this;
 		var facesToDraw = [];
 
-		var cameraPos = world.camera.Locatable.loc.pos;
+		var cameraPos = world.camera.locatable.loc.pos;
 
 		var spacePartitioningTreeRoot =
 			world.spacePartitioningTreeForZonesActive.nodeRoot;
@@ -761,13 +761,13 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		{
 			var entity = entities[b];
 
-			if (entity.Drawable != null && entity.Movable != null)
+			if (entity.drawable != null && entity.movable != null)
 			{
 				// hack
 				// Find the floor the mover is standing on,
 				// and draw the mover immediately after that floor.
 
-				var entityPos = entity.Locatable.loc.pos;
+				var entityPos = entity.locatable.loc.pos;
 				var edgeForFootprint = new Edge
 				([
 					entityPos,
@@ -784,7 +784,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 					if (isEntityStandingOnFace)
 					{
-						var moverFaces = entity.Collidable.collider.faces();
+						var moverFaces = entity.collidable.collider.faces();
 						for (var f = 0; f < moverFaces.length; f++)
 						{
 							var moverFace = moverFaces[f];
@@ -823,11 +823,11 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			for (var b = 0; b < entities.length; b++)
 			{
 				var entity = entities[b];
-				var drawable = entity.Drawable;
+				var drawable = entity.drawable;
 				if (drawable != null)
 				{
 					var entityVisual = drawable.visual;
-					entityVisual.draw(universe, this, display, drawable, entity);
+					entityVisual.draw(universe, this, display, entity);
 				}
 			}
 		}

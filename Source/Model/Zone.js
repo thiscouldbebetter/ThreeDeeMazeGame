@@ -7,10 +7,10 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 	this.entities = entities;
 
 	var entity = this.entities[0];
-	var meshTransformed = entity.Collidable.collider;
+	var meshTransformed = entity.collidable.collider;
 	meshTransformed.transform
 	(
-		new Transform_Locate(entity.Locatable.loc)
+		new Transform_Locate(entity.locatable.loc)
 	);
 }
 {
@@ -305,7 +305,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		{
 			var entity = this.entities[b];
 
-			var actor = entity.Actor;
+			var actor = entity.actor;
 			if (actor != null)
 			{
 				var activity = actor.activity;
@@ -327,9 +327,9 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 				}
 			}
 
-			if (entity.Animatable != null)
+			if (entity.animatable != null)
 			{
-				entity.Animatable.updateForTimerTick(universe, world, this, entity);
+				entity.animatable.updateForTimerTick(universe, world, this, entity);
 			}
 
 			var entityConstraints = entity.constraints;
@@ -370,7 +370,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 			collisions = [];
 		}
 
-		var zoneMesh = this.entities[0].Collidable.collider.geometry;
+		var zoneMesh = this.entities[0].collidable.collider.geometry;
 
 		universe.collisionHelper.collisionsOfEdgeAndMesh
 		(

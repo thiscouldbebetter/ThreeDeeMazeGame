@@ -9,7 +9,7 @@ function Groundable()
 
 		var meshBeingStoodOn = null;
 
-		var pos = entity.Locatable.loc.pos;
+		var pos = entity.locatable.loc.pos;
 		var edgeLength = 100;
 		var gravityDirection = new Coords(0, 0, edgeLength);
 		var edgeForFootprint = new Edge
@@ -24,7 +24,7 @@ function Groundable()
 		{
 			var zone = zonesToCheck[i];
 			var zoneEntity = zone.entities[0];
-			var zoneMesh = zoneEntity.Collidable.collider.geometry;
+			var zoneMesh = zoneEntity.collidable.collider.geometry;
 			var collisions =
 				universe.collisionHelper.collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh);
 			if (collisions.some(x => x.isActive))

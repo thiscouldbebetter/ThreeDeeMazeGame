@@ -7,8 +7,9 @@ function Constraint_Gravity(accelerationPerTick)
 {
 	Constraint_Gravity.prototype.constrain = function(universe, world, place, entityToConstrain)
 	{
-		var entityLoc = entityToConstrain.Locatable.loc;
-		var isEntityGrounded = entityToConstrain.Groundable.isGrounded(universe, world, place, entityToConstrain);
+		var entityLoc = entityToConstrain.locatable.loc;
+		var isEntityGrounded =
+			entityToConstrain.groundable.isGrounded(universe, world, place, entityToConstrain);
 
 		if (isEntityGrounded == false)
 		{
@@ -19,7 +20,7 @@ function Constraint_Gravity(accelerationPerTick)
 			entityLoc.vel.z = 0;
 			entityLoc.pos.z = -.01;
 
-			var animatable = entityToConstrain.Animatable;
+			var animatable = entityToConstrain.animatable;
 			if (animatable != null)
 			{
 				if (animatable.animationDefnNameCurrent == "Jump")
@@ -29,6 +30,9 @@ function Constraint_Gravity(accelerationPerTick)
 			}
 		}
 
-		entityToConstrain.Groundable.ground(universe, world, place, entityToConstrain);
+		entityToConstrain.groundable.ground
+		(
+			universe, world, place, entityToConstrain
+		);
 	}
 }

@@ -7,7 +7,7 @@ function Constraint_Attach(entityAttachedTo, offsetForwardRightDown)
 
 	this.transformOrient = new Transform_Orient
 	(
-		this.entityAttachedTo.Locatable.loc.orientation
+		this.entityAttachedTo.locatable.loc.orientation
 	);
 }
 
@@ -16,13 +16,13 @@ function Constraint_Attach(entityAttachedTo, offsetForwardRightDown)
 	{
 		this.transformOrient.transformCoords
 		(
-			entityToConstrain.Locatable.loc.pos.overwriteWith
+			entityToConstrain.locatable.loc.pos.overwriteWith
 			(
 				this.offsetForwardRightDown
 			)
 		).add
 		(
-			this.entityAttachedTo.Locatable.loc.pos
+			this.entityAttachedTo.locatable.loc.pos
 		);
 	}
 }

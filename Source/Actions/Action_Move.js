@@ -13,8 +13,9 @@ function Action_Move(amountToMoveForwardRightDown)
 {
 	Action_Move.prototype.perform = function(universe, world, place, entity)
 	{
-		var entityLoc = entity.Locatable.loc;
-		var isEntityOnGround = entity.Groundable.isGrounded(universe, world, place, entity);
+		var entityLoc = entity.locatable.loc;
+		var isEntityOnGround =
+			entity.groundable.isGrounded(universe, world, place, entity);
 		if (isEntityOnGround)
 		{
 			this.transformOrient.orientation = entityLoc.orientation;
@@ -32,7 +33,7 @@ function Action_Move(amountToMoveForwardRightDown)
 				this.acceleration
 			);
 
-			entity.Animatable.animationStart("Walk");
+			entity.animatable.animationStart("Walk");
 		}
 	}
 }

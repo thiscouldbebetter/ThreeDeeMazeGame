@@ -9,9 +9,9 @@ function Constraint_Follow(entityToFollow, distanceToKeep)
 {
 	Constraint_Follow.prototype.constrain = function(universe, world, zone, entityToConstrain)
 	{
-		var entityToConstrainLoc = entityToConstrain.Locatable.loc;
+		var entityToConstrainLoc = entityToConstrain.locatable.loc;
 		var entityToConstrainPos = entityToConstrainLoc.pos;
-		var entityToFollowLoc = this.entityToFollow.Locatable.loc;
+		var entityToFollowLoc = this.entityToFollow.locatable.loc;
 		var entityToFollowPos = entityToFollowLoc.pos;
 
 		var displacementToLeader = entityToFollowPos.clone().subtract(entityToConstrainPos);
