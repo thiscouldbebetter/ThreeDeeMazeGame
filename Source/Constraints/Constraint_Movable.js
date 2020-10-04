@@ -1,11 +1,12 @@
 
-function Constraint_Movable()
+class Constraint_Movable
 {
-	this.transformLocate = new Transform_Locate();
-}
+	constructor()
+	{
+		this.transformLocate = new Transform_Locate();
+	}
 
-{
-	Constraint_Movable.prototype.constrain = function(universe, world, zone, entityToConstrain)
+	constrain(universe, world, zone, entityToConstrain)
 	{
 		var entityLoc = entityToConstrain.locatable.loc;
 		var entityPos = entityLoc.pos;

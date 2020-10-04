@@ -1,11 +1,12 @@
 
-function Action_Stop()
+class Action_Stop
 {
-	this.name = "Stop";
-}
+	constructor()
+	{
+		this.name = "Stop";
+	}
 
-{
-	Action_Stop.prototype.perform = function(universe, world, zone, entity)
+	perform(universe, world, zone, entity)
 	{
 		var entityLoc = entity.locatable.loc;
 		entityLoc.vel.clear();

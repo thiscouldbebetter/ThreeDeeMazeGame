@@ -1,13 +1,14 @@
 
-function Constraint_Solid()
+class Constraint_Solid
 {
-	// Helper variables.
+	constructor()
+	{
+		// Helper variables.
 
-	this._collisions = [];
-}
+		this._collisions = [];
+	}
 
-{
-	Constraint_Solid.prototype.constrain = function
+	constrain
 	(
 		universe, world, zone, entityToConstrain
 	)

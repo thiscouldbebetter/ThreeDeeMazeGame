@@ -1,13 +1,14 @@
 
-function Constraint_Follow(entityToFollow, distanceToKeep)
+class Constraint_Follow
 {
-	this.name = "Follow";
-	this.entityToFollow = entityToFollow;
-	this.distanceToKeep = distanceToKeep;
-}
+	constructor(entityToFollow, distanceToKeep)
+	{
+		this.name = "Follow";
+		this.entityToFollow = entityToFollow;
+		this.distanceToKeep = distanceToKeep;
+	}
 
-{
-	Constraint_Follow.prototype.constrain = function(universe, world, zone, entityToConstrain)
+	constrain(universe, world, zone, entityToConstrain)
 	{
 		var entityToConstrainLoc = entityToConstrain.locatable.loc;
 		var entityToConstrainPos = entityToConstrainLoc.pos;

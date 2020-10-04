@@ -1,17 +1,18 @@
 
-function Action_Move(amountToMoveForwardRightDown)
+class Action_Move
 {
-	this.ticksToHold = 1;
-	this.amountToMoveForwardRightDown = amountToMoveForwardRightDown;
+	constructor(amountToMoveForwardRightDown)
+	{
+		this.ticksToHold = 1;
+		this.amountToMoveForwardRightDown = amountToMoveForwardRightDown;
 
-	this.name = "Move" + this.amountToMoveForwardRightDown.toString();
+		this.name = "Move" + this.amountToMoveForwardRightDown.toString();
 
-	this.acceleration = new Coords(0, 0, 0);
-	this.transformOrient = new Transform_Orient();
-}
+		this.acceleration = new Coords(0, 0, 0);
+		this.transformOrient = new Transform_Orient();
+	}
 
-{
-	Action_Move.prototype.perform = function(universe, world, place, entity)
+	perform(universe, world, place, entity)
 	{
 		var entityLoc = entity.locatable.loc;
 		var isEntityOnGround =

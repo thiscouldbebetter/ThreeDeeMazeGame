@@ -1,14 +1,15 @@
 
-function Action_CameraZoomOut(distanceToZoomOut)
+class Action_CameraZoomOut
 {
-	this.ticksToHold = 1;
-	this.distanceToZoomOut = distanceToZoomOut;
+	constructor(distanceToZoomOut)
+	{
+		this.ticksToHold = 1;
+		this.distanceToZoomOut = distanceToZoomOut;
 
-	this.name = "CameraZoomOut" + this.distanceToZoomOut;
-}
+		this.name = "CameraZoomOut" + this.distanceToZoomOut;
+	}
 
-{
-	Action_CameraZoomOut.prototype.perform = function(universe, world, zone, entity)
+	perform(universe, world, zone, entity)
 	{
 		var entityForCamera = world.cameraEntity;
 		var constraintAttach = entityForCamera.constraints["Attach"];

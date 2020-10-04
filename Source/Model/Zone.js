@@ -1,20 +1,22 @@
 
-function Zone(name, pos, namesOfZonesAdjacent, entities)
+class Zone
 {
-	this.name = name;
-	this.pos = pos;
-	this.namesOfZonesAdjacent = namesOfZonesAdjacent;
-	this.entities = entities;
+	constructor(name, pos, namesOfZonesAdjacent, entities)
+	{
+		this.name = name;
+		this.pos = pos;
+		this.namesOfZonesAdjacent = namesOfZonesAdjacent;
+		this.entities = entities;
 
-	var entity = this.entities[0];
-	var meshTransformed = entity.collidable.collider;
-	meshTransformed.transform
-	(
-		new Transform_Locate(entity.locatable.loc)
-	);
-}
-{
-	Zone.manyFromMaze = function
+		var entity = this.entities[0];
+		var meshTransformed = entity.collidable.collider;
+		meshTransformed.transform
+		(
+			new Transform_Locate(entity.locatable.loc)
+		);
+	}
+
+	static manyFromMaze
 	(
 		maze,
 		materialWall,
@@ -70,7 +72,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		return returnValues;
 	}
 
-	Zone.manyFromMaze_Cell = function
+	static manyFromMaze_Cell
 	(
 		maze,
 		cellPos,
@@ -152,7 +154,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		}
 	}
 
-	Zone.manyFromMaze_Cell_Neighbors = function
+	static manyFromMaze_Cell_Neighbors
 	(
 		maze, cellPos, cellCurrent, materialWall, materialFloor
 	)
@@ -297,9 +299,9 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		} // end for each neighbor
 
 		return [ zonesForConnectorsToNeighbors, zonesAdjacentNames ];
-	};
+	}
 
-	Zone.prototype.updateForTimerTick = function(universe, world)
+	updateForTimerTick(universe, world)
 	{
 		for (var b = 0; b < this.entities.length; b++)
 		{
@@ -345,7 +347,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 		}
 	}
 
-	Zone.prototype.zonesAdjacent = function(world)
+	zonesAdjacent(world)
 	{
 		var returnValues = [];
 
@@ -363,7 +365,7 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 
 	// collisions
 
-	Zone.prototype.collisionsWithEdge = function(universe, edge, collisions)
+	collisionsWithEdge(universe, edge, collisions)
 	{
 		if (collisions == null)
 		{
@@ -379,5 +381,4 @@ function Zone(name, pos, namesOfZonesAdjacent, entities)
 
 		return collisions;
 	}
-
 }

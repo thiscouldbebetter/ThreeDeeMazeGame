@@ -1,8 +1,7 @@
 
-function TreeHelper()
-{}
+class TreeHelper
 {
-	TreeHelper.addNodeAndAllDescendantsToList = function(node, listToAddTo)
+	static addNodeAndAllDescendantsToList(node, listToAddTo)
 	{
 		listToAddTo.push(node);
 

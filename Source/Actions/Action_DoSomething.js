@@ -1,11 +1,12 @@
 
-function Action_DoSomething()
+class Action_DoSomething
 {
-	this.name = "DoSomething";
-}
+	constructor()
+	{
+		this.name = "DoSomething";
+	}
 
-{
-	Action_DoSomething.prototype.perform = function(universe, world, zone, entity)
+	perform(universe, world, zone, entity)
 	{
 		entity.animatable.animationStart("DoSomething");
 	}

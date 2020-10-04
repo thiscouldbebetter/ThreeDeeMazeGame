@@ -1,68 +1,69 @@
 
-function SpacePartitioningTreeNode(faces)
+class SpacePartitioningTreeNode
 {
-	var faceToDivideOn = faces[0];
-	this.faces = [ faceToDivideOn ];
-	var planeToDivideOn = faceToDivideOn.geometry.plane();
-
-	if (faces.length == 1)
+	constructor(faces)
 	{
-		this.children = null;
-	}
-	else
-	{
-		var faceSetsFrontAndBack =
-		[
-			[],
-			[]
-		];
+		var faceToDivideOn = faces[0];
+		this.faces = [ faceToDivideOn ];
+		var planeToDivideOn = faceToDivideOn.geometry.plane();
 
-		for (var f = 1; f < faces.length; f++)
+		if (faces.length == 1)
 		{
-			var faceOther = faces[f];
-			var faceOtherGeometry = faceOther.geometry;
-			var planeOther = faceOtherGeometry.plane();
-			if (planeOther.equals(planeToDivideOn) == true)
-			{
-				this.faces.push(faceOther);
-			}
-			else
-			{
-				var facesDividedFrontAndBack = new MeshBuilder().splitFaceByPlaneFrontAndBack
-				(
-					faceOther,
-					planeToDivideOn
-				);
+			this.children = null;
+		}
+		else
+		{
+			var faceSetsFrontAndBack =
+			[
+				[],
+				[]
+			];
 
-				for (var i = 0; i < facesDividedFrontAndBack.length; i++)
+			for (var f = 1; f < faces.length; f++)
+			{
+				var faceOther = faces[f];
+				var faceOtherGeometry = faceOther.geometry;
+				var planeOther = faceOtherGeometry.plane();
+				if (planeOther.equals(planeToDivideOn) == true)
 				{
-					var facePart = facesDividedFrontAndBack[i];
-					if (facePart != null)
+					this.faces.push(faceOther);
+				}
+				else
+				{
+					var facesDividedFrontAndBack = new MeshBuilder().splitFaceByPlaneFrontAndBack
+					(
+						faceOther,
+						planeToDivideOn
+					);
+
+					for (var i = 0; i < facesDividedFrontAndBack.length; i++)
 					{
-						var facesForChildNode = faceSetsFrontAndBack[i];
-						facesForChildNode.push(facePart);
+						var facePart = facesDividedFrontAndBack[i];
+						if (facePart != null)
+						{
+							var facesForChildNode = faceSetsFrontAndBack[i];
+							facesForChildNode.push(facePart);
+						}
 					}
 				}
 			}
-		}
 
-		this.children = [];
+			this.children = [];
 
-		for (var i = 0; i < faceSetsFrontAndBack.length; i++)
-		{
-			var faceSet = faceSetsFrontAndBack[i];
-			var childNode = null;
-			if (faceSet.length > 0)
+			for (var i = 0; i < faceSetsFrontAndBack.length; i++)
 			{
-				childNode = new SpacePartitioningTreeNode(faceSet);
+				var faceSet = faceSetsFrontAndBack[i];
+				var childNode = null;
+				if (faceSet.length > 0)
+				{
+					childNode = new SpacePartitioningTreeNode(faceSet);
+				}
+				this.children[i] = childNode;
 			}
-			this.children[i] = childNode;
 		}
 	}
-}
 
-{
-	SpacePartitioningTreeNode.prototype.addFacesBackToFrontForCameraPosToList = function
+	addFacesBackToFrontForCameraPosToList
 	(
 		cameraPos,
 		facesToAddTo

@@ -1,13 +1,12 @@
 
-// classes
-
-function Action_DoNothing()
+class Action_DoNothing
 {
-	this.name = "DoNothing";
-}
+	constructor()
+	{
+		this.name = "DoNothing";
+	}
 
-{
-	Action_DoNothing.prototype.perform = function(universe, world, zone, entity)
+	perform(universe, world, zone, entity)
 	{
 		// do nothing
 	}

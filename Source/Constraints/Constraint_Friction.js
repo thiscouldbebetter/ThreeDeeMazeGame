@@ -1,13 +1,14 @@
 
-function Constraint_Friction(speedMax, frictionPerTick, epsilon)
+class Constraint_Friction
 {
-	this.speedMax = speedMax;
-	this.frictionPerTick = frictionPerTick;
-	this.epsilon = epsilon;
-}
+	constructor(speedMax, frictionPerTick, epsilon)
+	{
+		this.speedMax = speedMax;
+		this.frictionPerTick = frictionPerTick;
+		this.epsilon = epsilon;
+	}
 
-{
-	Constraint_Friction.prototype.constrain = function(universe, world, zone, entityToConstrain)
+	constrain(universe, world, zone, entityToConstrain)
 	{
 		var vel = entityToConstrain.locatable.loc.vel;
 		var velZ = vel.z;

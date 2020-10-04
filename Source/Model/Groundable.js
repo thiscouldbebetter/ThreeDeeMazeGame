@@ -1,9 +1,7 @@
-function Groundable()
+
+class Groundable
 {
-	// Do nothing.
-}
-{
-	Groundable.prototype.ground = function(universe, world, place, entity)
+	ground(universe, world, place, entity)
 	{
 		// hack
 
@@ -42,10 +40,10 @@ function Groundable()
 		}
 
 		return meshBeingStoodOn;
-	};
+	}
 
-	Groundable.prototype.isGrounded = function(universe, world, place, entity)
+	isGrounded(universe, world, place, entity)
 	{
 		return (this.ground(universe, world, place, entity) != null);
-	};
+	}
 }

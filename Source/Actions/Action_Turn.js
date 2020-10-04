@@ -1,16 +1,17 @@
 
-function Action_Turn(amountToTurnRightAndDown)
+class Action_Turn
 {
-	this.ticksToHold = 1;
-	this.amountToTurnRightAndDown = amountToTurnRightAndDown;
+	constructor(amountToTurnRightAndDown)
+	{
+		this.ticksToHold = 1;
+		this.amountToTurnRightAndDown = amountToTurnRightAndDown;
 
-	this.name = "Turn" + this.amountToTurnRightAndDown.toString();
+		this.name = "Turn" + this.amountToTurnRightAndDown.toString();
 
-	this.orientationTemp = Orientation.Instances().ForwardXDownZ.clone();
-}
+		this.orientationTemp = Orientation.Instances().ForwardXDownZ.clone();
+	}
 
-{
-	Action_Turn.prototype.perform = function(universe, world, zone, entity)
+	perform(universe, world, zone, entity)
 	{
 		var entityOrientation = entity.locatable.loc.orientation;
 		this.orientationTemp.overwriteWith(entityOrientation);

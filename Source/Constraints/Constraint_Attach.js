@@ -1,18 +1,19 @@
 
-function Constraint_Attach(entityAttachedTo, offsetForwardRightDown)
+class Constraint_Attach
 {
-	this.name = "Attach";
-	this.entityAttachedTo = entityAttachedTo;
-	this.offsetForwardRightDown = offsetForwardRightDown;
+	constructor(entityAttachedTo, offsetForwardRightDown)
+	{
+		this.name = "Attach";
+		this.entityAttachedTo = entityAttachedTo;
+		this.offsetForwardRightDown = offsetForwardRightDown;
 
-	this.transformOrient = new Transform_Orient
-	(
-		this.entityAttachedTo.locatable.loc.orientation
-	);
-}
+		this.transformOrient = new Transform_Orient
+		(
+			this.entityAttachedTo.locatable.loc.orientation
+		);
+	}
 
-{
-	Constraint_Attach.prototype.constrain = function(universe, world, zone, entityToConstrain)
+	constrain(universe, world, zone, entityToConstrain)
 	{
 		this.transformOrient.transformCoords
 		(

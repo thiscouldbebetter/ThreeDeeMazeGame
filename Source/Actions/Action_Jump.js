@@ -1,12 +1,13 @@
 
-function Action_Jump(acceleration)
+class Action_Jump
 {
-	this.name = "Jump";
-	this.acceleration = acceleration;
-}
+	constructor(acceleration)
+	{
+		this.name = "Jump";
+		this.acceleration = acceleration;
+	}
 
-{
-	Action_Jump.prototype.perform = function(universe, world, place, entity)
+	perform(universe, world, place, entity)
 	{
 		var entityLoc = entity.locatable.loc;
 		var isEntityGrounded =

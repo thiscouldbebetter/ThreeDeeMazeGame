@@ -1,11 +1,12 @@
 
-function SpacePartitioningTree(nodeRoot)
+class SpacePartitioningTree
 {
-	this.nodeRoot = nodeRoot;
-}
+	constructor(nodeRoot)
+	{
+		this.nodeRoot = nodeRoot;
+	}
 
-{
-	SpacePartitioningTree.fromFaces = function(faces)
+	static fromFaces(faces)
 	{
 		var nodeRoot = new SpacePartitioningTreeNode(faces);
 		var returnValue = new SpacePartitioningTree(nodeRoot);

@@ -1,16 +1,17 @@
 
-function Constraint_OrientToward(targetEntity)
+class Constraint_OrientToward
 {
-	this.targetEntity = targetEntity;
+	constructor(targetEntity)
+	{
+		this.targetEntity = targetEntity;
 
-	this.transformOrient = new Transform_Orient
-	(
-		Orientation.Instances().ForwardXDownZ.clone()
-	);
-}
+		this.transformOrient = new Transform_Orient
+		(
+			Orientation.Instances().ForwardXDownZ.clone()
+		);
+	}
 
-{
-	Constraint_OrientToward.prototype.constrain = function(universe, world, zone, entityToConstrain)
+	constrain(universe, world, zone, entityToConstrain)
 	{
 		var entityToConstrainLoc = entityToConstrain.locatable.loc;
 		var targetLoc = this.targetEntity.locatable.loc;

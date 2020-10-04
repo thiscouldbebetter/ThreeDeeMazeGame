@@ -1,11 +1,12 @@
 
-function Constraint_Gravity(accelerationPerTick)
+class Constraint_Gravity
 {
-	this.accelerationPerTick = accelerationPerTick;
-}
+	constructor(accelerationPerTick)
+	{
+		this.accelerationPerTick = accelerationPerTick;
+	}
 
-{
-	Constraint_Gravity.prototype.constrain = function(universe, world, place, entityToConstrain)
+	constrain(universe, world, place, entityToConstrain)
 	{
 		var entityLoc = entityToConstrain.locatable.loc;
 		var isEntityGrounded =
