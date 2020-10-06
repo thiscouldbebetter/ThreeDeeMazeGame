@@ -13,8 +13,8 @@ class Constraint_OrientToward
 
 	constrain(universe, world, zone, entityToConstrain)
 	{
-		var entityToConstrainLoc = entityToConstrain.locatable.loc;
-		var targetLoc = this.targetEntity.locatable.loc;
+		var entityToConstrainLoc = entityToConstrain.locatable().loc;
+		var targetLoc = this.targetEntity.locatable().loc;
 		var entityOrientationForward = targetLoc.pos.clone().subtract
 		(
 			entityToConstrainLoc.pos

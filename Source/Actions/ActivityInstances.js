@@ -2,16 +2,16 @@ class ActivityInstances
 {
 	constructor()
 	{
-		this.DoNothing = function perform(universe, world, zone, entity, activity)
+		this.DoNothing = (universe, world, zone, entity, activity) =>
 		{
 			// do nothing
 		};
 
-		this.UserInputAccept = function perform(universe, world, zone, entity, activity)
+		this.UserInputAccept = (universe, world, zone, entity, activity) =>
 		{
 			var inputHelper = universe.inputHelper;
 			var inputsActive = inputHelper.inputsPressed; //Active;
-			var actionsFromActor = entity.actor.actions;
+			var actionsFromActor = entity.actor().actions;
 
 			var actions = world.actions;
 			var mappings = world.actionToInputsMappings;

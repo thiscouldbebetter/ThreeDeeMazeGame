@@ -8,7 +8,7 @@ class Constraint_Movable
 
 	constrain(universe, world, zone, entityToConstrain)
 	{
-		var entityLoc = entityToConstrain.locatable.loc;
+		var entityLoc = entityToConstrain.locatable().loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;
@@ -17,7 +17,7 @@ class Constraint_Movable
 		entityAccel.clear();
 		entityPos.add(entityVel);
 
-		var collidable = entityToConstrain.collidable;
+		var collidable = entityToConstrain.collidable();
 		if (collidable != null)
 		{
 			var meshTransformed = collidable.collider;

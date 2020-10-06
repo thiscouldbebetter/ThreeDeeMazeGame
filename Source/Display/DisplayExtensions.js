@@ -4,7 +4,7 @@ function DisplayExtensions2D()
 	// Extension class.
 }
 {
-	Display.prototype.drawFaceForCamera = function(faceToDraw, camera)
+	Display2D.prototype.drawFaceForCamera = function(faceToDraw, camera)
 	{
 		var cameraClipPlanes = camera.clipPlanes();
 
@@ -19,7 +19,7 @@ function DisplayExtensions2D()
 
 		var displacementFromCameraToVertex0 = vertices[0].clone().subtract
 		(
-			camera.locatable.loc.pos
+			camera.locatable().loc.pos
 		);
 
 		var faceNormal = faceToDraw.plane().normal;
@@ -72,7 +72,7 @@ function DisplayExtensions2D()
 		this.graphics.fill();
 	}
 
-	Display.prototype.drawFacesForCamera = function(facesToDraw, camera)
+	Display2D.prototype.drawFacesForCamera = function(facesToDraw, camera)
 	{
 		for (var i = 0; i < facesToDraw.length; i++)
 		{

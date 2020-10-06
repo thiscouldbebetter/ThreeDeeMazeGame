@@ -9,7 +9,7 @@ class Constraint_Attach
 
 		this.transformOrient = new Transform_Orient
 		(
-			this.entityAttachedTo.locatable.loc.orientation
+			this.entityAttachedTo.locatable().loc.orientation
 		);
 	}
 
@@ -17,13 +17,13 @@ class Constraint_Attach
 	{
 		this.transformOrient.transformCoords
 		(
-			entityToConstrain.locatable.loc.pos.overwriteWith
+			entityToConstrain.locatable().loc.pos.overwriteWith
 			(
 				this.offsetForwardRightDown
 			)
 		).add
 		(
-			this.entityAttachedTo.locatable.loc.pos
+			this.entityAttachedTo.locatable().loc.pos
 		);
 	}
 }

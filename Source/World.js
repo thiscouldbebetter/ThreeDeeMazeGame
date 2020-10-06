@@ -1,23 +1,24 @@
 
-function World(name, actions, actionToInputsMappings, materials, sizeInPixels, zones, entityForPlayer)
+class World
 {
-	this.name = name;
-	this.actions = actions.addLookupsByName();
-	this.actionToInputsMappings = actionToInputsMappings.addLookups( function(x) { return x.inputNames[0]; } );
-	this.materials = materials;
-	this.sizeInPixels = sizeInPixels;
-	this.zones = zones;
-	this.entityForPlayer = entityForPlayer;
+	constructor(name, actions, actionToInputsMappings, materials, sizeInPixels, zones, entityForPlayer)
+	{
+		this.name = name;
+		this.actions = actions.addLookupsByName();
+		this.actionToInputsMappings = actionToInputsMappings.addLookups( function(x) { return x.inputNames[0]; } );
+		this.materials = materials;
+		this.sizeInPixels = sizeInPixels;
+		this.zones = zones;
+		this.entityForPlayer = entityForPlayer;
 
-	this.zones.addLookupsByName();
+		this.zones.addLookupsByName();
 
-	this.timerTicksSoFar = 0;
-}
+		this.timerTicksSoFar = 0;
+	}
 
-{
 	// static methods
 
-	World.new = function(universe)
+	static create(universe)
 	{
 		var mazeSizeInCells = new Coords(4, 4, 1);
 		var mazeCellSizeInPixels = new Coords(80, 80, 40);
@@ -26,7 +27,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		return returnValue;
 	}
 
-	World.random = function(mazeSizeInCells, mazeCellSizeInPixels, randomizer)
+	static random(mazeSizeInCells, mazeCellSizeInPixels, randomizer)
 	{
 		var amountToMoveForward = .4;
 		var amountToMoveBackward = amountToMoveForward / 2;
@@ -35,15 +36,15 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 		var actions =
 		[
-			new Action_Turn(new Coords(amountToYaw, 0, 0)),
-			new Action_DoSomething(),
-			new Action_Move(new Coords(0, amountToStrafe, 0)),
-			new Action_Turn(new Coords(0 - amountToYaw, 0, 0)),
-			new Action_Move(new Coords(-amountToMoveBackward, 0, 0)),
-			new Action_Move(new Coords(amountToMoveForward, 0, 0)),
-			new Action_Stop(),
-			new Action_Move(new Coords(0, 0 - amountToStrafe, 0)),
-			new Action_Jump(.6),
+			new Action_Turn(new Coords(0 - amountToYaw, 0, 0)), // 0 - a - turn right
+			new Action_DoSomething(), // 1
+			new Action_Move(new Coords(0, amountToStrafe, 0)), // 2
+			new Action_Turn(new Coords(amountToYaw, 0, 0)), // 3
+			new Action_Move(new Coords(-amountToMoveBackward, 0, 0)), // 4
+			new Action_Move(new Coords(amountToMoveForward, 0, 0)), // 5
+			new Action_Stop(), // 6
+			new Action_Move(new Coords(0, 0 - amountToStrafe, 0)), // 7
+			new Action_Jump(.6), // 8
 		];
 
 		var actionToInputsMappings =
@@ -275,7 +276,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			).absolute().sumOfDimensions();
 		}
 
-		zones = Zone.manyFromMaze
+		var zones = Zone.manyFromMaze
 		(
 			maze,
 			materials["Wall"],
@@ -289,14 +290,14 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		var nameOfZoneStart = cellPosOfStart.toString();
 		var zoneStart = zones[nameOfZoneStart];
 
-		var skeleton = SkeletonHelper.biped
+		var skeletonAtRest = SkeletonHelper.biped
 		(
 			6 // hack - figureHeightInPixels
 		);
 
 		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
 
-		var loc = new Location
+		var loc = new Disposition
 		(
 			cellPosOfStart.clone().multiply
 			(
@@ -318,10 +319,10 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		var transformPose = new Transform_MeshPoseWithSkeleton
 		(
 			mesh,
-			skeleton,
+			skeletonAtRest,
 			BoneInfluence.buildManyForBonesAndVertexGroups
 			(
-				skeleton.bonesAll,
+				skeletonAtRest.bonesAll,
 				mesh.vertexGroups
 			)
 		);
@@ -329,28 +330,21 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		(
 			new Transform_Multiple
 			([
-				new Transform_Overwrite(mesh),
+				//new Transform_Overwrite(mesh),
 				transformPose,
-				new Transform_Orient(loc.orientation),
-				new Transform_Translate(loc.pos)
+				new Transform_Orient2(loc.orientation), // hack
+				new Transform_Translate(loc.pos),
 			]),
 			visual
 		);
-		var transformAnimate = new Transform_Animate(animationDefnGroupBiped);
-		visual = new VisualGroup
-		([
-			new VisualTransform
-			(
-				new Transform_Multiple
-				([
-					new Transform_Overwrite(skeleton),
-					transformAnimate
-				]),
-				new VisualInvisible(transformPose.skeletonPosed)
-			),
-			visual
-		]);
+
 		var drawable = new Drawable(visual);
+
+		var skeletonPosed = transformPose.skeletonPosed;
+		var animatable = new Animatable
+		(
+			animationDefnGroupBiped, skeletonAtRest, skeletonPosed
+		);
 
 		var activities = new ActivityInstances();
 		var actor = new Actor
@@ -365,8 +359,8 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			"Player",
 			[
 				actor,
-				transformAnimate.animatable, // hack
-				new Collidable(mesh),
+				animatable, // hack
+				new Collidable(null, mesh),
 				drawable,
 				groundable,
 				locatable,
@@ -374,7 +368,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			]
 		);
 
-		loc = new Location
+		loc = new Disposition
 		(
 			cellPosOfStart.clone().add
 			(
@@ -406,7 +400,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		(
 			"MoverOther",
 			[
-				new Collidable(mesh),
+				new Collidable(null, mesh),
 				new Drawable(visual),
 				groundable,
 				locatable,
@@ -414,7 +408,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			]
 		);
 
-		loc = new Location
+		loc = new Disposition
 		(
 			cellPosOfStart.clone().add
 			(
@@ -446,14 +440,14 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		(
 			"Chest",
 			[
-				new Collidable(mesh),
+				new Collidable(null, mesh),
 				new Drawable(visual),
 				groundable,
 				locatable
 			]
 		);
 
-		loc = new Location
+		loc = new Disposition
 		(
 			cellPosOfStart.clone().add
 			(
@@ -485,7 +479,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		(
 			"Door",
 			[
-				new Collidable(mesh),
+				new Collidable(null, mesh),
 				new Drawable(visual),
 				groundable,
 				locatable
@@ -517,7 +511,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 	// instance methods
 
-	World.prototype.secondsElapsed = function()
+	secondsElapsed()
 	{
 		var now = new Date();
 		var secondsElapsed = Math.floor
@@ -530,12 +524,12 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 	// venue
 
-	World.prototype.finalize = function()
+	finalize()
 	{
 		// todo
 	}
 
-	World.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		this.meshesToDraw = [];
 
@@ -545,7 +539,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		{
 			var zone = this.zones[i];
 			var zoneEntity = zone.entities[0];
-			if (zoneEntity.collidable.collider.materials[1].name == "Start")
+			if (zoneEntity.collidable().collider.materials[1].name == "Start")
 			{
 				zoneStart = zone;
 				break;
@@ -593,9 +587,9 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			0 - focalLength
 		).divideScalar(followDivisor);
 
-		var loc = new Location
+		var loc = new Disposition
 		(
-			this.zoneNext.entities[0].locatable.loc.pos.clone().add
+			this.zoneNext.entities[0].locatable().loc.pos.clone().add
 			(
 				offsetOfCameraFromPlayer
 			),
@@ -623,7 +617,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		(
 			viewSizeInPixels,
 			focalLength,
-			cameraEntity.locatable.loc
+			cameraEntity.locatable().loc
 		);
 
 		cameraEntity.constraints =
@@ -639,12 +633,12 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		this.dateStarted = new Date();
 	}
 
-	World.prototype.updateForTimerTick = function(universe)
+	updateForTimerTick(universe)
 	{
 		if (this.zoneNext != null)
 		{
 			var zoneNextEntity = this.zoneNext.entities[0];
-			if (zoneNextEntity.collidable.collider.materials[0].name == "Goal")
+			if (zoneNextEntity.collidable().collider.materials[0].name == "Goal")
 			{
 				var messageWin =
 					"You reached the goal in "
@@ -673,7 +667,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			{
 				var zoneActive = this.zonesActive[i];
 				var zoneActiveEntity = zoneActive.entities[0];
-				var facesForZone = zoneActiveEntity.collidable.collider.faces();
+				var facesForZone = zoneActiveEntity.collidable().collider.faces();
 				facesForZonesActive.append(facesForZone);
 			}
 
@@ -694,19 +688,19 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		this.draw(universe);
 
 		var zoneCurrentEntity = this.zoneCurrent.entities[0];
-		var zoneCurrentBounds = zoneCurrentEntity.collidable.collider.geometry.box();
+		var zoneCurrentBounds = zoneCurrentEntity.collidable().collider.geometry.box();
 
-		if (zoneCurrentBounds.containsPoint(this.entityForPlayer.locatable.loc.pos) == false)
+		if (zoneCurrentBounds.containsPoint(this.entityForPlayer.locatable().loc.pos) == false)
 		{
 			for (var z = 0; z < this.zonesActive.length; z++)
 			{
 				var zoneActive = this.zonesActive[z];
 				var zoneActiveEntity = zoneActive.entities[0];
-				var zoneActiveMesh = zoneActiveEntity.collidable.collider;
+				var zoneActiveMesh = zoneActiveEntity.collidable().collider;
 				var zoneActiveBounds = zoneActiveMesh.geometry.box();
 				var isPlayerInZoneActive = zoneActiveBounds.containsPoint
 				(
-					this.entityForPlayer.locatable.loc.pos
+					this.entityForPlayer.locatable().loc.pos
 				);
 				if (isPlayerInZoneActive == true)
 				{
@@ -725,11 +719,11 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 	// drawable
 
-	World.prototype.draw = function(universe)
+	draw(universe)
 	{
 		var display = universe.display;
 		var displayTypeName = display.constructor.name;
-		if (displayTypeName == Display.name)
+		if (displayTypeName == Display2D.name)
 		{
 			this.draw2D(universe);
 		}
@@ -739,13 +733,13 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		}
 	}
 
-	World.prototype.draw2D = function(universe)
+	draw2D(universe)
 	{
 		var display = universe.display;
 		var world  = this;
 		var facesToDraw = [];
 
-		var cameraPos = world.camera.locatable.loc.pos;
+		var cameraPos = world.camera.locatable().loc.pos;
 
 		var spacePartitioningTreeRoot =
 			world.spacePartitioningTreeForZonesActive.nodeRoot;
@@ -767,7 +761,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 				// Find the floor the mover is standing on,
 				// and draw the mover immediately after that floor.
 
-				var entityPos = entity.locatable.loc.pos;
+				var entityPos = entity.locatable().loc.pos;
 				var edgeForFootprint = new Edge
 				([
 					entityPos,
@@ -784,7 +778,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 					if (isEntityStandingOnFace)
 					{
-						var moverFaces = entity.collidable.collider.faces();
+						var moverFaces = entity.collidable().collider.faces();
 						for (var f = 0; f < moverFaces.length; f++)
 						{
 							var moverFace = moverFaces[f];
@@ -806,7 +800,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		display.drawText(world.secondsElapsed(), 10, new Coords(0, 20));
 	}
 
-	World.prototype.draw3D = function(universe)
+	draw3D(universe)
 	{
 		var display = universe.display;
 		display.drawBackground();
@@ -823,11 +817,11 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 			for (var b = 0; b < entities.length; b++)
 			{
 				var entity = entities[b];
-				var drawable = entity.drawable;
+				var drawable = entity.drawable();
 				if (drawable != null)
 				{
 					var entityVisual = drawable.visual;
-					entityVisual.draw(universe, this, display, entity);
+					entityVisual.draw(universe, this, zone, entity, display);
 				}
 			}
 		}
@@ -835,7 +829,7 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 
 	// collisions
 
-	World.prototype.collisionsWithEdge = function(universe, edge, collisions)
+	collisionsWithEdge(universe, edge, collisions)
 	{
 		if (collisions == null)
 		{
@@ -856,4 +850,10 @@ function World(name, actions, actionToInputsMappings, materials, sizeInPixels, z
 		return collisions;
 	}
 
+	// Controls.
+
+	toControl()
+	{
+		return new ControlNone(); // todo
+	}
 }

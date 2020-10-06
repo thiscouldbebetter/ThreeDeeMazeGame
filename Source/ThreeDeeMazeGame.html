@@ -4,17 +4,24 @@
 <script type="text/javascript" src="main.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Extensions/ArrayExtensions.js"></script>
+<script type="text/javascript" src="Framework/Source/Extensions/ArrayHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Extensions/NumberExtensions.js"></script>
+<script type="text/javascript" src="Framework/Source/Extensions/NumberHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Extensions/StringExtensions.js"></script>
+<script type="text/javascript" src="Framework/Source/Extensions/StringHelper.js"></script>
+
+<!-- hack -->
+<script type="text/javascript" src="Framework/Source/Model/EntityProperty.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Controls/ControlActionNames.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlBase.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlButton.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlContainer.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlContainerTransparent.js"></script>
-<script type="text/javascript" src="Framework/Source/Controls/ControlDynamic.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlLabel.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlList.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlNone.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlScrollbar.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlSelect.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlSelectOption.js"></script>
@@ -26,8 +33,9 @@
 <script type="text/javascript" src="Framework/Source/Controls/VenueMessage.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Display/Color.js"></script>
-<script type="text/javascript" src="Framework/Source/Display/Display.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Display2D.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Display3D.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Drawable.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/FaceTextured.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Lighting.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Material.js"></script>
@@ -45,6 +53,7 @@
 <script type="text/javascript" src="Framework/Source/Display/Animation/AnimationKeyframe.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Animation/Transform_Animate.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Display/Visuals/VisualNone.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualGroup.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualImageFromLibrary.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualImageScaled.js"></script>
@@ -56,10 +65,11 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/CollisionHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Location.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Disposition.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Orientation.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Polar.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Quaternion.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/RangeExtent.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Rotation.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Box.js"></script>
@@ -68,13 +78,18 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Edge.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Face.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Hemispace.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/MapLocated.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Plane.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeContainer.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAll.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAny.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeInverse.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Sphere.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapLocated.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maze/Maze.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maze/MazeCell.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maze/MazeCellNetwork.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/MeshBuilder.js"></script>
@@ -112,21 +127,29 @@
 <script type="text/javascript" src="Framework/Source/Media/SoundHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/VideoHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Video.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/VisualSound.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Model/Actor.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Collidable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Drawable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Locatable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Movable.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Universe.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/VenueWorld.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Actors/Action.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Actors/Actor.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Physics/Collidable.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Physics/Locatable.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Physics/Movable.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Profiles/Profile.js"></script>
 <script type="text/javascript" src="Framework/Source/Profiles/ProfileHelper.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Storage/Serializer.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/StorageHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Storage/Compressor/BitStream.js"></script>
+<script type="text/javascript" src="Framework/Source/Storage/Compressor/ByteStreamFromString.js"></script>
+<script type="text/javascript" src="Framework/Source/Storage/Compressor/CompressorLZW.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Utility/DateTime.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/IDHelper.js"></script>
@@ -135,10 +158,6 @@
 <script type="text/javascript" src="Framework/Source/Utility/Reference.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/TimerHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/VenueTask.js"></script>
-
-<script type="text/javascript" src="Framework/Source/Utility/Maze/Maze.js"></script>
-<script type="text/javascript" src="Framework/Source/Utility/Maze/MazeCell.js"></script>
-<script type="text/javascript" src="Framework/Source/Utility/Maze/MazeCellNetwork.js"></script>
 
 <script type="text/javascript" src="Actions/Action_DoNothing.js"></script>
 <script type="text/javascript" src="Actions/Action_DoSomething.js"></script>
@@ -160,6 +179,8 @@
 <script type="text/javascript" src="Display/DisplayExtensions.js"></script>
 <script type="text/javascript" src="Display/SpacePartitioningTree.js"></script>
 <script type="text/javascript" src="Display/SpacePartitioningTreeNode.js"></script>
+
+<script type="text/javascript" src="Geometry/Transforms/Transform_Orient2.js"></script>
 
 <script type="text/javascript" src="Model/Groundable.js"></script>
 <script type="text/javascript" src="Model/Zone.js"></script>

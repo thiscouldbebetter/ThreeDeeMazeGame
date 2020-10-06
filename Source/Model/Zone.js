@@ -9,10 +9,10 @@ class Zone
 		this.entities = entities;
 
 		var entity = this.entities[0];
-		var meshTransformed = entity.collidable.collider;
+		var meshTransformed = entity.collidable().collider;
 		meshTransformed.transform
 		(
-			new Transform_Locate(entity.locatable.loc)
+			new Transform_Locate(entity.locatable().loc)
 		);
 	}
 
@@ -114,7 +114,7 @@ class Zone
 			materialRoomFloor
 		);
 
-		var loc = new Location(cellPosInPixels.clone());
+		var loc = new Disposition(cellPosInPixels.clone());
 		var visual = new VisualTransform
 		(
 			new Transform_Multiple
@@ -129,7 +129,7 @@ class Zone
 		(
 			this.name,
 			[
-				new Collidable(mesh),
+				new Collidable(null, mesh),
 				new Drawable(visual),
 				new Locatable(loc)
 			]
@@ -259,7 +259,7 @@ class Zone
 						.1 // wallThickness
 					);
 
-					var loc = new Location(connectorPosInPixels.clone());
+					var loc = new Disposition(connectorPosInPixels.clone());
 					var visual = new VisualTransform
 					(
 						new Transform_Multiple
@@ -274,7 +274,7 @@ class Zone
 					(
 						this.name,
 						[
-							new Collidable(mesh),
+							new Collidable(null, mesh),
 							new Drawable(visual),
 							new Locatable(loc)
 						]
@@ -307,7 +307,7 @@ class Zone
 		{
 			var entity = this.entities[b];
 
-			var actor = entity.actor;
+			var actor = entity.actor();
 			if (actor != null)
 			{
 				var activity = actor.activity;
@@ -329,9 +329,11 @@ class Zone
 				}
 			}
 
-			if (entity.animatable != null)
+			var entityAnimatable = entity.animatable();
+			if (entityAnimatable != null)
 			{
-				entity.animatable.updateForTimerTick(universe, world, this, entity);
+				entityAnimatable.updateForTimerTick(universe, world, this, entity);
+var todo = entityAnimatable.transformableAtRest.equals(entityAnimatable.transformableTransformed);
 			}
 
 			var entityConstraints = entity.constraints;
@@ -372,7 +374,7 @@ class Zone
 			collisions = [];
 		}
 
-		var zoneMesh = this.entities[0].collidable.collider.geometry;
+		var zoneMesh = this.entities[0].collidable().collider.geometry;
 
 		universe.collisionHelper.collisionsOfEdgeAndMesh
 		(

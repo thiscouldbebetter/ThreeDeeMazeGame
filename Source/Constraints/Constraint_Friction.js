@@ -10,7 +10,7 @@ class Constraint_Friction
 
 	constrain(universe, world, zone, entityToConstrain)
 	{
-		var vel = entityToConstrain.locatable.loc.vel;
+		var vel = entityToConstrain.locatable().loc.vel;
 		var velZ = vel.z;
 		var speed = vel.magnitude();
 		if (speed > this.speedMax)
@@ -24,13 +24,11 @@ class Constraint_Friction
 		else
 		{
 			vel.clear();
-			var animatable = entityToConstrain.animatable;
+			var animatable = entityToConstrain.animatable();
 			if (animatable != null)
 			{
-				if (animatable.animationDefnNameCurrent == "Walk")
-				{
-					animatable.animationDefnNameCurrent = null;
-				}
+				animatable.animationStopByName("Walk");
+				animatable.transformableReset();
 			}
 		}
 		vel.z = velZ;

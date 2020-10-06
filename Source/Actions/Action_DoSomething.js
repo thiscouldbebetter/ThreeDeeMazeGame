@@ -8,6 +8,7 @@ class Action_DoSomething
 
 	perform(universe, world, zone, entity)
 	{
-		entity.animatable.animationStart("DoSomething");
+		var animatable = entity.animatable();
+		animatable.animationStartByName("DoSomething", world);
 	}
 }

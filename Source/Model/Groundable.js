@@ -7,7 +7,7 @@ class Groundable
 
 		var meshBeingStoodOn = null;
 
-		var pos = entity.locatable.loc.pos;
+		var pos = entity.locatable().loc.pos;
 		var edgeLength = 100;
 		var gravityDirection = new Coords(0, 0, edgeLength);
 		var edgeForFootprint = new Edge
@@ -22,13 +22,13 @@ class Groundable
 		{
 			var zone = zonesToCheck[i];
 			var zoneEntity = zone.entities[0];
-			var zoneMesh = zoneEntity.collidable.collider.geometry;
+			var zoneMesh = zoneEntity.collidable().collider.geometry;
 			var collisions =
 				universe.collisionHelper.collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh);
 			if (collisions.some(x => x.isActive))
 			{
 				var collision = collisions[0];
-				var meshBelowEntity = collision.colliders.Mesh;
+				var meshBelowEntity = collision.collidersByName.get(Mesh.name);
 				if (collision.distanceToCollision <= edgeLength)
 				{
 					meshBeingStoodOn = meshBelowEntity;
@@ -46,4 +46,9 @@ class Groundable
 	{
 		return (this.ground(universe, world, place, entity) != null);
 	}
+}
+
+Entity.prototype.groundable = function()
+{
+	return this.propertyByName(Groundable.name);
 }

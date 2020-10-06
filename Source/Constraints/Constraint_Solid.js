@@ -13,7 +13,7 @@ class Constraint_Solid
 		universe, world, zone, entityToConstrain
 	)
 	{
-		var entityLoc = entityToConstrain.locatable.loc;
+		var entityLoc = entityToConstrain.locatable().loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;
@@ -56,7 +56,8 @@ class Constraint_Solid
 				{
 					var collisionClosest =
 						universe.collisionHelper.collisionClosest(collisions);
-					var faceCollidedWith = collisionClosest.colliders["Face"];
+					var faceCollidedWith =
+						collisionClosest.collidersByName.get(Face.name);
 
 					var planeCollidedWith = faceCollidedWith.plane();
 					var planeNormal = planeCollidedWith.normal;

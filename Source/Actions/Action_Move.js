@@ -14,9 +14,9 @@ class Action_Move
 
 	perform(universe, world, place, entity)
 	{
-		var entityLoc = entity.locatable.loc;
+		var entityLoc = entity.locatable().loc;
 		var isEntityOnGround =
-			entity.groundable.isGrounded(universe, world, place, entity);
+			entity.groundable().isGrounded(universe, world, place, entity);
 		if (isEntityOnGround)
 		{
 			this.transformOrient.orientation = entityLoc.orientation;
@@ -34,7 +34,8 @@ class Action_Move
 				this.acceleration
 			);
 
-			entity.animatable.animationStart("Walk");
+			var animatable = entity.animatable();
+			animatable.animationStartByName("Walk", world);
 		}
 	}
 }

@@ -10,9 +10,9 @@ class Constraint_Follow
 
 	constrain(universe, world, zone, entityToConstrain)
 	{
-		var entityToConstrainLoc = entityToConstrain.locatable.loc;
+		var entityToConstrainLoc = entityToConstrain.locatable().loc;
 		var entityToConstrainPos = entityToConstrainLoc.pos;
-		var entityToFollowLoc = this.entityToFollow.locatable.loc;
+		var entityToFollowLoc = this.entityToFollow.locatable().loc;
 		var entityToFollowPos = entityToFollowLoc.pos;
 
 		var displacementToLeader = entityToFollowPos.clone().subtract(entityToConstrainPos);

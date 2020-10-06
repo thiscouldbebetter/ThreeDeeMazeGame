@@ -8,9 +8,9 @@ class Constraint_Gravity
 
 	constrain(universe, world, place, entityToConstrain)
 	{
-		var entityLoc = entityToConstrain.locatable.loc;
+		var entityLoc = entityToConstrain.locatable().loc;
 		var isEntityGrounded =
-			entityToConstrain.groundable.isGrounded(universe, world, place, entityToConstrain);
+			entityToConstrain.groundable().isGrounded(universe, world, place, entityToConstrain);
 
 		if (isEntityGrounded == false)
 		{
@@ -21,17 +21,17 @@ class Constraint_Gravity
 			entityLoc.vel.z = 0;
 			entityLoc.pos.z = -.01;
 
-			var animatable = entityToConstrain.animatable;
+			var animatable = entityToConstrain.animatable();
 			if (animatable != null)
 			{
 				if (animatable.animationDefnNameCurrent == "Jump")
 				{
-					animatable.animationStart("Walk");
+					animatable.animationStartByName("Walk", world);
 				}
 			}
 		}
 
-		entityToConstrain.groundable.ground
+		entityToConstrain.groundable().ground
 		(
 			universe, world, place, entityToConstrain
 		);

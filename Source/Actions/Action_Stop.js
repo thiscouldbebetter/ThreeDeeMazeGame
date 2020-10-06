@@ -8,7 +8,7 @@ class Action_Stop
 
 	perform(universe, world, zone, entity)
 	{
-		var entityLoc = entity.locatable.loc;
+		var entityLoc = entity.locatable().loc;
 		entityLoc.vel.clear();
 		entityLoc.accel.clear();
 	}

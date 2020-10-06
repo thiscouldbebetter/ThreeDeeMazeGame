@@ -13,7 +13,7 @@ class Action_Turn
 
 	perform(universe, world, zone, entity)
 	{
-		var entityOrientation = entity.locatable.loc.orientation;
+		var entityOrientation = entity.locatable().loc.orientation;
 		this.orientationTemp.overwriteWith(entityOrientation);
 
 		entityOrientation.overwriteWith
