@@ -13,18 +13,18 @@ class ActivityInstances
 			var inputsActive = inputHelper.inputsPressed; //Active;
 			var actionsFromActor = entity.actor().actions;
 
-			var actions = world.actions;
-			var mappings = world.actionToInputsMappings;
+			var actionsByName = world.actionsByName;
+			var mappingsByInputName = world.actionToInputsMappingsByInputName;
 
 			for (var i = 0; i < inputsActive.length; i++)
 			{
 				var inputActive = inputsActive[i];
 
-				var mapping = mappings[inputActive.name];
+				var mapping = mappingsByInputName.get(inputActive.name);
 				if (mapping != null)
 				{
 					var actionName = mapping.actionName;
-					var action = actions[actionName];
+					var action = actionsByName.get(actionName);
 					var ticksToHold =
 					(
 						action.ticksToHold == null

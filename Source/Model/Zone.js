@@ -333,13 +333,13 @@ class Zone
 			if (entityAnimatable != null)
 			{
 				entityAnimatable.updateForTimerTick(universe, world, this, entity);
-var todo = entityAnimatable.transformableAtRest.equals(entityAnimatable.transformableTransformed);
 			}
 
-			var entityConstraints = entity.constraints;
+			var entityConstrainable = entity.constrainable();
 
-			if (entityConstraints != null)
+			if (entityConstrainable != null)
 			{
+				var entityConstraints = entityConstrainable.constraints;
 				for (var c = 0; c < entityConstraints.length; c++)
 				{
 					var constraint = entityConstraints[c];
@@ -353,12 +353,12 @@ var todo = entityAnimatable.transformableAtRest.equals(entityAnimatable.transfor
 	{
 		var returnValues = [];
 
-		var zones = world.zones;
+		var zonesByName = world.zonesByName;
 		var namesOfZonesAdjacent = this.namesOfZonesAdjacent;
 		for (var i = 0; i < namesOfZonesAdjacent.length; i++)
 		{
 			var nameOfZoneAdjacent = namesOfZonesAdjacent[i];
-			var zoneAdjacent = zones[nameOfZoneAdjacent];
+			var zoneAdjacent = zonesByName.get(nameOfZoneAdjacent);
 			returnValues.push(zoneAdjacent);
 		}
 

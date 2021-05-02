@@ -32,19 +32,19 @@ function main()
 		new Coords(320, 240, 2000),
 		"Font", // fontName,
 		10, // fontHeightInPixels,
-		"White", // colorFore,
-		"Black", // colorBack
+		Color.byName("White"), // colorFore,
+		Color.byName("Black") // colorBack
 	);
 
 	var universe = new Universe
 	(
 		"ThreeDeeMaze",
-		"0.0.0", // version
+		"0.0.0-20210502-0200", // version
 		new TimerHelper(20),
 		display,
 		mediaLibrary,
-		ControlStyle.Instances().Default,
-		null //world
+		ControlBuilder.default(),
+		World.create
 	);
 
 	universe.initialize

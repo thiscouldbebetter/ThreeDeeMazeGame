@@ -4,14 +4,19 @@ class World
 	constructor(name, actions, actionToInputsMappings, materials, sizeInPixels, zones, entityForPlayer)
 	{
 		this.name = name;
-		this.actions = actions.addLookupsByName();
-		this.actionToInputsMappings = actionToInputsMappings.addLookups( function(x) { return x.inputNames[0]; } );
+		this.actions = actions;
+		this.actionsByName = ArrayHelper.addLookupsByName(this.actions);
+		this.actionToInputsMappings = actionToInputsMappings;
+		this.actionToInputsMappingsByInputName = ArrayHelper.addLookups
+		(
+			this.actionToInputsMappings, x => x.inputNames[0]
+		);
 		this.materials = materials;
 		this.sizeInPixels = sizeInPixels;
 		this.zones = zones;
 		this.entityForPlayer = entityForPlayer;
 
-		this.zones.addLookupsByName();
+		this.zonesByName = ArrayHelper.addLookupsByName(this.zones);
 
 		this.timerTicksSoFar = 0;
 	}
@@ -191,7 +196,8 @@ class World
 					]
 				)
 			),
-		].addLookupsByName();
+		];
+		var texturesByName = ArrayHelper.addLookupsByName(textures);
 
 		var materials = [];
 
@@ -208,7 +214,7 @@ class World
 			materials.push(materialForTexture);
 		}
 
-		materials.addLookupsByName();
+		var materialsByName = ArrayHelper.addLookupsByName(materials);
 
 		var meshBuilder = new MeshBuilder();
 
@@ -230,26 +236,37 @@ class World
 		var chestHeight = moverHeight / 4;
 		var doorHeight = moverHeight / 2 * 1.33; // ?
 
-		var meshDefns = {};
-		meshDefns["Chest"] = meshBuilder.box
-		(
-			materials["Chest"],
-			new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
-			new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
-		).faceTexturesBuild();
+		var meshDefnsByName = new Map
+		([
+			[
+				"Chest", 
+				meshBuilder.box
+				(
+					materialsByName.get("Chest"),
+					new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
+					new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
+				).faceTexturesBuild()
+			],
 
-		meshDefns["Door"] = meshBuilder.box
-		(
-			materials["Door"],
-			new Coords(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
-			new Coords(0, 0, -1).multiplyScalar(doorHeight) // pos
-		).faceTexturesBuild();
+			[
+				"Door",
+				meshBuilder.box
+				(
+					materialsByName.get("Door"),
+					new Coords(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
+					new Coords(0, 0, -1).multiplyScalar(doorHeight) // pos
+				).faceTexturesBuild()
+			],
 
-		meshDefns["Mover"] = meshBuilder.biped
-		(
-			materials["Mover"],
-			moverHeight
-		).faceTexturesBuild();
+			[
+				"Mover", 
+				meshBuilder.biped
+				(
+					materialsByName.get("Mover"),
+					moverHeight
+				).faceTexturesBuild()
+			]
+		]);
 
 		var cellPosOfStart = new Coords().randomize().multiply
 		(
@@ -279,16 +296,17 @@ class World
 		var zones = Zone.manyFromMaze
 		(
 			maze,
-			materials["Wall"],
-			materials["Floor"],
+			materialsByName.get("Wall"),
+			materialsByName.get("Floor"),
 			cellPosOfStart,
-			materials["Start"],
+			materialsByName.get("Start"),
 			cellPosOfGoal,
-			materials["Goal"]
+			materialsByName.get("Goal")
 		);
 
 		var nameOfZoneStart = cellPosOfStart.toString();
-		var zoneStart = zones[nameOfZoneStart];
+		var zonesByName = ArrayHelper.addLookupsByName(zones);
+		var zoneStart = zonesByName.get(nameOfZoneStart);
 
 		var skeletonAtRest = SkeletonHelper.biped
 		(
@@ -314,7 +332,7 @@ class World
 			nameOfZoneStart // venue
 		);
 		var locatable = new Locatable(loc);
-		var mesh = meshDefns["Mover"];
+		var mesh = meshDefnsByName.get("Mover");
 		var visual = new VisualMesh(mesh.clone());
 		var transformPose = new Transform_MeshPoseWithSkeleton
 		(
@@ -341,7 +359,7 @@ class World
 		var drawable = new Drawable(visual);
 
 		var skeletonPosed = transformPose.skeletonPosed;
-		var animatable = new Animatable
+		var animatable = new Animatable2
 		(
 			animationDefnGroupBiped, skeletonAtRest, skeletonPosed
 		);
@@ -385,7 +403,7 @@ class World
 			nameOfZoneStart // venue
 		);
 		locatable = new Locatable(loc);
-		var mesh = meshDefns["Mover"];
+		var mesh = meshDefnsByName.get("Mover");
 		var visual = new VisualTransform
 		(
 			new Transform_Multiple
@@ -425,7 +443,7 @@ class World
 			nameOfZoneStart // venue
 		);
 		locatable = new Locatable(loc);
-		mesh = meshDefns["Chest"];
+		mesh = meshDefnsByName.get("Chest");
 		var visual = new VisualTransform
 		(
 			new Transform_Multiple
@@ -464,7 +482,7 @@ class World
 			nameOfZoneStart // venue
 		);
 		locatable = new Locatable(loc);
-		mesh = meshDefns["Door"];
+		mesh = meshDefnsByName.get("Door");
 		var visual = new VisualTransform
 		(
 			new Transform_Multiple
@@ -486,13 +504,16 @@ class World
 			]
 		);
 
-		zoneStart.entities.addMany
-		([
-			entityForPlayer,
-			entityForMoverOther,
-			entityForChest,
-			entityForDoor,
-		]);
+		ArrayHelper.addMany
+		(
+			zoneStart.entities,
+			[
+				entityForPlayer,
+				entityForMoverOther,
+				entityForChest,
+				entityForDoor,
+			]
+		);
 
 		var returnValue = new World
 		(
@@ -564,6 +585,7 @@ class World
 			new Constraint_Movable(),
 		];
 
+		var constrainable = new Constrainable(constraintsCommon);
 		for (var z = 0; z < this.zones.length; z++)
 		{
 			var zone = this.zones[z];
@@ -573,7 +595,7 @@ class World
 			{
 				var entity = entities[i];
 
-				entity.constraints = constraintsCommon.slice();
+				entity.propertyAdd(constrainable);
 			}
 		}
 
@@ -608,6 +630,11 @@ class World
 		(
 			"Camera",
 			[
+				new Constrainable
+				([
+					new Constraint_Follow(this.entityForPlayer, focalLength / followDivisor),
+					new Constraint_OrientToward(this.entityForPlayer),
+				]),
 				locatable,
 				new Groundable()
 			]
@@ -619,12 +646,6 @@ class World
 			focalLength,
 			cameraEntity.locatable().loc
 		);
-
-		cameraEntity.constraints =
-		[
-			new Constraint_Follow(this.entityForPlayer, focalLength / followDivisor),
-			new Constraint_OrientToward(this.entityForPlayer),
-		].addLookupsByName();
 
 		zoneStart.entities.push(cameraEntity);
 
@@ -668,7 +689,7 @@ class World
 				var zoneActive = this.zonesActive[i];
 				var zoneActiveEntity = zoneActive.entities[0];
 				var facesForZone = zoneActiveEntity.collidable().collider.faces();
-				facesForZonesActive.append(facesForZone);
+				ArrayHelper.append(facesForZonesActive, facesForZone);
 			}
 
 			this.spacePartitioningTreeForZonesActive = SpacePartitioningTree.fromFaces
@@ -702,13 +723,18 @@ class World
 				(
 					this.entityForPlayer.locatable().loc.pos
 				);
-				if (isPlayerInZoneActive == true)
+
+				if (isPlayerInZoneActive)
 				{
+					var zoneCurrentEntities = this.zoneCurrent.entities;
+					ArrayHelper.remove(zoneCurrentEntities, this.entityForPlayer);
+					ArrayHelper.remove(zoneCurrentEntities, this.cameraEntity);
+
 					this.zoneNext = zoneActive;
-					this.zoneCurrent.entities.remove(this.entityForPlayer);
-					this.zoneCurrent.entities.remove(this.cameraEntity);
-					this.zoneNext.entities.push(this.entityForPlayer);
-					this.zoneNext.entities.push(this.cameraEntity);
+					var zoneNextEntities = this.zoneNext.entities;
+					zoneNextEntities.push(this.entityForPlayer);
+					zoneNextEntities.push(this.cameraEntity);
+
 					break;
 				}
 			}
@@ -855,5 +881,10 @@ class World
 	toControl()
 	{
 		return new ControlNone(); // todo
+	}
+
+	toVenue()
+	{
+		return new VenueWorld(this);
 	}
 }
