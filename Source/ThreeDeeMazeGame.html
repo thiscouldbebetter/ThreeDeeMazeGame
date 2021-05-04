@@ -1,8 +1,6 @@
 <html>
 <body>
 
-<script type="text/javascript" src="main.js"></script>
-
 <script type="text/javascript" src="Framework/Source/Helpers/ArrayHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Helpers/NumberHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Helpers/StringHelper.js"></script>
@@ -60,8 +58,6 @@
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualTransform.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Camera.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/CollisionHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Disposition.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Orientation.js"></script>
@@ -69,6 +65,9 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Quaternion.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/RangeExtent.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Rotation.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Collisions/Collision.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionHelper.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Box.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/BoxRotated.js"></script>
@@ -131,9 +130,15 @@
 <script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Universe.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/VenueWorld.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/World.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/WorldDefn.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Actors/Action.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Actors/Activity.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Actors/ActivityDefn.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Actors/Actor.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Places/Place.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Physics/Collidable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Physics/Constrainable.js"></script>
@@ -141,7 +146,6 @@
 <script type="text/javascript" src="Framework/Source/Model/Physics/Movable.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Profiles/Profile.js"></script>
-<script type="text/javascript" src="Framework/Source/Profiles/ProfileHelper.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Storage/Serializer.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/StorageHelper.js"></script>
@@ -156,8 +160,12 @@
 <script type="text/javascript" src="Framework/Source/Utility/RandomizerSystem.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/Reference.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/TimerHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/TreeHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/VenueTask.js"></script>
 
+<script type="text/javascript" src="Imports.js"></script>
+
+<script type="text/javascript" src="Actions/ActionTimed.js"></script>
 <script type="text/javascript" src="Actions/Action_DoNothing.js"></script>
 <script type="text/javascript" src="Actions/Action_DoSomething.js"></script>
 <script type="text/javascript" src="Actions/Action_Move.js"></script>
@@ -184,15 +192,14 @@
 <script type="text/javascript" src="Model/Groundable.js"></script>
 <script type="text/javascript" src="Model/Zone.js"></script>
 
-<script type="text/javascript" src="Utilities/TreeHelper.js"></script>
-
 <script type="text/javascript" src="World.js"></script>
 
+<script type="text/javascript" src="Game.js"></script>
+
 <script type="text/javascript">
-
-main();
-
+new Game().start();
 </script>
+
 </body>
 </html>
 

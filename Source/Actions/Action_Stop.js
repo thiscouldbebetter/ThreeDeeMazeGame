@@ -1,15 +1,11 @@
-
-class Action_Stop
-{
-	constructor()
-	{
-		this.name = "Stop";
-	}
-
-	perform(universe, world, zone, entity)
-	{
-		var entityLoc = entity.locatable().loc;
-		entityLoc.vel.clear();
-		entityLoc.accel.clear();
-	}
+"use strict";
+class Action_Stop extends ActionTimed {
+    constructor() {
+        super("Stop");
+    }
+    perform(universe, world, place, entity) {
+        var entityLoc = entity.locatable().loc;
+        entityLoc.vel.clear();
+        entityLoc.accel.clear();
+    }
 }
