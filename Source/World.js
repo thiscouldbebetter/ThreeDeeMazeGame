@@ -187,7 +187,7 @@ class WorldExtended extends World {
             drawable,
             groundable,
             locatable,
-            Movable.create()
+            Movable.default()
         ]);
         loc = new Disposition(cellPosOfStart.clone().add(new Coords(1, 1, 0).multiplyScalar(.1)).multiply(maze.cellSizeInPixels), new Orientation(new Coords(0, 1, 0), new Coords(0, 0, 1)), nameOfZoneStart // venue
         );
@@ -203,7 +203,7 @@ class WorldExtended extends World {
             Drawable.fromVisual(visual),
             groundable,
             locatable,
-            Movable.create()
+            Movable.default()
         ]);
         loc = new Disposition(cellPosOfStart.clone().add(new Coords(1, -1, 0).multiplyScalar(.05)).multiply(maze.cellSizeInPixels), new Orientation(new Coords(1, -1, 0), new Coords(0, 0, 1)), nameOfZoneStart // venue
         );
@@ -249,9 +249,8 @@ class WorldExtended extends World {
         var activityDefns = [
             activityDefnUserInputAccept
         ];
-        var returnValue = new WorldDefn([
-            activityDefns
-        ]);
+        var returnValue = new WorldDefn(null, // actions
+        activityDefns, null, null, null, null);
         return returnValue;
     }
     // instance methods
@@ -265,7 +264,7 @@ class WorldExtended extends World {
     finalize() {
         // todo
     }
-    initialize(universe) {
+    initialize(uwpe) {
         this.meshesToDraw = [];
         // todo - hack
         var zoneStart;
@@ -303,6 +302,7 @@ class WorldExtended extends World {
                 entity.propertyAdd(constrainable);
             }
         }
+        var universe = uwpe.universe;
         var viewSizeInPixels = universe.display.sizeInPixels.clone();
         var focalLength = viewSizeInPixels.z / 16;
         var followDivisor = 16;
@@ -325,7 +325,8 @@ class WorldExtended extends World {
         this.cameraEntity = cameraEntity;
         this.dateStarted = new Date();
     }
-    updateForTimerTick(universe) {
+    updateForTimerTick(uwpe) {
+        var universe = uwpe.universe;
         if (this.zoneNext != null) {
             var zoneNextEntity = this.zoneNext.entities[0];
             var zoneNextMesh = zoneNextEntity.collidable().collider;
@@ -357,7 +358,7 @@ class WorldExtended extends World {
         }
         for (var z = 0; z < this.zonesActive.length; z++) {
             var zoneActive = this.zonesActive[z];
-            zoneActive.updateForTimerTick(universe, this);
+            zoneActive.updateForTimerTick(uwpe);
         }
         this.draw(universe);
         var zoneCurrentEntity = this.zoneCurrent.entities[0];
@@ -435,25 +436,28 @@ class WorldExtended extends World {
         }
         display.drawBackground(null, null);
         DisplayHelper.drawFacesForCamera(display, facesToDraw, world.cameraEntity);
-        display.drawText(world.name, 10, Coords.fromXY(0, 10), null, null, null, null, null // ?
+        display.drawText(world.name, 10, Coords.fromXY(0, 10), null, null, null, null // ?
         );
-        display.drawText("" + world.secondsElapsed(), 10, Coords.fromXY(0, 20), null, null, null, null, null // ?
+        display.drawText("" + world.secondsElapsed(), 10, Coords.fromXY(0, 20), null, null, null, null // ?
         );
     }
     draw3D(universe) {
+        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, null, null);
         var display = universe.display;
         display.drawBackground(null, null);
         display.cameraSet(this.camera);
         display.lightingSet(null); // todo
         for (var z = 0; z < this.zonesActive.length; z++) {
             var zone = this.zonesActive[z];
+            uwpe.placeSet(zone);
             var entities = zone.entities;
             for (var b = 0; b < entities.length; b++) {
                 var entity = entities[b];
+                uwpe.entitySet(entity);
                 var drawable = entity.drawable();
                 if (drawable != null) {
                     var entityVisual = drawable.visual;
-                    entityVisual.draw(universe, this, zone, entity, display);
+                    entityVisual.draw(uwpe, display);
                 }
             }
         }

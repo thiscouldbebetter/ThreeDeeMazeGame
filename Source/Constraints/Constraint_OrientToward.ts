@@ -15,11 +15,10 @@ class Constraint_OrientToward implements Constraint
 		);
 	}
 
-	constrain
-	(
-		universe: Universe, world: World, place: Place, entityToConstrain: Entity
-	): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entityToConstrain = uwpe.entity;
+
 		var entityToConstrainLoc = entityToConstrain.locatable().loc;
 		var targetLoc = this.targetEntity.locatable().loc;
 		var entityOrientationForward = targetLoc.pos.clone().subtract
@@ -36,4 +35,9 @@ class Constraint_OrientToward implements Constraint
 			)
 		);
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
+
 }

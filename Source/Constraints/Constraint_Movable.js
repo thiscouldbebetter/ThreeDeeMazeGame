@@ -3,7 +3,8 @@ class Constraint_Movable {
     constructor() {
         this.transformLocate = new Transform_Locate(null);
     }
-    constrain(universe, world, place, entityToConstrain) {
+    constrain(uwpe) {
+        var entityToConstrain = uwpe.entity;
         var entityLoc = entityToConstrain.locatable().loc;
         var entityPos = entityLoc.pos;
         var entityVel = entityLoc.vel;
@@ -20,4 +21,7 @@ class Constraint_Movable {
         }
     }
     ;
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
 }

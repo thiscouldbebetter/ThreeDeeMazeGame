@@ -5,7 +5,8 @@ class Constraint_Follow {
         this.entityToFollow = entityToFollow;
         this.distanceToKeep = distanceToKeep;
     }
-    constrain(universe, world, place, entityToConstrain) {
+    constrain(uwpe) {
+        var entityToConstrain = uwpe.entity;
         var entityToConstrainLoc = entityToConstrain.locatable().loc;
         var entityToConstrainPos = entityToConstrainLoc.pos;
         var entityToFollowLoc = this.entityToFollow.locatable().loc;
@@ -22,4 +23,7 @@ class Constraint_Follow {
             entityToConstrainPos.add(directionToLeader.clone().multiplyScalar(thrustToApply));
         }
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
 }

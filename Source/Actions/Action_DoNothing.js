@@ -3,7 +3,7 @@ class Action_DoNothing extends ActionTimed {
     constructor() {
         super("DoNothing");
     }
-    perform(universe, world, place, entity) {
+    perform(uwpe) {
         // Do nothing.
     }
 }

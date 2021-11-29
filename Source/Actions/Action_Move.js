@@ -7,7 +7,11 @@ class Action_Move extends ActionTimed {
         this.acceleration = Coords.create();
         this.transformOrient = new Transform_Orient(null);
     }
-    perform(universe, world, place, entity) {
+    perform(uwpe) {
+        var universe = uwpe.universe;
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var entity = uwpe.entity;
         var entityLoc = entity.locatable().loc;
         var isEntityOnGround = Groundable.fromEntity(entity).isGrounded(universe, world, place, entity);
         if (isEntityOnGround) {

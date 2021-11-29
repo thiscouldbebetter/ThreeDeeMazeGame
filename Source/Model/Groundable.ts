@@ -1,5 +1,5 @@
 
-class Groundable implements EntityProperty
+class Groundable implements EntityPropertyBase
 {
 	universe: Universe;
 	world: World;
@@ -72,8 +72,15 @@ class Groundable implements EntityProperty
 		return (this.ground(universe, world, place, entity) != null);
 	}
 
+	// Clonable.
+	clone(): EntityPropertyBase { return this; }
+	overwriteWith(other: EntityPropertyBase): EntityPropertyBase { return this; }
+
 	// EntityProperty.
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable.
+	equals(other: EntityPropertyBase): boolean { return false; }
 }

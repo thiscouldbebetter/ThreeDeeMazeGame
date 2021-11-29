@@ -54,6 +54,7 @@ var Transform_Overwrite = gf.Transform_Overwrite;
 var Transform_Translate = gf.Transform_Translate;
 var TreeHelper = gf.TreeHelper;
 var Universe = gf.Universe;
+var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 var VenueWorld = gf.VenueWorld;
 var Video = gf.Video;
 var VisualMesh = gf.VisualMesh;

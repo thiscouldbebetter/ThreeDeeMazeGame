@@ -59,7 +59,7 @@ class WorldExtended extends World
 
 	// static methods
 
-	static create(universe: Universe)
+	static create(universe: Universe): WorldExtended
 	{
 		var mazeSizeInCells = new Coords(4, 4, 1);
 		var mazeCellSizeInPixels = new Coords(2, 2, 1).multiplyScalar(40);
@@ -383,7 +383,7 @@ class WorldExtended extends World
 		);
 		var locatable = new Locatable(loc);
 		var mesh = meshDefnsByName.get("Mover");
-		var visual: Visual = new VisualMesh(mesh.clone());
+		var visual: VisualBase = new VisualMesh(mesh.clone());
 		var transformPose = new Transform_MeshPoseWithSkeleton
 		(
 			mesh,
@@ -430,7 +430,7 @@ class WorldExtended extends World
 				drawable,
 				groundable,
 				locatable,
-				Movable.create()
+				Movable.default()
 			]
 		);
 
@@ -470,7 +470,7 @@ class WorldExtended extends World
 				Drawable.fromVisual(visual),
 				groundable,
 				locatable,
-				Movable.create()
+				Movable.default()
 			]
 		);
 
@@ -591,9 +591,11 @@ class WorldExtended extends World
 		];
 
 		var returnValue = new WorldDefn
-		([
-			activityDefns
-		]);
+		(
+			null, // actions
+			activityDefns,
+			null, null, null, null
+		);
 
 		return returnValue;
 	}
@@ -620,7 +622,7 @@ class WorldExtended extends World
 		// todo
 	}
 
-	initialize(universe: Universe): void
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
 		this.meshesToDraw = [];
 
@@ -672,6 +674,7 @@ class WorldExtended extends World
 			}
 		}
 
+		var universe = uwpe.universe;
 		var viewSizeInPixels = universe.display.sizeInPixels.clone();
 		var focalLength = viewSizeInPixels.z / 16;
 		var followDivisor = 16;
@@ -728,8 +731,10 @@ class WorldExtended extends World
 		this.dateStarted = new Date();
 	}
 
-	updateForTimerTick(universe: Universe): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var universe = uwpe.universe;
+
 		if (this.zoneNext != null)
 		{
 			var zoneNextEntity = this.zoneNext.entities[0];
@@ -778,7 +783,7 @@ class WorldExtended extends World
 		for (var z = 0; z < this.zonesActive.length; z++)
 		{
 			var zoneActive = this.zonesActive[z];
-			zoneActive.updateForTimerTick(universe, this);
+			zoneActive.updateForTimerTick(uwpe);
 		}
 
 		this.draw(universe);
@@ -916,17 +921,22 @@ class WorldExtended extends World
 		display.drawText
 		(
 			world.name, 10, Coords.fromXY(0, 10),
-			null, null, null, null, null // ?
+			null, null, null, null // ?
 		);
 		display.drawText
 		(
 			"" + world.secondsElapsed(), 10, Coords.fromXY(0, 20),
-			null, null, null, null, null // ?
+			null, null, null, null// ?
 		);
 	}
 
 	draw3D(universe: Universe): void
 	{
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, null, null, null
+		);
+
 		var display = universe.display as Display3D;
 		display.drawBackground(null, null);
 
@@ -937,16 +947,18 @@ class WorldExtended extends World
 		for (var z = 0; z < this.zonesActive.length; z++)
 		{
 			var zone = this.zonesActive[z];
+			uwpe.placeSet(zone);
 			var entities = zone.entities;
 
 			for (var b = 0; b < entities.length; b++)
 			{
 				var entity = entities[b];
+				uwpe.entitySet(entity);
 				var drawable = entity.drawable();
 				if (drawable != null)
 				{
 					var entityVisual = drawable.visual;
-					entityVisual.draw(universe, this, zone, entity, display);
+					entityVisual.draw(uwpe, display);
 				}
 			}
 		}

@@ -18,11 +18,13 @@ class Action_Move extends ActionTimed
 		this.transformOrient = new Transform_Orient(null);
 	}
 
-	perform
-	(
-		universe: Universe, world: World, place: Place, entity: Entity
-	): void
+	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var universe = uwpe.universe;
+		var world = uwpe.world;
+		var place = uwpe.place;
+		var entity = uwpe.entity;
+
 		var entityLoc = entity.locatable().loc;
 		var isEntityOnGround =
 			Groundable.fromEntity(entity).isGrounded(universe, world, place, entity);

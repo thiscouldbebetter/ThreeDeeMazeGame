@@ -12,11 +12,10 @@ class Constraint_Friction implements Constraint
 		this.epsilon = epsilon;
 	}
 
-	constrain
-	(
-		universe: Universe, world: World, place: Place, entityToConstrain: Entity
-	): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entityToConstrain = uwpe.entity;
+
 		var vel = entityToConstrain.locatable().loc.vel;
 		var velZ = vel.z;
 		var speed = vel.magnitude();
@@ -40,4 +39,9 @@ class Constraint_Friction implements Constraint
 		}
 		vel.z = velZ;
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
+
 }

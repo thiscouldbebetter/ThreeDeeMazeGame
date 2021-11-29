@@ -3,8 +3,10 @@ class ActivityInstances {
     static doNothing(universe, world, place, entity) {
         // Do nothing.
     }
-    static userInputAcceptPerform(universe, worldAsWorld, place, entity) {
-        var world = worldAsWorld;
+    static userInputAcceptPerform(uwpe) {
+        var universe = uwpe.universe;
+        var world = uwpe.world;
+        var entity = uwpe.entity;
         var inputHelper = universe.inputHelper;
         var inputsActive = inputHelper.inputsPressed; //Active;
         var actionsFromActor = entity.actor().actions;

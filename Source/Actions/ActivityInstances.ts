@@ -10,10 +10,12 @@ class ActivityInstances
 
 	static userInputAcceptPerform
 	(
-		universe: Universe, worldAsWorld: World, place: Place, entity: Entity
+		uwpe: UniverseWorldPlaceEntities
 	): void
 	{
-		var world = worldAsWorld as WorldExtended;
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
+		var entity = uwpe.entity;
 
 		var inputHelper = universe.inputHelper;
 		var inputsActive = inputHelper.inputsPressed; //Active;

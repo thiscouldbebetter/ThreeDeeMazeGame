@@ -15,11 +15,10 @@ class Action_Turn extends ActionTimed
 		this.orientationTemp = Orientation.Instances().ForwardXDownZ.clone();
 	}
 
-	perform
-	(
-		universe: Universe, world: World, place: Place, entity: Entity
-	): void
+	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entity = uwpe.entity;
+
 		var entityOrientation = entity.locatable().loc.orientation;
 		this.orientationTemp.overwriteWith(entityOrientation);
 

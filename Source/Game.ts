@@ -9,12 +9,14 @@ class Game
 			// images
 			[
 				new Image2("Opening", "../Content/Images/Opening.png"),
+				new Image2("Producer", "../Content/Images/Producer.png"),
 				new Image2("Title", "../Content/Images/Title.png"),
 			],
 			// sounds
 			[
 				new Sound("Sound", "../Content/Audio/Effects/Sound.wav"),
 				new Sound("Music_Music", "../Content/Audio/Music/Music.mp3"),
+				new Sound("Music_Producer", "../Content/Audio/Music/Music.mp3"),
 				new Sound("Music_Title", "../Content/Audio/Music/Title.mp3"),
 			],
 			// videos

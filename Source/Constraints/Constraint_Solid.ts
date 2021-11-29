@@ -10,12 +10,11 @@ class Constraint_Solid implements Constraint
 		this._collisions = [];
 	}
 
-	constrain
-	(
-		universe: Universe, worldAsWorld: World, place: Place, entityToConstrain: Entity
-	): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = worldAsWorld as WorldExtended;
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
+		var entityToConstrain = uwpe.entity;
 
 		var entityLoc = entityToConstrain.locatable().loc;
 		var entityPos = entityLoc.pos;
@@ -92,4 +91,9 @@ class Constraint_Solid implements Constraint
 		} // end while (true)
 
 	} // end method
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
+
 }

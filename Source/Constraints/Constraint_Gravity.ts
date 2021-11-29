@@ -8,11 +8,13 @@ class Constraint_Gravity implements Constraint
 		this.accelerationPerTick = accelerationPerTick;
 	}
 
-	constrain
-	(
-		universe: Universe, world: World, place: Place, entityToConstrain: Entity
-	): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var universe = uwpe.universe;
+		var world = uwpe.world;
+		var place = uwpe.place;
+		var entityToConstrain = uwpe.entity;
+
 		var entityLoc = entityToConstrain.locatable().loc;
 		var isEntityGrounded =
 			Groundable.fromEntity(entityToConstrain).isGrounded(universe, world, place, entityToConstrain);
@@ -41,4 +43,9 @@ class Constraint_Gravity implements Constraint
 			universe, world, place, entityToConstrain
 		);
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
+
 }

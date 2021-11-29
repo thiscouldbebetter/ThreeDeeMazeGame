@@ -145,34 +145,35 @@ class Zone extends Place {
         } // end for each neighbor
         return [zonesForConnectorsToNeighbors, zonesAdjacentNames];
     }
-    updateForTimerTick(universe, world) {
+    updateForTimerTick(uwpe) {
         for (var b = 0; b < this.entities.length; b++) {
             var entity = this.entities[b];
+            uwpe.entitySet(entity);
             var actor = entity.actor();
             if (actor != null) {
                 var activity = actor.activity;
                 if (activity != null) {
-                    activity.perform(universe, world, this, entity);
+                    activity.perform(uwpe);
                 }
                 var actions = actor.actions;
                 if (actions != null) {
                     for (var a = 0; a < actions.length; a++) {
                         var action = actions[a];
-                        action.perform(universe, world, this, entity);
+                        action.perform(uwpe);
                     }
                     actions.length = 0;
                 }
             }
             var entityAnimatable = entity.animatable();
             if (entityAnimatable != null) {
-                entityAnimatable.updateForTimerTick(universe, world, this, entity);
+                entityAnimatable.updateForTimerTick(uwpe);
             }
             var entityConstrainable = entity.constrainable();
             if (entityConstrainable != null) {
                 var entityConstraints = entityConstrainable.constraints;
                 for (var c = 0; c < entityConstraints.length; c++) {
                     var constraint = entityConstraints[c];
-                    constraint.constrain(universe, world, this, entity);
+                    constraint.constrain(uwpe);
                 }
             }
         }

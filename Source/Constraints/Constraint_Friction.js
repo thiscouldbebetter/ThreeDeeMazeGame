@@ -5,7 +5,8 @@ class Constraint_Friction {
         this.frictionPerTick = frictionPerTick;
         this.epsilon = epsilon;
     }
-    constrain(universe, world, place, entityToConstrain) {
+    constrain(uwpe) {
+        var entityToConstrain = uwpe.entity;
         var vel = entityToConstrain.locatable().loc.vel;
         var velZ = vel.z;
         var speed = vel.magnitude();
@@ -25,4 +26,7 @@ class Constraint_Friction {
         }
         vel.z = velZ;
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
 }

@@ -24,7 +24,7 @@ class Transform_Orient2
 		return this; // todo
 	}
 
-	transform(transformable: Transformable): Transformable
+	transform(transformable: TransformableBase): TransformableBase
 	{
 		return transformable.transform(this);
 	}

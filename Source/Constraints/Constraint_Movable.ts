@@ -8,11 +8,10 @@ class Constraint_Movable implements Constraint
 		this.transformLocate = new Transform_Locate(null);
 	}
 
-	constrain
-	(
-		universe: Universe, world: World, place: Place, entityToConstrain: Entity
-	): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entityToConstrain = uwpe.entity;
+
 		var entityLoc = entityToConstrain.locatable().loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
@@ -31,4 +30,9 @@ class Constraint_Movable implements Constraint
 			mesh.transform(this.transformLocate);
 		}
 	};
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
+
 }

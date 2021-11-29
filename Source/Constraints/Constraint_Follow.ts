@@ -12,11 +12,10 @@ class Constraint_Follow implements Constraint
 		this.distanceToKeep = distanceToKeep;
 	}
 
-	constrain
-	(
-		universe: Universe, world: World, place: Place, entityToConstrain: Entity
-	): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entityToConstrain = uwpe.entity;
+
 		var entityToConstrainLoc = entityToConstrain.locatable().loc;
 		var entityToConstrainPos = entityToConstrainLoc.pos;
 		var entityToFollowLoc = this.entityToFollow.locatable().loc;
@@ -41,4 +40,9 @@ class Constraint_Follow implements Constraint
 			)
 		}
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
+
 }

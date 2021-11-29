@@ -17,11 +17,10 @@ class Constraint_Attach implements Constraint
 		);
 	}
 
-	constrain
-	(
-		universe: Universe, world: World, place: Place, entityToConstrain: Entity
-	): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entityToConstrain = uwpe.entity;
+
 		this.transformOrient.transformCoords
 		(
 			entityToConstrain.locatable().loc.pos.overwriteWith
@@ -33,4 +32,8 @@ class Constraint_Attach implements Constraint
 			this.entityAttachedTo.locatable().loc.pos
 		);
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
 }

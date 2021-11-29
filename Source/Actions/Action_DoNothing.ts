@@ -6,10 +6,7 @@ class Action_DoNothing extends ActionTimed
 		super("DoNothing");
 	}
 
-	perform
-	(
-		universe: Universe, world: World, place: Place, entity: Entity
-	): void
+	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
 		// Do nothing.
 	}

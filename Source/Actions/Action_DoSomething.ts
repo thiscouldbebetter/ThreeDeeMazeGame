@@ -6,11 +6,11 @@ class Action_DoSomething extends ActionTimed
 		super("DoSomething");
 	}
 
-	perform
-	(
-		universe: Universe, world: World, place: Place, entity: Entity
-	): void
+	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var world = uwpe.world;
+		var entity = uwpe.entity;
+
 		var animatable = entity.animatable();
 		animatable.animationStartByName("DoSomething", world);
 	}

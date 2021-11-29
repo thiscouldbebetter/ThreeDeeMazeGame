@@ -11,12 +11,9 @@ class Action_CameraZoomOut extends ActionTimed
 		this.ticksToHold = 1;
 	}
 
-	perform
-	(
-		universe: Universe, worldAsWorld: World, zone: Zone, entity: Entity
-	): void
+	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = world as WorldExtended;
+		var world = uwpe.world as WorldExtended;
 
 		var entityForCamera = world.cameraEntity;
 		var constraintAttach =

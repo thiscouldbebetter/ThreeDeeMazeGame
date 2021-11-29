@@ -6,11 +6,10 @@ class Action_Stop extends ActionTimed
 		super("Stop");
 	}
 
-	perform
-	(
-		universe: Universe, world: World, place: Place, entity: Entity
-	): void
+	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entity = uwpe.entity;
+
 		var entityLoc = entity.locatable().loc;
 		entityLoc.vel.clear();
 		entityLoc.accel.clear();

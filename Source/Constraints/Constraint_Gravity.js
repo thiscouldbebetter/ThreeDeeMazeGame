@@ -3,7 +3,11 @@ class Constraint_Gravity {
     constructor(accelerationPerTick) {
         this.accelerationPerTick = accelerationPerTick;
     }
-    constrain(universe, world, place, entityToConstrain) {
+    constrain(uwpe) {
+        var universe = uwpe.universe;
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var entityToConstrain = uwpe.entity;
         var entityLoc = entityToConstrain.locatable().loc;
         var isEntityGrounded = Groundable.fromEntity(entityToConstrain).isGrounded(universe, world, place, entityToConstrain);
         if (isEntityGrounded == false) {
@@ -21,4 +25,7 @@ class Constraint_Gravity {
         }
         Groundable.fromEntity(entityToConstrain).ground(universe, world, place, entityToConstrain);
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
 }
