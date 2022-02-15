@@ -2,7 +2,8 @@
 // main
 class Game {
     start() {
-        var mediaLibrary = new MediaLibrary(
+        var soundHelper = new SoundHelperLive();
+        var mediaLibrary = new MediaLibrary("../Content/", 
         // images
         [
             new Image2("Opening", "../Content/Images/Opening.png"),
@@ -11,10 +12,10 @@ class Game {
         ], 
         // sounds
         [
-            new Sound("Sound", "../Content/Audio/Effects/Sound.wav"),
-            new Sound("Music_Music", "../Content/Audio/Music/Music.mp3"),
-            new Sound("Music_Producer", "../Content/Audio/Music/Music.mp3"),
-            new Sound("Music_Title", "../Content/Audio/Music/Title.mp3"),
+            new SoundFromFile("Sound", "../Content/Audio/Effects/Sound.wav"),
+            new SoundFromFile("Music_Music", "../Content/Audio/Music/Music.mp3"),
+            new SoundFromFile("Music_Producer", "../Content/Audio/Music/Music.mp3"),
+            new SoundFromFile("Music_Title", "../Content/Audio/Music/Title.mp3"),
         ], 
         // videos
         [
@@ -31,8 +32,9 @@ class Game {
         Color.byName("White"), // colorFore,
         Color.byName("Black") // colorBack
         );
-        var universe = new Universe("ThreeDeeMaze", "0.0.0-20210502-2100", // version
-        new TimerHelper(20), display, mediaLibrary, ControlBuilder.default(), WorldExtended.create);
+        var worldCreator = WorldCreator.fromWorldCreate(WorldExtended.create);
+        var universe = new Universe("ThreeDeeMaze", "0.0.0-20220215-0000", // version
+        new TimerHelper(20), display, soundHelper, mediaLibrary, ControlBuilder.default(), worldCreator);
         universe.initialize(() => universe.start());
     }
 }

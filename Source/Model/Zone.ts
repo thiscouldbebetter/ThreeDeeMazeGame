@@ -18,6 +18,7 @@ class Zone extends Place
 		(
 			name,
 			null, // defnName
+			null, // parentName
 			null, // size
 			entities
 		);

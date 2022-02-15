@@ -436,9 +436,10 @@ class WorldExtended extends World {
         }
         display.drawBackground(null, null);
         DisplayHelper.drawFacesForCamera(display, facesToDraw, world.cameraEntity);
-        display.drawText(world.name, 10, Coords.fromXY(0, 10), null, null, null, null // ?
+        var fontHeight = 10;
+        display.drawText(world.name, fontHeight, Coords.fromXY(0, 1).multiplyScalar(fontHeight), null, null, null, null, null // ?
         );
-        display.drawText("" + world.secondsElapsed(), 10, Coords.fromXY(0, 20), null, null, null, null // ?
+        display.drawText("" + world.secondsElapsed(), fontHeight, Coords.fromXY(0, 2).multiplyScalar(fontHeight), null, null, null, null, null // ?
         );
     }
     draw3D(universe) {

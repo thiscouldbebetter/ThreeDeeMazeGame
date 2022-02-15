@@ -2,6 +2,7 @@
 class Zone extends Place {
     constructor(name, pos, namesOfZonesAdjacent, entities) {
         super(name, null, // defnName
+        null, // parentName
         null, // size
         entities);
         this.pos = pos;
