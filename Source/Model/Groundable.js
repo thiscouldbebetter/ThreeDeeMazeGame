@@ -46,6 +46,7 @@ class Groundable {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Groundable.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

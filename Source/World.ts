@@ -36,8 +36,11 @@ class WorldExtended extends World
 	{
 		super
 		(
-			name, DateTime.now(),
-			WorldExtended.defnBuild(), new Array<Place>()
+			name,
+			DateTime.now(),
+			WorldExtended.defnBuild(),
+			() => { throw new Error("todo") },
+			"", // placeInitialName
 		);
 		this.name = name;
 		this.actions = actions;
@@ -591,11 +594,9 @@ class WorldExtended extends World
 		];
 
 		var returnValue = new WorldDefn
-		(
-			null, // actions
-			activityDefns,
-			null, null, null, null
-		);
+		([
+			activityDefns
+		]);
 
 		return returnValue;
 	}
@@ -920,17 +921,18 @@ class WorldExtended extends World
 		DisplayHelper.drawFacesForCamera(display, facesToDraw, world.cameraEntity);
 
 		var fontHeight = 10;
+		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		display.drawText
 		(
 			world.name,
-			fontHeight,
+			font,
 			Coords.fromXY(0, 1).multiplyScalar(fontHeight),
 			null, null, null, null, null // ?
 		);
 		display.drawText
 		(
 			"" + world.secondsElapsed(),
-			fontHeight,
+			font,
 			Coords.fromXY(0, 2).multiplyScalar(fontHeight),
 			null, null, null, null, null// ?
 		);

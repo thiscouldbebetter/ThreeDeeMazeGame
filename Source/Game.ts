@@ -11,9 +11,9 @@ class Game
 			"../Content/",
 			// images
 			[
-				new Image2("Opening", "../Content/Images/Opening.png"),
-				new Image2("Producer", "../Content/Images/Producer.png"),
-				new Image2("Title", "../Content/Images/Title.png"),
+				new Image2("Titles_Opening", "../Content/Images/Titles/Opening.png"),
+				new Image2("Titles_Producer", "../Content/Images/Titles/Producer.png"),
+				new Image2("Titles_Title", "../Content/Images/Titles/Title.png"),
 			],
 			// sounds
 			[
@@ -34,13 +34,14 @@ class Game
 			[]
 		);
 
+		var colors = Color.Instances();
+
 		var display = new Display3D
 		(
 			new Coords(320, 240, 2000),
-			"Font", // fontName,
-			10, // fontHeightInPixels,
-			Color.byName("White"), // colorFore,
-			Color.byName("Black") // colorBack
+			new FontNameAndHeight("Font", 10),
+			colors.White, // colorFore,
+			colors.Black // colorBack
 		);
 
 		var worldCreator = WorldCreator.fromWorldCreate

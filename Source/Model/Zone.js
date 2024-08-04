@@ -1,5 +1,5 @@
 "use strict";
-class Zone extends Place {
+class Zone extends PlaceBase {
     constructor(name, pos, namesOfZonesAdjacent, entities) {
         super(name, null, // defnName
         null, // parentName

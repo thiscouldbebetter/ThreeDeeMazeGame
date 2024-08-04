@@ -79,6 +79,7 @@ class Groundable implements EntityPropertyBase
 	// EntityProperty.
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return Groundable.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.

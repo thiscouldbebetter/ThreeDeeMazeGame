@@ -1,5 +1,5 @@
 
-class Zone extends Place
+class Zone extends PlaceBase
 {
 	name: string;
 	pos: Coords;

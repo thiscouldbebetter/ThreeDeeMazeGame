@@ -1,7 +1,7 @@
 "use strict";
 class WorldExtended extends World {
     constructor(name, actions, actionToInputsMappings, materials, sizeInPixels, zones, entityForPlayer) {
-        super(name, DateTime.now(), WorldExtended.defnBuild(), new Array());
+        super(name, DateTime.now(), WorldExtended.defnBuild(), () => { throw new Error("todo"); }, "");
         this.name = name;
         this.actions = actions;
         this.actionsByName = ArrayHelper.addLookupsByName(this.actions);
@@ -28,14 +28,14 @@ class WorldExtended extends World {
         var amountToYaw = 0.1;
         var amountToStrafe = .1;
         var actions = [
-            new Action_Turn(new Coords(0 - amountToYaw, 0, 0)),
-            new Action_DoSomething(),
-            new Action_Move(new Coords(0, amountToStrafe, 0)),
-            new Action_Turn(new Coords(amountToYaw, 0, 0)),
-            new Action_Move(new Coords(-amountToMoveBackward, 0, 0)),
-            new Action_Move(new Coords(amountToMoveForward, 0, 0)),
-            new Action_Stop(),
-            new Action_Move(new Coords(0, 0 - amountToStrafe, 0)),
+            new Action_Turn(new Coords(0 - amountToYaw, 0, 0)), // 0 - a - turn right
+            new Action_DoSomething(), // 1
+            new Action_Move(new Coords(0, amountToStrafe, 0)), // 2
+            new Action_Turn(new Coords(amountToYaw, 0, 0)), // 3
+            new Action_Move(new Coords(-amountToMoveBackward, 0, 0)), // 4
+            new Action_Move(new Coords(amountToMoveForward, 0, 0)), // 5
+            new Action_Stop(), // 6
+            new Action_Move(new Coords(0, 0 - amountToStrafe, 0)), // 7
             new Action_Jump(.6), // 8
         ];
         var canBeHeldDownTrue = true;
@@ -118,9 +118,9 @@ class WorldExtended extends World {
         var maze = new Maze(mazeCellSizeInPixels, mazeSizeInCells, 
         // neighborOffsets
         [
-            new Coords(-1, 0, 0),
-            new Coords(1, 0, 0),
-            new Coords(0, -1, 0),
+            new Coords(-1, 0, 0), // west
+            new Coords(1, 0, 0), // east
+            new Coords(0, -1, 0), // north
             new Coords(0, 1, 0), // south
         ]).generateRandom(randomizer);
         var ceilingHeight = maze.cellSizeInPixels.z;
@@ -171,7 +171,7 @@ class WorldExtended extends World {
         visual = new VisualTransform(new Transform_Multiple([
             //new Transform_Overwrite(mesh),
             transformPose,
-            new Transform_Orient2(loc.orientation),
+            new Transform_Orient2(loc.orientation), // hack
             new Transform_Translate(loc.pos),
         ]), visual);
         var drawable = Drawable.fromVisual(visual);
@@ -182,7 +182,7 @@ class WorldExtended extends World {
         var groundable = new Groundable();
         var entityForPlayer = new Entity("Player", [
             actor,
-            animatable,
+            animatable, // hack
             collidable,
             drawable,
             groundable,
@@ -249,8 +249,9 @@ class WorldExtended extends World {
         var activityDefns = [
             activityDefnUserInputAccept
         ];
-        var returnValue = new WorldDefn(null, // actions
-        activityDefns, null, null, null, null);
+        var returnValue = new WorldDefn([
+            activityDefns
+        ]);
         return returnValue;
     }
     // instance methods
@@ -437,9 +438,10 @@ class WorldExtended extends World {
         display.drawBackground(null, null);
         DisplayHelper.drawFacesForCamera(display, facesToDraw, world.cameraEntity);
         var fontHeight = 10;
-        display.drawText(world.name, fontHeight, Coords.fromXY(0, 1).multiplyScalar(fontHeight), null, null, null, null, null // ?
+        var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
+        display.drawText(world.name, font, Coords.fromXY(0, 1).multiplyScalar(fontHeight), null, null, null, null, null // ?
         );
-        display.drawText("" + world.secondsElapsed(), fontHeight, Coords.fromXY(0, 2).multiplyScalar(fontHeight), null, null, null, null, null // ?
+        display.drawText("" + world.secondsElapsed(), font, Coords.fromXY(0, 2).multiplyScalar(fontHeight), null, null, null, null, null // ?
         );
     }
     draw3D(universe) {
