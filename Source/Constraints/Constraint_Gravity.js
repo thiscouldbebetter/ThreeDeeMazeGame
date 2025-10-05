@@ -1,5 +1,5 @@
 "use strict";
-class Constraint_Gravity {
+class Constraint_Gravity2 {
     constructor(accelerationPerTick) {
         this.accelerationPerTick = accelerationPerTick;
     }
@@ -8,7 +8,7 @@ class Constraint_Gravity {
         var world = uwpe.world;
         var place = uwpe.place;
         var entityToConstrain = uwpe.entity;
-        var entityLoc = entityToConstrain.locatable().loc;
+        var entityLoc = Locatable.of(entityToConstrain).loc;
         var isEntityGrounded = Groundable.fromEntity(entityToConstrain).isGrounded(universe, world, place, entityToConstrain);
         if (isEntityGrounded == false) {
             entityLoc.accel.z += this.accelerationPerTick;
@@ -16,7 +16,7 @@ class Constraint_Gravity {
         else {
             entityLoc.vel.z = 0;
             entityLoc.pos.z = -.01;
-            var animatable = entityToConstrain.animatable();
+            var animatable = Animatable2.of(entityToConstrain);
             if (animatable != null) {
                 if (animatable.animationsRunningNames().indexOf("Jump") >= 0) {
                     animatable.animationStartByName("Walk", world);
@@ -24,6 +24,10 @@ class Constraint_Gravity {
             }
         }
         Groundable.fromEntity(entityToConstrain).ground(universe, world, place, entityToConstrain);
+    }
+    nameSet(value) {
+        this.name = value;
+        return this;
     }
     // Clonable.
     clone() { return this; }

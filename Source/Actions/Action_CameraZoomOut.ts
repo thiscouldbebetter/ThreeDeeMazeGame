@@ -17,7 +17,7 @@ class Action_CameraZoomOut extends ActionTimed
 
 		var entityForCamera = world.cameraEntity;
 		var constraintAttach =
-			entityForCamera.constrainable().constraintByClassName
+			Constrainable.of(entityForCamera).constraintByClassName
 			(
 				Constraint_Attach.name
 			) as Constraint_Attach;

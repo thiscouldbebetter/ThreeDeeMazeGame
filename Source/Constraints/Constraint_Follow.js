@@ -7,9 +7,9 @@ class Constraint_Follow {
     }
     constrain(uwpe) {
         var entityToConstrain = uwpe.entity;
-        var entityToConstrainLoc = entityToConstrain.locatable().loc;
+        var entityToConstrainLoc = Locatable.of(entityToConstrain).loc;
         var entityToConstrainPos = entityToConstrainLoc.pos;
-        var entityToFollowLoc = this.entityToFollow.locatable().loc;
+        var entityToFollowLoc = Locatable.of(this.entityToFollow).loc;
         var entityToFollowPos = entityToFollowLoc.pos;
         var displacementToLeader = entityToFollowPos.clone().subtract(entityToConstrainPos);
         displacementToLeader.z = 0; // hack - XY only
@@ -22,6 +22,10 @@ class Constraint_Follow {
             var thrustToApply = deviationFractional * thrustBase;
             entityToConstrainPos.add(directionToLeader.clone().multiplyScalar(thrustToApply));
         }
+    }
+    nameSet(value) {
+        this.name = value;
+        return this;
     }
     // Clonable.
     clone() { return this; }

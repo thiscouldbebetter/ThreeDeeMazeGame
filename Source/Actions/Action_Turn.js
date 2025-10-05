@@ -8,7 +8,7 @@ class Action_Turn extends ActionTimed {
     }
     perform(uwpe) {
         var entity = uwpe.entity;
-        var entityOrientation = entity.locatable().loc.orientation;
+        var entityOrientation = Locatable.of(entity).loc.orientation;
         this.orientationTemp.overwriteWith(entityOrientation);
         entityOrientation.overwriteWith(new Orientation(this.orientationTemp.forward.add(this.orientationTemp.right.multiplyScalar(this.amountToTurnRightAndDown.x)), entityOrientation.down));
         // todo - Down.

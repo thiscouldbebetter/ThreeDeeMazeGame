@@ -7,7 +7,7 @@ class Constraint_Friction {
     }
     constrain(uwpe) {
         var entityToConstrain = uwpe.entity;
-        var vel = entityToConstrain.locatable().loc.vel;
+        var vel = Locatable.of(entityToConstrain).loc.vel;
         var velZ = vel.z;
         var speed = vel.magnitude();
         if (speed > this.speedMax) {
@@ -18,13 +18,17 @@ class Constraint_Friction {
         }
         else {
             vel.clear();
-            var animatable = entityToConstrain.animatable();
+            var animatable = Animatable2.of(entityToConstrain);
             if (animatable != null) {
                 animatable.animationStopByName("Walk");
                 animatable.transformableReset();
             }
         }
         vel.z = velZ;
+    }
+    nameSet(value) {
+        this.name = value;
+        return this;
     }
     // Clonable.
     clone() { return this; }

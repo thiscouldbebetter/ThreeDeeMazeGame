@@ -32,8 +32,8 @@ class Game {
         colors.Black // colorBack
         );
         var worldCreator = WorldCreator.fromWorldCreate(WorldExtended.create);
-        var universe = new Universe("ThreeDeeMaze", "0.0.0-20220215-0000", // version
-        new TimerHelper(20), display, soundHelper, mediaLibrary, ControlBuilder.default(), worldCreator);
+        var universe = new Universe("ThreeDeeMaze", "0.0.0-20251004-0000", // version
+        new TimerHelper(20), display, soundHelper, mediaLibrary, ControlBuilder.default(), ProfileHelper.maximal(), worldCreator);
         universe.initialize(() => universe.start());
     }
 }

@@ -1,5 +1,5 @@
 
-class Transform_Orient2
+class Transform_Orient2 implements Transform<Transform_Orient2>
 {
 	// hack
 	// This class exists because for some reason the player
@@ -17,6 +17,11 @@ class Transform_Orient2
 		[
 			Coords.create(), Coords.create(), Coords.create()
 		];
+	}
+
+	clone(): Transform_Orient2
+	{
+		return this;
 	}
 
 	overwriteWith(other: Transform_Orient2): Transform_Orient2

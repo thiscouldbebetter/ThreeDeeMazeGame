@@ -1,5 +1,5 @@
 
-class Groundable implements EntityPropertyBase
+class Groundable extends EntityPropertyBase<Groundable>
 {
 	universe: Universe;
 	world: World;
@@ -22,7 +22,7 @@ class Groundable implements EntityPropertyBase
 
 		var world = worldAsWorld as WorldExtended;
 
-		var pos = entity.locatable().loc.pos;
+		var pos = Locatable.of(entity).loc.pos;
 		var edgeLength = 100;
 		var gravityDirection = new Coords(0, 0, edgeLength);
 		var edgeForFootprint = new Edge
@@ -40,7 +40,7 @@ class Groundable implements EntityPropertyBase
 		{
 			var zone = zonesToCheck[i];
 			var zoneEntity = zone.entities[0];
-			var zoneMesh = zoneEntity.collidable().collider as MeshTextured
+			var zoneMesh = Collidable.of(zoneEntity).collider as MeshTextured
 			var collisions = collisionHelper.collisionsOfEdgeAndMesh
 			(
 				edgeForFootprint, zoneMesh.geometry,
@@ -73,8 +73,8 @@ class Groundable implements EntityPropertyBase
 	}
 
 	// Clonable.
-	clone(): EntityPropertyBase { return this; }
-	overwriteWith(other: EntityPropertyBase): EntityPropertyBase { return this; }
+	clone(): Groundable { return this; }
+	overwriteWith(other: Groundable): Groundable { return this; }
 
 	// EntityProperty.
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
@@ -83,5 +83,5 @@ class Groundable implements EntityPropertyBase
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.
-	equals(other: EntityPropertyBase): boolean { return false; }
+	equals(other: Groundable): boolean { return false; }
 }

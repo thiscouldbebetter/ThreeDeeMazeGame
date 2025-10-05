@@ -6,7 +6,7 @@ class Action_DoSomething extends ActionTimed {
     perform(uwpe) {
         var world = uwpe.world;
         var entity = uwpe.entity;
-        var animatable = entity.animatable();
+        var animatable = Animatable2.of(entity);
         animatable.animationStartByName("DoSomething", world);
     }
 }

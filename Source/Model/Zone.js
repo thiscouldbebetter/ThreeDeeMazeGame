@@ -1,5 +1,5 @@
 "use strict";
-class Zone extends PlaceBase {
+class Zone2 extends PlaceBase {
     constructor(name, pos, namesOfZonesAdjacent, entities) {
         super(name, null, // defnName
         null, // parentName
@@ -9,8 +9,8 @@ class Zone extends PlaceBase {
         this.namesOfZonesAdjacent = namesOfZonesAdjacent;
         this.entities = entities;
         var entity = this.entities[0];
-        var meshTransformed = entity.collidable().collider;
-        meshTransformed.transform(new Transform_Locate(entity.locatable().loc));
+        var meshTransformed = Collidable.of(entity).collider;
+        meshTransformed.transform(new Transform_Locate(Locatable.of(entity).loc));
     }
     static manyFromMaze(maze, materialWall, materialFloor, cellPosOfStart, materialStart, cellPosOfGoal, materialGoal) {
         var returnValues = new Array();
@@ -35,7 +35,7 @@ class Zone extends PlaceBase {
                 else {
                     materialForRoomFloor = materialFloor;
                 }
-                Zone.manyFromMaze_Cell(maze, cellPos, cellPosInPixels, cellSizeInPixels, materialWall, materialForRoomFloor, materialFloor, returnValues);
+                this.manyFromMaze_Cell(maze, cellPos, cellPosInPixels, cellSizeInPixels, materialWall, materialForRoomFloor, materialFloor, returnValues);
             }
         }
         return returnValues;
@@ -48,7 +48,7 @@ class Zone extends PlaceBase {
         cellPosInPixels.overwriteWith(cellPos).multiply(cellSizeInPixels);
         var cellCurrent = maze.cellAtPos(cellPos);
         var zoneForNodeName = cellPos.toString();
-        var tuple = Zone.manyFromMaze_Cell_Neighbors(maze, cellPos, cellCurrent, materialWall, materialConnectorFloor);
+        var tuple = Zone2.manyFromMaze_Cell_Neighbors(maze, cellPos, cellCurrent, materialWall, materialConnectorFloor);
         var zonesForConnectorsToNeighbors = tuple[0];
         var zonesAdjacentNames = tuple[1];
         var mesh = meshBuilder.room(roomSizeInPixelsHalf, maze.neighborOffsets, cellCurrent.connectedToNeighbors, materialWall, materialRoomFloor, null, null // ?
@@ -64,7 +64,7 @@ class Zone extends PlaceBase {
             Drawable.fromVisual(visual),
             new Locatable(loc)
         ]);
-        var zoneForNode = new Zone(zoneForNodeName, cellPosInPixels.clone(), //pos,
+        var zoneForNode = new Zone2(zoneForNodeName, cellPosInPixels.clone(), //pos,
         zonesAdjacentNames, [zoneEntity]);
         returnValues.push(zoneForNode);
         returnValuesByName.set(zoneForNode.name, zoneForNode);
@@ -134,7 +134,7 @@ class Zone extends PlaceBase {
                         Drawable.fromVisual(visual),
                         new Locatable(loc)
                     ]);
-                    var zoneForConnector = new Zone(zoneForConnectorName, connectorPosInPixels, 
+                    var zoneForConnector = new Zone2(zoneForConnectorName, connectorPosInPixels, 
                     // namesOfZonesAdjacent
                     [
                         zoneForNodeName,
@@ -150,7 +150,7 @@ class Zone extends PlaceBase {
         for (var b = 0; b < this.entities.length; b++) {
             var entity = this.entities[b];
             uwpe.entitySet(entity);
-            var actor = entity.actor();
+            var actor = Actor.of(entity);
             if (actor != null) {
                 var activity = actor.activity;
                 if (activity != null) {
@@ -165,11 +165,11 @@ class Zone extends PlaceBase {
                     actions.length = 0;
                 }
             }
-            var entityAnimatable = entity.animatable();
+            var entityAnimatable = Animatable2.of(entity);
             if (entityAnimatable != null) {
                 entityAnimatable.updateForTimerTick(uwpe);
             }
-            var entityConstrainable = entity.constrainable();
+            var entityConstrainable = Constrainable.of(entity);
             if (entityConstrainable != null) {
                 var entityConstraints = entityConstrainable.constraints;
                 for (var c = 0; c < entityConstraints.length; c++) {
@@ -195,7 +195,7 @@ class Zone extends PlaceBase {
         if (collisions == null) {
             collisions = [];
         }
-        var zoneMesh = this.entities[0].collidable().collider.geometry;
+        var zoneMesh = Collidable.of(this.entities[0]).collider.geometry;
         universe.collisionHelper.collisionsOfEdgeAndMesh(edge, zoneMesh, collisions, null // first?
         );
         return collisions;

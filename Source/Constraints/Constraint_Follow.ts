@@ -16,9 +16,9 @@ class Constraint_Follow implements Constraint
 	{
 		var entityToConstrain = uwpe.entity;
 
-		var entityToConstrainLoc = entityToConstrain.locatable().loc;
+		var entityToConstrainLoc = Locatable.of(entityToConstrain).loc;
 		var entityToConstrainPos = entityToConstrainLoc.pos;
-		var entityToFollowLoc = this.entityToFollow.locatable().loc;
+		var entityToFollowLoc = Locatable.of(this.entityToFollow).loc;
 		var entityToFollowPos = entityToFollowLoc.pos;
 
 		var displacementToLeader = entityToFollowPos.clone().subtract(entityToConstrainPos);
@@ -39,6 +39,12 @@ class Constraint_Follow implements Constraint
 				directionToLeader.clone().multiplyScalar(thrustToApply)
 			)
 		}
+	}
+
+	nameSet(value: string): Constraint
+	{
+		this.name = value;
+		return this;
 	}
 
 	// Clonable.

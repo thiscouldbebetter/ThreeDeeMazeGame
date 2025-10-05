@@ -5,20 +5,20 @@ class WorldExtended extends World
 	actionToInputsMappings: ActionToInputsMapping[];
 	materials: Material[];
 	sizeInPixels: Coords;
-	zones: Zone[];
+	zones: Zone2[];
 	entityForPlayer: Entity;
 
-	actionsByName: Map<string,Action>;
+	actionsByName: Map<string, Action>;
 	actionToInputsMappingsByInputName: Map<string, ActionToInputsMapping>;
 	camera: Camera;
 	cameraEntity: Entity;
 	dateStarted: Date;
 	entities: Entity[]
 	timerTicksSoFar: number;
-	zoneCurrent: Zone;
-	zoneNext: Zone;
-	zonesActive: Zone[];
-	zonesByName: Map<string, Zone>;
+	zoneCurrent: Zone2;
+	zoneNext: Zone2;
+	zonesActive: Zone2[];
+	zonesByName: Map<string, Zone2>;
 
 	meshesToDraw: Mesh[];
 	spacePartitioningTreeForZonesActive: SpacePartitioningTree;
@@ -30,7 +30,7 @@ class WorldExtended extends World
 		actionToInputsMappings: ActionToInputsMapping[],
 		materials: Material[],
 		sizeInPixels: Coords,
-		zones: Zone[],
+		zones: Zone2[],
 		entityForPlayer: Entity
 	)
 	{
@@ -346,7 +346,7 @@ class WorldExtended extends World
 			).absolute().sumOfDimensions();
 		}
 
-		var zones = Zone.manyFromMaze
+		var zones = Zone2.manyFromMaze
 		(
 			maze,
 			materialsByName.get("Wall"),
@@ -386,7 +386,7 @@ class WorldExtended extends World
 		);
 		var locatable = new Locatable(loc);
 		var mesh = meshDefnsByName.get("Mover");
-		var visual: VisualBase = new VisualMesh(mesh.clone());
+		var visual: Visual = new VisualMesh(mesh.clone());
 		var transformPose = new Transform_MeshPoseWithSkeleton
 		(
 			mesh,
@@ -633,7 +633,7 @@ class WorldExtended extends World
 		{
 			var zone = this.zones[i];
 			var zoneEntity = zone.entities[0];
-			var zoneMesh = zoneEntity.collidable().collider as MeshTextured;
+			var zoneMesh = Collidable.of(zoneEntity).collider as MeshTextured;
 			if (zoneMesh.materials[1].name == "Start")
 			{
 				zoneStart = zone;
@@ -655,10 +655,10 @@ class WorldExtended extends World
 
 		var constraintsCommon =
 		[
-			new Constraint_Gravity(.1),
+			new Constraint_Gravity2(.1),
 			new Constraint_Solid(),
 			new Constraint_Friction(1, .5, .01),
-			new Constraint_Movable(),
+			new Constraint_Movable2(),
 		];
 
 		var constrainable = new Constrainable(constraintsCommon);
@@ -679,7 +679,7 @@ class WorldExtended extends World
 		var viewSizeInPixels = universe.display.sizeInPixels.clone();
 		var focalLength = viewSizeInPixels.z / 16;
 		var followDivisor = 16;
-		var offsetOfCameraFromPlayer = new Coords
+		var offsetOfCameraFromPlayer = Coords.fromXYZ
 		(
 			0 - focalLength,
 			0,
@@ -688,15 +688,15 @@ class WorldExtended extends World
 
 		var loc = new Disposition
 		(
-			this.zoneNext.entities[0].locatable().loc.pos.clone().add
+			Locatable.of(this.zoneNext.entities[0] ).loc.pos.clone().add
 			(
 				offsetOfCameraFromPlayer
 			),
 
-			new Orientation
+			Orientation.fromForwardAndDown
 			(
-				new Coords(1, 0, 1), // forward
-				new Coords(0, 0, 1) // down
+				Coords.fromXYZ(1, 0, 1), // forward
+				Coords.fromXYZ(0, 0, 1) // down
 			),
 
 			this.zoneNext.name
@@ -721,7 +721,7 @@ class WorldExtended extends World
 		(
 			viewSizeInPixels,
 			focalLength,
-			cameraEntity.locatable().loc,
+			Locatable.of(cameraEntity).loc,
 			null // entitiesSort
 		);
 
@@ -740,7 +740,7 @@ class WorldExtended extends World
 		{
 			var zoneNextEntity = this.zoneNext.entities[0];
 			var zoneNextMesh =
-				zoneNextEntity.collidable().collider as MeshTextured;
+				Collidable.of(zoneNextEntity).collider as MeshTextured;
 			if (zoneNextMesh.materials[0].name == "Goal")
 			{
 				var messageWin =
@@ -770,7 +770,7 @@ class WorldExtended extends World
 			{
 				var zoneActive = this.zonesActive[i];
 				var zoneActiveEntity = zoneActive.entities[0];
-				var zoneMesh = zoneActiveEntity.collidable().collider as MeshTextured;
+				var zoneMesh = Collidable.of(zoneActiveEntity).collider as MeshTextured;
 				var facesForZone = zoneMesh.faces();
 				ArrayHelper.append(facesForZonesActive, facesForZone);
 			}
@@ -791,13 +791,13 @@ class WorldExtended extends World
 
 		var zoneCurrentEntity = this.zoneCurrent.entities[0];
 		var zoneCurrentMesh =
-			zoneCurrentEntity.collidable().collider as MeshTextured;
+			Collidable.of(zoneCurrentEntity).collider as MeshTextured;
 		var zoneCurrentBounds =
 			zoneCurrentMesh.geometry.box();
 
 		var playerIsInZoneCurrent = zoneCurrentBounds.containsPoint
 		(
-			this.entityForPlayer.locatable().loc.pos
+			Locatable.of(this.entityForPlayer).loc.pos
 		);
 		if (playerIsInZoneCurrent == false)
 		{
@@ -806,11 +806,11 @@ class WorldExtended extends World
 				var zoneActive = this.zonesActive[z];
 				var zoneActiveEntity = zoneActive.entities[0];
 				var zoneActiveMesh =
-					zoneActiveEntity.collidable().collider as MeshTextured;
+					Collidable.of(zoneActiveEntity).collider as MeshTextured;
 				var zoneActiveBounds = zoneActiveMesh.geometry.box();
 				var isPlayerInZoneActive = zoneActiveBounds.containsPoint
 				(
-					this.entityForPlayer.locatable().loc.pos
+					Locatable.of(this.entityForPlayer).loc.pos
 				);
 
 				if (isPlayerInZoneActive)
@@ -854,7 +854,7 @@ class WorldExtended extends World
 		var world  = this;
 		var facesToDraw = new Array<FaceTextured>();
 
-		var cameraPos = world.cameraEntity.locatable().loc.pos;
+		var cameraPos = Locatable.of(world.cameraEntity).loc.pos;
 
 		var spacePartitioningTreeRoot =
 			world.spacePartitioningTreeForZonesActive.nodeRoot;
@@ -870,13 +870,13 @@ class WorldExtended extends World
 		{
 			var entity = entities[b];
 
-			if (entity.drawable() != null && entity.movable() != null)
+			if (Drawable.of(entity) != null && Movable.of(entity) != null)
 			{
 				// hack
 				// Find the floor the mover is standing on,
 				// and draw the mover immediately after that floor.
 
-				var entityPos = entity.locatable().loc.pos;
+				var entityPos = Locatable.of(entity).loc.pos;
 				var edgeForFootprint = new Edge
 				([
 					entityPos,
@@ -900,7 +900,7 @@ class WorldExtended extends World
 
 					if (isEntityStandingOnFace)
 					{
-						var moverMesh = entity.collidable().collider as MeshTextured;
+						var moverMesh = Collidable.of(entity).collider as MeshTextured;
 						var moverFaces = moverMesh.faces();
 						for (var f = 0; f < moverFaces.length; f++)
 						{
@@ -917,19 +917,19 @@ class WorldExtended extends World
 			}
 		}
 
-		display.drawBackground(null, null);
+		display.drawBackground();
 		DisplayHelper.drawFacesForCamera(display, facesToDraw, world.cameraEntity);
 
 		var fontHeight = 10;
 		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
-		display.drawText
+		display.drawTextWithFontAtPosWithColorsFillAndOutline
 		(
 			world.name,
 			font,
 			Coords.fromXY(0, 1).multiplyScalar(fontHeight),
 			null, null, null, null, null // ?
 		);
-		display.drawText
+		display.drawTextWithFontAtPosWithColorsFillAndOutline
 		(
 			"" + world.secondsElapsed(),
 			font,
@@ -946,7 +946,7 @@ class WorldExtended extends World
 		);
 
 		var display = universe.display as Display3D;
-		display.drawBackground(null, null);
+		display.drawBackground();
 
 		display.cameraSet(this.camera);
 
@@ -962,7 +962,7 @@ class WorldExtended extends World
 			{
 				var entity = entities[b];
 				uwpe.entitySet(entity);
-				var drawable = entity.drawable();
+				var drawable = Drawable.of(entity);
 				if (drawable != null)
 				{
 					var entityVisual = drawable.visual;

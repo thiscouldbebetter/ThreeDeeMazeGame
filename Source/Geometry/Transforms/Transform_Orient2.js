@@ -7,6 +7,9 @@ class Transform_Orient2 {
                 Coords.create(), Coords.create(), Coords.create()
             ];
     }
+    clone() {
+        return this;
+    }
     overwriteWith(other) {
         return this; // todo
     }

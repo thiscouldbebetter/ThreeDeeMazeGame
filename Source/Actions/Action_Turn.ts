@@ -19,7 +19,7 @@ class Action_Turn extends ActionTimed
 	{
 		var entity = uwpe.entity;
 
-		var entityOrientation = entity.locatable().loc.orientation;
+		var entityOrientation = Locatable.of(entity).loc.orientation;
 		this.orientationTemp.overwriteWith(entityOrientation);
 
 		entityOrientation.overwriteWith

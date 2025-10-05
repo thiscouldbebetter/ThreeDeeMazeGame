@@ -1,6 +1,7 @@
 
-class Constraint_Movable implements Constraint
+class Constraint_Movable2 implements Constraint
 {
+	name: string;
 	transformLocate: Transform_Locate;
 
 	constructor()
@@ -12,7 +13,7 @@ class Constraint_Movable implements Constraint
 	{
 		var entityToConstrain = uwpe.entity;
 
-		var entityLoc = entityToConstrain.locatable().loc;
+		var entityLoc = Locatable.of(entityToConstrain).loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;
@@ -21,7 +22,7 @@ class Constraint_Movable implements Constraint
 		entityAccel.clear();
 		entityPos.add(entityVel);
 
-		var collidable = entityToConstrain.collidable();
+		var collidable = Collidable.of(entityToConstrain);
 		if (collidable != null)
 		{
 			var meshTransformed = collidable.collider as MeshTextured;
@@ -30,6 +31,12 @@ class Constraint_Movable implements Constraint
 			mesh.transform(this.transformLocate);
 		}
 	};
+
+	nameSet(value: string): Constraint
+	{
+		this.name = value;
+		return this;
+	}
 
 	// Clonable.
 	clone(): Constraint { return this; }

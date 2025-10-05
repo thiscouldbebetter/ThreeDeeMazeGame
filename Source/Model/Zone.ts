@@ -1,5 +1,5 @@
 
-class Zone extends PlaceBase
+class Zone2 extends PlaceBase
 {
 	name: string;
 	pos: Coords;
@@ -27,10 +27,10 @@ class Zone extends PlaceBase
 		this.entities = entities;
 
 		var entity = this.entities[0];
-		var meshTransformed = entity.collidable().collider;
+		var meshTransformed = Collidable.of(entity).collider;
 		meshTransformed.transform
 		(
-			new Transform_Locate(entity.locatable().loc)
+			new Transform_Locate(Locatable.of(entity).loc)
 		);
 	}
 
@@ -43,9 +43,9 @@ class Zone extends PlaceBase
 		materialStart: Material,
 		cellPosOfGoal: Coords,
 		materialGoal: Material
-	): Zone[]
+	): Zone2[]
 	{
-		var returnValues = new Array<Zone>();
+		var returnValues = new Array<Zone2>();
 
 		//var meshBuilder = new MeshBuilder();
 
@@ -79,7 +79,7 @@ class Zone extends PlaceBase
 					materialForRoomFloor = materialFloor;
 				}
 
-				Zone.manyFromMaze_Cell
+				this.manyFromMaze_Cell
 				(
 					maze, cellPos, cellPosInPixels, cellSizeInPixels,
 					materialWall, materialForRoomFloor, materialFloor, returnValues
@@ -99,10 +99,10 @@ class Zone extends PlaceBase
 		materialWall: Material,
 		materialRoomFloor: Material,
 		materialConnectorFloor: Material,
-		returnValues: Zone[]
+		returnValues: Zone2[]
 	): void
 	{
-		var returnValuesByName = new Map<string, Zone>();
+		var returnValuesByName = new Map<string, Zone2>();
 
 		//var cellSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(2);
 		var roomSizeInPixelsHalf = cellSizeInPixels.clone().divideScalar(8);
@@ -117,12 +117,12 @@ class Zone extends PlaceBase
 
 		var zoneForNodeName = cellPos.toString();
 
-		var tuple = Zone.manyFromMaze_Cell_Neighbors
+		var tuple = Zone2.manyFromMaze_Cell_Neighbors
 		(
 			maze, cellPos, cellCurrent, materialWall, materialConnectorFloor
 		);
 
-		var zonesForConnectorsToNeighbors: Zone[] = tuple[0];
+		var zonesForConnectorsToNeighbors: Zone2[] = tuple[0];
 		var zonesAdjacentNames: string[] = tuple[1];
 
 		var mesh = meshBuilder.room
@@ -156,7 +156,7 @@ class Zone extends PlaceBase
 			]
 		);
 
-		var zoneForNode = new Zone
+		var zoneForNode = new Zone2
 		(
 			zoneForNodeName,
 			cellPosInPixels.clone(), //pos,
@@ -303,7 +303,7 @@ class Zone extends PlaceBase
 						]
 					);
 
-					var zoneForConnector = new Zone
+					var zoneForConnector = new Zone2
 					(
 						zoneForConnectorName,
 						connectorPosInPixels,
@@ -331,7 +331,7 @@ class Zone extends PlaceBase
 			var entity = this.entities[b];
 			uwpe.entitySet(entity);
 
-			var actor = entity.actor();
+			var actor = Actor.of(entity);
 			if (actor != null)
 			{
 				var activity = actor.activity;
@@ -353,13 +353,13 @@ class Zone extends PlaceBase
 				}
 			}
 
-			var entityAnimatable = entity.animatable();
+			var entityAnimatable = Animatable2.of(entity);
 			if (entityAnimatable != null)
 			{
 				entityAnimatable.updateForTimerTick(uwpe);
 			}
 
-			var entityConstrainable = entity.constrainable();
+			var entityConstrainable = Constrainable.of(entity);
 
 			if (entityConstrainable != null)
 			{
@@ -373,7 +373,7 @@ class Zone extends PlaceBase
 		}
 	}
 
-	zonesAdjacent(world: WorldExtended): Zone[]
+	zonesAdjacent(world: WorldExtended): Zone2[]
 	{
 		var returnValues = [];
 
@@ -402,7 +402,7 @@ class Zone extends PlaceBase
 		}
 
 		var zoneMesh =
-			(this.entities[0].collidable().collider as MeshTextured).geometry;
+			(Collidable.of(this.entities[0]).collider as MeshTextured).geometry;
 
 		universe.collisionHelper.collisionsOfEdgeAndMesh
 		(

@@ -8,7 +8,7 @@ class DisplayHelper
 	{
 		var drawPos = display._drawPos;
 
-		var camera = cameraEntity.camera();
+		var camera = Camera.of(cameraEntity);
 		var cameraClipPlanes = camera.clipPlanes();
 
 		faceToDraw = new MeshBuilder().clipFaceAgainstPlanes
@@ -25,7 +25,7 @@ class DisplayHelper
 
 		var displacementFromCameraToVertex0 = vertices[0].clone().subtract
 		(
-			cameraEntity.locatable().loc.pos
+			Locatable.of(cameraEntity).loc.pos
 		);
 
 		var faceNormal = faceToDraw.geometry.plane().normal;

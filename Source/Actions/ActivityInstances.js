@@ -9,7 +9,7 @@ class ActivityInstances {
         var entity = uwpe.entity;
         var inputHelper = universe.inputHelper;
         var inputsActive = inputHelper.inputsPressed; //Active;
-        var actionsFromActor = entity.actor().actions;
+        var actionsFromActor = Actor.of(entity).actions;
         var actionsByName = world.actionsByName;
         var mappingsByInputName = world.actionToInputsMappingsByInputName;
         for (var i = 0; i < inputsActive.length; i++) {

@@ -1,5 +1,5 @@
 "use strict";
-class Groundable {
+class Groundable extends EntityPropertyBase {
     static fromEntity(entity) {
         return entity.propertyByName(Groundable.name);
     }
@@ -7,7 +7,7 @@ class Groundable {
         // hack
         var meshBeingStoodOn = null;
         var world = worldAsWorld;
-        var pos = entity.locatable().loc.pos;
+        var pos = Locatable.of(entity).loc.pos;
         var edgeLength = 100;
         var gravityDirection = new Coords(0, 0, edgeLength);
         var edgeForFootprint = new Edge([
@@ -21,7 +21,7 @@ class Groundable {
         for (var i = 0; i < zonesToCheck.length; i++) {
             var zone = zonesToCheck[i];
             var zoneEntity = zone.entities[0];
-            var zoneMesh = zoneEntity.collidable().collider;
+            var zoneMesh = Collidable.of(zoneEntity).collider;
             var collisions = collisionHelper.collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh.geometry, null, null // ?
             );
             if (collisions.some((x) => x.isActive)) {

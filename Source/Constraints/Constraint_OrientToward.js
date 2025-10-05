@@ -6,10 +6,14 @@ class Constraint_OrientToward {
     }
     constrain(uwpe) {
         var entityToConstrain = uwpe.entity;
-        var entityToConstrainLoc = entityToConstrain.locatable().loc;
-        var targetLoc = this.targetEntity.locatable().loc;
+        var entityToConstrainLoc = Locatable.of(entityToConstrain).loc;
+        var targetLoc = Locatable.of(this.targetEntity).loc;
         var entityOrientationForward = targetLoc.pos.clone().subtract(entityToConstrainLoc.pos).normalize();
         entityToConstrainLoc.orientation.overwriteWith(new Orientation(entityOrientationForward, targetLoc.orientation.down));
+    }
+    nameSet(value) {
+        this.name = value;
+        return this;
     }
     // Clonable.
     clone() { return this; }

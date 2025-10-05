@@ -52,12 +52,13 @@ class Game
 		var universe = new Universe
 		(
 			"ThreeDeeMaze",
-			"0.0.0-20220215-0000", // version
+			"0.0.0-20251004-0000", // version
 			new TimerHelper(20),
 			display,
 			soundHelper,
 			mediaLibrary,
 			ControlBuilder.default(),
+			ProfileHelper.maximal(),
 			worldCreator
 		);
 

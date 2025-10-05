@@ -10,7 +10,7 @@ class Action_Stop extends ActionTimed
 	{
 		var entity = uwpe.entity;
 
-		var entityLoc = entity.locatable().loc;
+		var entityLoc = Locatable.of(entity).loc;
 		entityLoc.vel.clear();
 		entityLoc.accel.clear();
 	}

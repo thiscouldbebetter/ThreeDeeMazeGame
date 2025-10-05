@@ -17,14 +17,14 @@ class Action_Jump extends ActionTimed
 		var place = uwpe.place;
 		var entity = uwpe.entity;
 
-		var entityLoc = entity.locatable().loc;
+		var entityLoc = Locatable.of(entity).loc;
 		var isEntityGrounded =
 			Groundable.fromEntity(entity).isGrounded(universe, world, place, entity);
 		if (isEntityGrounded)
 		{
 			entityLoc.accel.z -= this.acceleration;
 		}
-		var animatable = entity.animatable();
+		var animatable = Animatable2.of(entity);
 		animatable.animationStartByName("Jump", world);
 	}
 }

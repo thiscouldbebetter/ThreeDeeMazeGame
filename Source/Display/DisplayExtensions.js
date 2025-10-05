@@ -2,14 +2,14 @@
 class DisplayHelper {
     static drawFaceForCamera(display, faceToDraw, cameraEntity) {
         var drawPos = display._drawPos;
-        var camera = cameraEntity.camera();
+        var camera = Camera.of(cameraEntity);
         var cameraClipPlanes = camera.clipPlanes();
         faceToDraw = new MeshBuilder().clipFaceAgainstPlanes(faceToDraw, cameraClipPlanes);
         if (faceToDraw == null) {
             return;
         }
         var vertices = faceToDraw.geometry.vertices;
-        var displacementFromCameraToVertex0 = vertices[0].clone().subtract(cameraEntity.locatable().loc.pos);
+        var displacementFromCameraToVertex0 = vertices[0].clone().subtract(Locatable.of(cameraEntity).loc.pos);
         var faceNormal = faceToDraw.geometry.plane().normal;
         var faceNormalDotDisplacementFromCameraToVertex0 = faceNormal.dotProduct(displacementFromCameraToVertex0);
         if (faceNormalDotDisplacementFromCameraToVertex0 >= 0) {

@@ -1,7 +1,9 @@
 
-class Constraint_Gravity implements Constraint
+class Constraint_Gravity2 implements Constraint
 {
 	accelerationPerTick: number;
+
+	name: string;
 
 	constructor(accelerationPerTick: number)
 	{
@@ -15,7 +17,7 @@ class Constraint_Gravity implements Constraint
 		var place = uwpe.place;
 		var entityToConstrain = uwpe.entity;
 
-		var entityLoc = entityToConstrain.locatable().loc;
+		var entityLoc = Locatable.of(entityToConstrain).loc;
 		var isEntityGrounded =
 			Groundable.fromEntity(entityToConstrain).isGrounded(universe, world, place, entityToConstrain);
 
@@ -28,7 +30,7 @@ class Constraint_Gravity implements Constraint
 			entityLoc.vel.z = 0;
 			entityLoc.pos.z = -.01;
 
-			var animatable = entityToConstrain.animatable();
+			var animatable = Animatable2.of(entityToConstrain);
 			if (animatable != null)
 			{
 				if (animatable.animationsRunningNames().indexOf("Jump") >= 0)
@@ -42,6 +44,12 @@ class Constraint_Gravity implements Constraint
 		(
 			universe, world, place, entityToConstrain
 		);
+	}
+
+	nameSet(value: string): Constraint
+	{
+		this.name = value;
+		return this;
 	}
 
 	// Clonable.

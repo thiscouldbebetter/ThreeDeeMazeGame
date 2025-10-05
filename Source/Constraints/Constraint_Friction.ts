@@ -1,6 +1,7 @@
 
 class Constraint_Friction implements Constraint
 {
+	name: string;
 	speedMax: number;
 	frictionPerTick: number;
 	epsilon: number;
@@ -16,7 +17,7 @@ class Constraint_Friction implements Constraint
 	{
 		var entityToConstrain = uwpe.entity;
 
-		var vel = entityToConstrain.locatable().loc.vel;
+		var vel = Locatable.of(entityToConstrain).loc.vel;
 		var velZ = vel.z;
 		var speed = vel.magnitude();
 		if (speed > this.speedMax)
@@ -30,7 +31,7 @@ class Constraint_Friction implements Constraint
 		else
 		{
 			vel.clear();
-			var animatable = entityToConstrain.animatable();
+			var animatable = Animatable2.of(entityToConstrain);
 			if (animatable != null)
 			{
 				animatable.animationStopByName("Walk");
@@ -38,6 +39,12 @@ class Constraint_Friction implements Constraint
 			}
 		}
 		vel.z = velZ;
+	}
+
+	nameSet(value: string): Constraint
+	{
+		this.name = value;
+		return this;
 	}
 
 	// Clonable.

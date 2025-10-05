@@ -8,7 +8,7 @@ class Constraint_Solid {
         var universe = uwpe.universe;
         var world = uwpe.world;
         var entityToConstrain = uwpe.entity;
-        var entityLoc = entityToConstrain.locatable().loc;
+        var entityLoc = Locatable.of(entityToConstrain).loc;
         var entityPos = entityLoc.pos;
         var entityVel = entityLoc.vel;
         var entityAccel = entityLoc.accel;
@@ -37,6 +37,10 @@ class Constraint_Solid {
             } // end if (edgeForMovement.length > 0)
         } // end while (true)
     } // end method
+    nameSet(value) {
+        this.name = value;
+        return this;
+    }
     // Clonable.
     clone() { return this; }
     overwriteWith(other) { return this; }

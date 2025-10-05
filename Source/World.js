@@ -154,7 +154,7 @@ class WorldExtended extends World {
             cellPosOfGoal = Coords.create().randomize(randomizer).multiply(maze.sizeInCells).floor();
             distanceOrthogonalFromStartToGoal = cellPosOfGoal.clone().subtract(cellPosOfStart).absolute().sumOfDimensions();
         }
-        var zones = Zone.manyFromMaze(maze, materialsByName.get("Wall"), materialsByName.get("Floor"), cellPosOfStart, materialsByName.get("Start"), cellPosOfGoal, materialsByName.get("Goal"));
+        var zones = Zone2.manyFromMaze(maze, materialsByName.get("Wall"), materialsByName.get("Floor"), cellPosOfStart, materialsByName.get("Start"), cellPosOfGoal, materialsByName.get("Goal"));
         var nameOfZoneStart = cellPosOfStart.toString();
         var zonesByName = ArrayHelper.addLookupsByName(zones);
         var zoneStart = zonesByName.get(nameOfZoneStart);
@@ -272,7 +272,7 @@ class WorldExtended extends World {
         for (var i = 0; i < this.zones.length; i++) {
             var zone = this.zones[i];
             var zoneEntity = zone.entities[0];
-            var zoneMesh = zoneEntity.collidable().collider;
+            var zoneMesh = Collidable.of(zoneEntity).collider;
             if (zoneMesh.materials[1].name == "Start") {
                 zoneStart = zone;
                 break;
@@ -289,10 +289,10 @@ class WorldExtended extends World {
         var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
         */
         var constraintsCommon = [
-            new Constraint_Gravity(.1),
+            new Constraint_Gravity2(.1),
             new Constraint_Solid(),
             new Constraint_Friction(1, .5, .01),
-            new Constraint_Movable(),
+            new Constraint_Movable2(),
         ];
         var constrainable = new Constrainable(constraintsCommon);
         for (var z = 0; z < this.zones.length; z++) {
@@ -307,9 +307,9 @@ class WorldExtended extends World {
         var viewSizeInPixels = universe.display.sizeInPixels.clone();
         var focalLength = viewSizeInPixels.z / 16;
         var followDivisor = 16;
-        var offsetOfCameraFromPlayer = new Coords(0 - focalLength, 0, 0 - focalLength).divideScalar(followDivisor);
-        var loc = new Disposition(this.zoneNext.entities[0].locatable().loc.pos.clone().add(offsetOfCameraFromPlayer), new Orientation(new Coords(1, 0, 1), // forward
-        new Coords(0, 0, 1) // down
+        var offsetOfCameraFromPlayer = Coords.fromXYZ(0 - focalLength, 0, 0 - focalLength).divideScalar(followDivisor);
+        var loc = new Disposition(Locatable.of(this.zoneNext.entities[0]).loc.pos.clone().add(offsetOfCameraFromPlayer), Orientation.fromForwardAndDown(Coords.fromXYZ(1, 0, 1), // forward
+        Coords.fromXYZ(0, 0, 1) // down
         ), this.zoneNext.name);
         var locatable = new Locatable(loc);
         var cameraEntity = new Entity("Camera", [
@@ -320,7 +320,7 @@ class WorldExtended extends World {
             locatable,
             new Groundable()
         ]);
-        this.camera = new Camera(viewSizeInPixels, focalLength, cameraEntity.locatable().loc, null // entitiesSort
+        this.camera = new Camera(viewSizeInPixels, focalLength, Locatable.of(cameraEntity).loc, null // entitiesSort
         );
         zoneStart.entities.push(cameraEntity);
         this.cameraEntity = cameraEntity;
@@ -330,7 +330,7 @@ class WorldExtended extends World {
         var universe = uwpe.universe;
         if (this.zoneNext != null) {
             var zoneNextEntity = this.zoneNext.entities[0];
-            var zoneNextMesh = zoneNextEntity.collidable().collider;
+            var zoneNextMesh = Collidable.of(zoneNextEntity).collider;
             if (zoneNextMesh.materials[0].name == "Goal") {
                 var messageWin = "You reached the goal in "
                     + this.secondsElapsed()
@@ -349,7 +349,7 @@ class WorldExtended extends World {
             for (var i = 0; i < this.zonesActive.length; i++) {
                 var zoneActive = this.zonesActive[i];
                 var zoneActiveEntity = zoneActive.entities[0];
-                var zoneMesh = zoneActiveEntity.collidable().collider;
+                var zoneMesh = Collidable.of(zoneActiveEntity).collider;
                 var facesForZone = zoneMesh.faces();
                 ArrayHelper.append(facesForZonesActive, facesForZone);
             }
@@ -363,16 +363,16 @@ class WorldExtended extends World {
         }
         this.draw(universe);
         var zoneCurrentEntity = this.zoneCurrent.entities[0];
-        var zoneCurrentMesh = zoneCurrentEntity.collidable().collider;
+        var zoneCurrentMesh = Collidable.of(zoneCurrentEntity).collider;
         var zoneCurrentBounds = zoneCurrentMesh.geometry.box();
-        var playerIsInZoneCurrent = zoneCurrentBounds.containsPoint(this.entityForPlayer.locatable().loc.pos);
+        var playerIsInZoneCurrent = zoneCurrentBounds.containsPoint(Locatable.of(this.entityForPlayer).loc.pos);
         if (playerIsInZoneCurrent == false) {
             for (var z = 0; z < this.zonesActive.length; z++) {
                 var zoneActive = this.zonesActive[z];
                 var zoneActiveEntity = zoneActive.entities[0];
-                var zoneActiveMesh = zoneActiveEntity.collidable().collider;
+                var zoneActiveMesh = Collidable.of(zoneActiveEntity).collider;
                 var zoneActiveBounds = zoneActiveMesh.geometry.box();
-                var isPlayerInZoneActive = zoneActiveBounds.containsPoint(this.entityForPlayer.locatable().loc.pos);
+                var isPlayerInZoneActive = zoneActiveBounds.containsPoint(Locatable.of(this.entityForPlayer).loc.pos);
                 if (isPlayerInZoneActive) {
                     var zoneCurrentEntities = this.zoneCurrent.entities;
                     ArrayHelper.remove(zoneCurrentEntities, this.entityForPlayer);
@@ -402,18 +402,18 @@ class WorldExtended extends World {
         var display = universe.display;
         var world = this;
         var facesToDraw = new Array();
-        var cameraPos = world.cameraEntity.locatable().loc.pos;
+        var cameraPos = Locatable.of(world.cameraEntity).loc.pos;
         var spacePartitioningTreeRoot = world.spacePartitioningTreeForZonesActive.nodeRoot;
         spacePartitioningTreeRoot.addFacesBackToFrontForCameraPosToList(cameraPos, facesToDraw);
         var entities = world.entities;
         var collisionHelper = universe.collisionHelper;
         for (var b = 0; b < entities.length; b++) {
             var entity = entities[b];
-            if (entity.drawable() != null && entity.movable() != null) {
+            if (Drawable.of(entity) != null && Movable.of(entity) != null) {
                 // hack
                 // Find the floor the mover is standing on,
                 // and draw the mover immediately after that floor.
-                var entityPos = entity.locatable().loc.pos;
+                var entityPos = Locatable.of(entity).loc.pos;
                 var edgeForFootprint = new Edge([
                     entityPos,
                     entityPos.clone().add(new Coords(0, 0, 100))
@@ -424,7 +424,7 @@ class WorldExtended extends World {
                     var isEntityStandingOnFace = (collisionForFootprint != null
                         && collisionForFootprint.isActive);
                     if (isEntityStandingOnFace) {
-                        var moverMesh = entity.collidable().collider;
+                        var moverMesh = Collidable.of(entity).collider;
                         var moverFaces = moverMesh.faces();
                         for (var f = 0; f < moverFaces.length; f++) {
                             var moverFace = moverFaces[f];
@@ -435,19 +435,19 @@ class WorldExtended extends World {
                 }
             }
         }
-        display.drawBackground(null, null);
+        display.drawBackground();
         DisplayHelper.drawFacesForCamera(display, facesToDraw, world.cameraEntity);
         var fontHeight = 10;
         var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
-        display.drawText(world.name, font, Coords.fromXY(0, 1).multiplyScalar(fontHeight), null, null, null, null, null // ?
+        display.drawTextWithFontAtPosWithColorsFillAndOutline(world.name, font, Coords.fromXY(0, 1).multiplyScalar(fontHeight), null, null, null, null, null // ?
         );
-        display.drawText("" + world.secondsElapsed(), font, Coords.fromXY(0, 2).multiplyScalar(fontHeight), null, null, null, null, null // ?
+        display.drawTextWithFontAtPosWithColorsFillAndOutline("" + world.secondsElapsed(), font, Coords.fromXY(0, 2).multiplyScalar(fontHeight), null, null, null, null, null // ?
         );
     }
     draw3D(universe) {
         var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, null, null);
         var display = universe.display;
-        display.drawBackground(null, null);
+        display.drawBackground();
         display.cameraSet(this.camera);
         display.lightingSet(null); // todo
         for (var z = 0; z < this.zonesActive.length; z++) {
@@ -457,7 +457,7 @@ class WorldExtended extends World {
             for (var b = 0; b < entities.length; b++) {
                 var entity = entities[b];
                 uwpe.entitySet(entity);
-                var drawable = entity.drawable();
+                var drawable = Drawable.of(entity);
                 if (drawable != null) {
                     var entityVisual = drawable.visual;
                     entityVisual.draw(uwpe, display);

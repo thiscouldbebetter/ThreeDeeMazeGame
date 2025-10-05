@@ -1,6 +1,8 @@
 
 class Constraint_OrientToward implements Constraint
 {
+	name: string;
+
 	targetEntity: Entity;
 
 	transformOrient: Transform_Orient;
@@ -19,8 +21,8 @@ class Constraint_OrientToward implements Constraint
 	{
 		var entityToConstrain = uwpe.entity;
 
-		var entityToConstrainLoc = entityToConstrain.locatable().loc;
-		var targetLoc = this.targetEntity.locatable().loc;
+		var entityToConstrainLoc = Locatable.of(entityToConstrain).loc;
+		var targetLoc = Locatable.of(this.targetEntity).loc;
 		var entityOrientationForward = targetLoc.pos.clone().subtract
 		(
 			entityToConstrainLoc.pos
@@ -34,6 +36,12 @@ class Constraint_OrientToward implements Constraint
 				targetLoc.orientation.down
 			)
 		);
+	}
+
+	nameSet(value: string): Constraint
+	{
+		this.name = value;
+		return this;
 	}
 
 	// Clonable.

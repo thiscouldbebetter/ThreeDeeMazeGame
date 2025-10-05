@@ -3,6 +3,7 @@ class Constraint_Attach implements Constraint
 {
 	entityAttachedTo: Entity;
 	offsetForwardRightDown: Coords;
+	name: string;
 
 	transformOrient: Transform_Orient;
 
@@ -13,7 +14,7 @@ class Constraint_Attach implements Constraint
 
 		this.transformOrient = new Transform_Orient
 		(
-			this.entityAttachedTo.locatable().loc.orientation
+			Locatable.of(this.entityAttachedTo).loc.orientation
 		);
 	}
 
@@ -23,14 +24,20 @@ class Constraint_Attach implements Constraint
 
 		this.transformOrient.transformCoords
 		(
-			entityToConstrain.locatable().loc.pos.overwriteWith
+			Locatable.of(entityToConstrain).loc.pos.overwriteWith
 			(
 				this.offsetForwardRightDown
 			)
 		).add
 		(
-			this.entityAttachedTo.locatable().loc.pos
+			Locatable.of(this.entityAttachedTo).loc.pos
 		);
+	}
+
+	nameSet(value: string): Constraint
+	{
+		this.name = value;
+		return this;
 	}
 
 	// Clonable.

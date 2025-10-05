@@ -1,6 +1,8 @@
 
 class Constraint_Solid implements Constraint
 {
+	name: string;
+
 	private _collisions: Collision[];
 
 	constructor()
@@ -16,7 +18,7 @@ class Constraint_Solid implements Constraint
 		var world = uwpe.world as WorldExtended;
 		var entityToConstrain = uwpe.entity;
 
-		var entityLoc = entityToConstrain.locatable().loc;
+		var entityLoc = Locatable.of(entityToConstrain).loc;
 		var entityPos = entityLoc.pos;
 		var entityVel = entityLoc.vel;
 		var entityAccel = entityLoc.accel;
@@ -91,6 +93,12 @@ class Constraint_Solid implements Constraint
 		} // end while (true)
 
 	} // end method
+
+	nameSet(value: string): Constraint
+	{
+		this.name = value;
+		return this;
+	}
 
 	// Clonable.
 	clone(): Constraint { return this; }
