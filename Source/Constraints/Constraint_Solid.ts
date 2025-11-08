@@ -16,6 +16,7 @@ class Constraint_Solid implements Constraint
 	{
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
+		var place = world.place2;
 		var entityToConstrain = uwpe.entity;
 
 		var entityLoc = Locatable.of(entityToConstrain).loc;
@@ -48,7 +49,7 @@ class Constraint_Solid implements Constraint
 			{
 				collisions.length = 0;
 
-				collisions = world.collisionsWithEdge
+				collisions = place.collisionsWithEdge
 				(
 					universe, edgeForMovement, collisions
 				);

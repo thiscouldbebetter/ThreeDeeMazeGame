@@ -373,16 +373,15 @@ class Zone2 extends PlaceBase
 		}
 	}
 
-	zonesAdjacent(world: WorldExtended): Zone2[]
+	zonesAdjacent(place: PlaceZoned2): Zone2[]
 	{
 		var returnValues = [];
 
-		var zonesByName = world.zonesByName;
 		var namesOfZonesAdjacent = this.namesOfZonesAdjacent;
 		for (var i = 0; i < namesOfZonesAdjacent.length; i++)
 		{
 			var nameOfZoneAdjacent = namesOfZonesAdjacent[i];
-			var zoneAdjacent = zonesByName.get(nameOfZoneAdjacent);
+			var zoneAdjacent = place.zoneByName(nameOfZoneAdjacent);
 			returnValues.push(zoneAdjacent);
 		}
 

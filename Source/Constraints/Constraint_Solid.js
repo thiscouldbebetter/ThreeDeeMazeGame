@@ -7,6 +7,7 @@ class Constraint_Solid {
     constrain(uwpe) {
         var universe = uwpe.universe;
         var world = uwpe.world;
+        var place = world.place2;
         var entityToConstrain = uwpe.entity;
         var entityLoc = Locatable.of(entityToConstrain).loc;
         var entityPos = entityLoc.pos;
@@ -21,7 +22,7 @@ class Constraint_Solid {
             }
             else {
                 collisions.length = 0;
-                collisions = world.collisionsWithEdge(universe, edgeForMovement, collisions);
+                collisions = place.collisionsWithEdge(universe, edgeForMovement, collisions);
                 if (collisions.some((x) => x.isActive) == false) {
                     break;
                 }

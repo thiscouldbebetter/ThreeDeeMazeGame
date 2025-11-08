@@ -6,7 +6,7 @@ class Constraint_Gravity2 {
     constrain(uwpe) {
         var universe = uwpe.universe;
         var world = uwpe.world;
-        var place = uwpe.place;
+        var place = world.place2;
         var entityToConstrain = uwpe.entity;
         var entityLoc = Locatable.of(entityToConstrain).loc;
         var isEntityGrounded = Groundable.fromEntity(entityToConstrain).isGrounded(universe, world, place, entityToConstrain);

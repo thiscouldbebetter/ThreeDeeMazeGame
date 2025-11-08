@@ -13,8 +13,8 @@ class Action_Jump extends ActionTimed
 	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var universe = uwpe.universe;
-		var world = uwpe.world;
-		var place = uwpe.place;
+		var world = uwpe.world as WorldExtended;
+		var place = world.place2;
 		var entity = uwpe.entity;
 
 		var entityLoc = Locatable.of(entity).loc;

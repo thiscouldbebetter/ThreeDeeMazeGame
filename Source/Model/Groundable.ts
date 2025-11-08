@@ -1,10 +1,10 @@
 
 class Groundable extends EntityPropertyBase<Groundable>
 {
-	universe: Universe;
-	world: World;
-	place: Place;
-	entity: Entity;
+	static create(): Groundable
+	{
+		return new Groundable();
+	}
 
 	static fromEntity(entity: Entity): Groundable
 	{
@@ -18,20 +18,20 @@ class Groundable extends EntityPropertyBase<Groundable>
 	{
 		// hack
 
-		var meshBeingStoodOn = null;
+		var placeAsPlaceZoned = place as PlaceZoned2;
 
-		var world = worldAsWorld as WorldExtended;
+		var meshBeingStoodOn = null;
 
 		var pos = Locatable.of(entity).loc.pos;
 		var edgeLength = 100;
-		var gravityDirection = new Coords(0, 0, edgeLength);
+		var gravityDirection = Coords.fromXYZ(0, 0, edgeLength);
 		var edgeForFootprint = new Edge
 		([
 			pos.clone().subtract(gravityDirection),
 			pos.clone().add(gravityDirection)
 		]);
-		var zone = world.zoneCurrent;
-		var zonesToCheck = zone.zonesAdjacent(world);
+		var zone = placeAsPlaceZoned.zoneCurrent;
+		var zonesToCheck = zone.zonesAdjacent(placeAsPlaceZoned);
 		zonesToCheck.splice(0, 0, zone);
 
 		var collisionHelper = universe.collisionHelper;
