@@ -81,6 +81,142 @@ class WorldExtended extends World
 		randomizer: Randomizer
 	): WorldExtended
 	{
+		var actions = this.random_1_Actions();
+
+		var actionToInputsMappings = this.random_2_Mappings(actions);
+
+		var materials = this.random_3_Materials();
+		var materialsByName = ArrayHelper.addLookupsByName(materials);
+
+		var maze = new Maze
+		(
+			mazeCellSizeInPixels,
+			mazeSizeInCells,
+			// neighborOffsets
+			[
+				Coords.fromXY(-1, 0), // west
+				Coords.fromXY(1, 0), // east
+				Coords.fromXY(0, -1), // north
+				Coords.fromXY(0, 1), // south
+			]
+		).generateRandom(randomizer);
+
+		var meshBuilder = MeshBuilder.Instance();
+
+		var ceilingHeight = maze.cellSizeInPixels.z;
+		var moverHeight = ceilingHeight / 7;
+
+		var meshMover = meshBuilder.biped
+		(
+			materialsByName.get("Mover"),
+			moverHeight
+		).faceTexturesBuild();
+
+		var cellPosOfStart =
+			Coords
+				.create()
+				.randomize(randomizer)
+				.multiply(maze.sizeInCells)
+				.floor();
+
+		var cellPosOfGoal = null;
+
+		var distanceOrthogonalFromStartToGoalMin = maze.sizeInCells.x / 2;
+		var distanceOrthogonalFromStartToGoal = 0;
+
+		// hack - The time this will take is nondeterministic.
+
+		while (distanceOrthogonalFromStartToGoal < distanceOrthogonalFromStartToGoalMin)
+		{
+			cellPosOfGoal =
+				Coords
+					.create()
+					.randomize(randomizer)
+					.multiply(maze.sizeInCells)
+					.floor();
+
+			distanceOrthogonalFromStartToGoal =
+				cellPosOfGoal
+					.clone()
+					.subtract(cellPosOfStart)
+					.absolute()
+					.sumOfDimensions();
+		}
+
+		var zones = Zone2.manyFromMaze
+		(
+			maze,
+			materialsByName.get("Wall"),
+			materialsByName.get("Floor"),
+			cellPosOfStart,
+			materialsByName.get("Start"),
+			cellPosOfGoal,
+			materialsByName.get("Goal")
+		);
+
+		var nameOfZoneStart = cellPosOfStart.toString();
+		var zonesByName = ArrayHelper.addLookupsByName(zones);
+		var zoneStart = zonesByName.get(nameOfZoneStart);
+
+		var entityForPlayer =
+			this.random_4_EntityForPlayer
+			(
+				maze, nameOfZoneStart, cellPosOfStart, meshMover
+			);
+
+		var entityForMoverOther =
+			this.random_5_EntityForMoverOther
+			(
+				maze, nameOfZoneStart, cellPosOfStart, meshMover
+			);
+
+		var entityForChest =
+			this.random_6_EntityForChest
+			(
+				maze,
+				nameOfZoneStart,
+				cellPosOfStart,
+				materialsByName.get("Chest"),
+				moverHeight
+			);
+
+		var entityForDoor =
+			this.random_7_EntityForDoor
+			(
+				maze,
+				nameOfZoneStart,
+				cellPosOfStart,
+				materialsByName.get("Door"),
+				moverHeight
+			);
+
+		ArrayHelper.addMany
+		(
+			zoneStart.entities,
+			[
+				entityForPlayer,
+				entityForMoverOther,
+				entityForChest,
+				entityForDoor,
+			]
+		);
+
+		var returnValue = new WorldExtended
+		(
+			"Maze-" + maze.sizeInCells.x + "x" + maze.sizeInCells.y,
+			actions,
+			actionToInputsMappings,
+			materials,
+			maze.sizeInPixels,
+			zones,
+			entityForPlayer
+		);
+
+		return returnValue;
+	}
+
+	static random_1_Actions(): Action[]
+	{
 		var amountToMoveForward = .4;
 		var amountToMoveBackward = amountToMoveForward / 2;
 		var amountToYaw = 0.1;
@@ -88,32 +224,46 @@ class WorldExtended extends World
 
 		var actions =
 		[
-			new Action_Turn(new Coords(0 - amountToYaw, 0, 0)), // 0 - a - turn right
+			new Action_Turn(Coords.fromXY(0 - amountToYaw, 0)), // 0 - a - turn right
 			new Action_DoSomething(), // 1
-			new Action_Move(new Coords(0, amountToStrafe, 0)), // 2
-			new Action_Turn(new Coords(amountToYaw, 0, 0)), // 3
-			new Action_Move(new Coords(-amountToMoveBackward, 0, 0)), // 4
-			new Action_Move(new Coords(amountToMoveForward, 0, 0)), // 5
+			new Action_Move(Coords.fromXY(0, amountToStrafe)), // 2
+			new Action_Turn(Coords.fromXY(amountToYaw, 0)), // 3
+			new Action_Move(Coords.fromXY(-amountToMoveBackward, 0)), // 4
+			new Action_Move(Coords.fromXY(amountToMoveForward, 0)), // 5
 			new Action_Stop(), // 6
-			new Action_Move(new Coords(0, 0 - amountToStrafe, 0)), // 7
+			new Action_Move(Coords.fromXY(0, 0 - amountToStrafe)), // 7
 			new Action_Jump(.6), // 8
 		];
 
-		var canBeHeldDownTrue = true;
+		return actions;
+	}
+
+	static random_2_Mappings(actions: Action[]): ActionToInputsMapping[]
+	{
+		var atim =
+			(action: Action, input: Input) =>
+				ActionToInputsMapping.fromActionNameAndInputName(action.name, input.name);
+
+		var inputs = Input.Instances();
 
 		var actionToInputsMappings =
 		[
-			new ActionToInputsMapping( actions[0].name, [ "a" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[1].name, [ "e" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[2].name, [ "c" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[3].name, [ "d" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[4].name, [ "s" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[5].name, [ "w" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[6].name, [ "x" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[7].name, [ "z" ], canBeHeldDownTrue ),
-			new ActionToInputsMapping( actions[8].name, [ "_" ], canBeHeldDownTrue ),
+			atim(actions[0], inputs.a),
+			atim(actions[1], inputs.e),
+			atim(actions[2], inputs.c),
+			atim(actions[3], inputs.d),
+			atim(actions[4], inputs.s),
+			atim(actions[5], inputs.w),
+			atim(actions[6], inputs.x),
+			atim(actions[7], inputs.z),
+			atim(actions[8], inputs.Space)
 		];
 
+		return actionToInputsMappings;
+	}
+
+	static random_3_Materials(): Material[]
+	{
 		var pixelsGrayWithDarkBorder =
 		[
 			"aaaaaaaaaaaaaaaa",
@@ -153,7 +303,7 @@ class WorldExtended extends World
 
 		var textures =
 		[
-			new Texture
+			Texture.fromNameAndImage
 			(
 				"Chest",
 				imageBuilder.buildImageFromStrings
@@ -163,7 +313,7 @@ class WorldExtended extends World
 				)
 			),
 
-			new Texture
+			Texture.fromNameAndImage
 			(
 				"Door",
 				imageBuilder.buildImageFromStrings
@@ -173,7 +323,7 @@ class WorldExtended extends World
 				)
 			),
 
-			new Texture
+			Texture.fromNameAndImage
 			(
 				"Floor",
 				imageBuilder.buildImageFromStrings
@@ -183,7 +333,7 @@ class WorldExtended extends World
 				)
 			),
 
-			new Texture
+			Texture.fromNameAndImage
 			(
 				"Goal",
 				imageBuilder.buildImageFromStrings
@@ -193,7 +343,7 @@ class WorldExtended extends World
 				)
 			),
 
-			new Texture
+			Texture.fromNameAndImage
 			(
 				"Mover",
 				imageBuilder.buildImageFromStrings
@@ -205,7 +355,7 @@ class WorldExtended extends World
 				)
 			),
 
-			new Texture
+			Texture.fromNameAndImage
 			(
 				"Start",
 				imageBuilder.buildImageFromStrings
@@ -215,7 +365,7 @@ class WorldExtended extends World
 				)
 			),
 
-			new Texture
+			Texture.fromNameAndImage
 			(
 				"Wall",
 				imageBuilder.buildImageFromStrings
@@ -267,107 +417,17 @@ class WorldExtended extends World
 			materials.push(materialForTexture);
 		}
 
-		var materialsByName = ArrayHelper.addLookupsByName(materials);
+		return materials;
+	}
 
-		var meshBuilder = new MeshBuilder();
-
-		var maze = new Maze
-		(
-			mazeCellSizeInPixels,
-			mazeSizeInCells,
-			// neighborOffsets
-			[
-				new Coords(-1, 0, 0), // west
-				new Coords(1, 0, 0), // east
-				new Coords(0, -1, 0), // north
-				new Coords(0, 1, 0), // south
-			]
-		).generateRandom(randomizer);
-
-		var ceilingHeight = maze.cellSizeInPixels.z;
-		var moverHeight = ceilingHeight / 7;
-		var chestHeight = moverHeight / 4;
-		var doorHeight = moverHeight / 2 * 1.33; // ?
-
-		var meshDefnsByName = new Map
-		([
-			[
-				"Chest", 
-				meshBuilder.box
-				(
-					materialsByName.get("Chest"),
-					new Coords(2, 1, 1).multiplyScalar(chestHeight), // size
-					new Coords(0, 0, -1).multiplyScalar(chestHeight) // pos
-				).faceTexturesBuild()
-			],
-
-			[
-				"Door",
-				meshBuilder.box
-				(
-					materialsByName.get("Door"),
-					new Coords(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
-					new Coords(0, 0, -1).multiplyScalar(doorHeight) // pos
-				).faceTexturesBuild()
-			],
-
-			[
-				"Mover", 
-				meshBuilder.biped
-				(
-					materialsByName.get("Mover"),
-					moverHeight
-				).faceTexturesBuild()
-			]
-		]);
-
-		var cellPosOfStart = Coords.create().randomize(randomizer).multiply
-		(
-			maze.sizeInCells
-		).floor();
-
-		var cellPosOfGoal = null;
-
-		var distanceOrthogonalFromStartToGoalMin = maze.sizeInCells.x / 2;
-		var distanceOrthogonalFromStartToGoal = 0;
-
-		// hack - The time this will take is nondeterministic.
-
-		while (distanceOrthogonalFromStartToGoal < distanceOrthogonalFromStartToGoalMin)
-		{
-			cellPosOfGoal = Coords.create().randomize(randomizer).multiply
-			(
-				maze.sizeInCells
-			).floor();
-
-			distanceOrthogonalFromStartToGoal = cellPosOfGoal.clone().subtract
-			(
-				cellPosOfStart
-			).absolute().sumOfDimensions();
-		}
-
-		var zones = Zone2.manyFromMaze
-		(
-			maze,
-			materialsByName.get("Wall"),
-			materialsByName.get("Floor"),
-			cellPosOfStart,
-			materialsByName.get("Start"),
-			cellPosOfGoal,
-			materialsByName.get("Goal")
-		);
-
-		var nameOfZoneStart = cellPosOfStart.toString();
-		var zonesByName = ArrayHelper.addLookupsByName(zones);
-		var zoneStart = zonesByName.get(nameOfZoneStart);
-
-		var skeletonAtRest = SkeletonHelper.biped
-		(
-			6 // hack - figureHeightInPixels
-		);
-
-		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
-
+	static random_4_EntityForPlayer
+	(
+		maze: Maze,
+		nameOfZoneStart: string,
+		cellPosOfStart: Coords,
+		mesh: MeshTextured
+	): Entity
+	{
 		var loc = new Disposition
 		(
 			cellPosOfStart.clone().multiply
@@ -375,41 +435,47 @@ class WorldExtended extends World
 				maze.cellSizeInPixels
 			).add
 			(
-				new Coords(0, 0, -10)
+				Coords.fromXYZ(0, 0, -10)
 			),
-			new Orientation
+			Orientation.fromForwardAndDown
 			(
-				new Coords(0, 1, 0),
-				new Coords(0, 0, 1)
+				Coords.fromXYZ(0, 1, 0),
+				Coords.fromXYZ(0, 0, 1)
 			),
 			nameOfZoneStart // venue
 		);
-		var locatable = new Locatable(loc);
-		var mesh = meshDefnsByName.get("Mover");
-		var visual: Visual = new VisualMesh(mesh.clone());
-		var transformPose = new Transform_MeshPoseWithSkeleton
+		var locatable = Locatable.fromDisposition(loc);
+		var visual: Visual = VisualMesh.fromMesh(mesh.clone());
+
+		var skeletonAtRest = SkeletonHelper.biped
 		(
-			mesh,
-			skeletonAtRest,
-			BoneInfluence.buildManyForBonesAndVertexGroups
-			(
-				skeletonAtRest.bonesAll, mesh.vertexGroups
-			),
-			null // ?
+			6 // hack - figureHeightInPixels
 		);
-		visual = new VisualTransform
+		var transformPose =
+			Transform_MeshPoseWithSkeleton.fromMeshSkeletonAndBoneInfluences
+			(
+				mesh,
+				skeletonAtRest,
+				BoneInfluence.buildManyForBonesAndVertexGroups
+				(
+					skeletonAtRest.bonesAll, mesh.vertexGroups
+				)
+			);
+		visual = VisualTransform.fromTransformAndChild
 		(
-			new Transform_Multiple
+			Transform_Multiple.fromChildren
 			([
 				//new Transform_Overwrite(mesh),
 				transformPose,
 				new Transform_Orient2(loc.orientation), // hack
-				new Transform_Translate(loc.pos),
+				Transform_Translate.fromDisplacement(loc.pos),
 			]),
 			visual
 		);
 
 		var drawable = Drawable.fromVisual(visual);
+
+		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
 
 		var skeletonPosed = transformPose.skeletonPosed;
 		var animatable = new Animatable2
@@ -417,13 +483,16 @@ class WorldExtended extends World
 			animationDefnGroupBiped, skeletonAtRest, skeletonPosed
 		);
 
-		var actor = new Actor(Activity.fromDefnName("UserInputAccept"));
+		var activity = Activity.fromDefnName("UserInputAccept");
+		var actor = Actor.fromActivity(activity);
 
 		var collidable = Collidable.fromCollider(mesh);
 
 		var groundable = new Groundable();
 
-		var entityForPlayer = new Entity
+		var movable = Movable.default();
+
+		var entityForPlayer = Entity.fromNameAndProperties
 		(
 			"Player",
 			[
@@ -433,90 +502,157 @@ class WorldExtended extends World
 				drawable,
 				groundable,
 				locatable,
-				Movable.default()
+				movable
 			]
 		);
 
-		loc = new Disposition
+		return entityForPlayer;
+	}
+
+	static random_5_EntityForMoverOther
+	(
+		maze: Maze,
+		nameOfZoneStart: string,
+		cellPosOfStart: Coords,
+		meshDefnMover: MeshTextured
+	): Entity
+	{
+		var loc = Disposition.fromPosOrientationAndPlaceName
 		(
 			cellPosOfStart.clone().add
 			(
-				new Coords(1, 1, 0).multiplyScalar(.1)
+				Coords.fromXYZ(1, 1, 0).multiplyScalar(.1)
 			).multiply
 			(
 				maze.cellSizeInPixels
 			),
-			new Orientation
+			Orientation.fromForwardAndDown
 			(
-				new Coords(0, 1, 0),
-				new Coords(0, 0, 1)
+				Coords.fromXYZ(0, 1, 0),
+				Coords.fromXYZ(0, 0, 1)
 			),
 			nameOfZoneStart // venue
 		);
-		locatable = new Locatable(loc);
-		var mesh = meshDefnsByName.get("Mover");
-		visual = new VisualTransform
+		var locatable = Locatable.fromDisposition(loc);
+		var mesh = meshDefnMover;
+		var visual = VisualTransform.fromTransformAndChild
 		(
-			new Transform_Multiple
+			Transform_Multiple.fromChildren
 			([
 				new Transform_Overwrite(mesh),
-				new Transform_Orient(loc.orientation),
-				new Transform_Translate(loc.pos)
+				Transform_Orient.fromOrientation(loc.orientation),
+				Transform_Translate.fromDisplacement(loc.pos)
 			]),
-			new VisualMesh(mesh.clone())
+			VisualMesh.fromMesh(mesh.clone())
 		);
-		var entityForMoverOther = new Entity
+
+		var collidable = Collidable.fromCollider(mesh);
+		var drawable = Drawable.fromVisual(visual);
+		var groundable = new Groundable();
+		var movable = Movable.default();
+
+		var entityForMoverOther = Entity.fromNameAndProperties
 		(
 			"MoverOther",
 			[
-				Collidable.fromCollider(mesh),
-				Drawable.fromVisual(visual),
+				collidable,
+				drawable,
 				groundable,
 				locatable,
-				Movable.default()
+				movable
 			]
 		);
 
-		loc = new Disposition
+		return entityForMoverOther;
+	}
+
+	static random_6_EntityForChest
+	(
+		maze: Maze,
+		nameOfZoneStart: string,
+		cellPosOfStart: Coords,
+		material: Material,
+		moverHeight: number
+	): Entity
+	{
+		var chestHeight = moverHeight / 4;
+
+		var meshBuilder = MeshBuilder.Instance();
+
+		var mesh = meshBuilder.box
+		(
+			material,
+			Coords.fromXYZ(2, 1, 1).multiplyScalar(chestHeight), // size
+			Coords.fromXYZ(0, 0, -1).multiplyScalar(chestHeight) // pos
+		).faceTexturesBuild();
+
+		var loc = Disposition.fromPosOrientationAndPlaceName
 		(
 			cellPosOfStart.clone().add
 			(
-				new Coords(1, -1, 0).multiplyScalar(.05)
+				Coords.fromXYZ(1, -1, 0).multiplyScalar(.05)
 			).multiply
 			(
 				maze.cellSizeInPixels
 			),
-			new Orientation
+			Orientation.fromForwardAndDown
 			(
-				new Coords(1, -1, 0),
-				new Coords(0, 0, 1)
+				Coords.fromXYZ(1, -1, 0),
+				Coords.fromXYZ(0, 0, 1)
 			),
 			nameOfZoneStart // venue
 		);
-		locatable = new Locatable(loc);
-		mesh = meshDefnsByName.get("Chest");
-		visual = new VisualTransform
+		var locatable = Locatable.fromDisposition(loc);
+		var visual = VisualTransform.fromTransformAndChild
 		(
-			new Transform_Multiple
+			Transform_Multiple.fromChildren
 			([
 				new Transform_Overwrite(mesh),
-				new Transform_Orient(loc.orientation),
-				new Transform_Translate(loc.pos)
+				Transform_Orient.fromOrientation(loc.orientation),
+				Transform_Translate.fromDisplacement(loc.pos)
 			]),
-			new VisualMesh(mesh.clone())
+			VisualMesh.fromMesh(mesh.clone() )
 		);
-		var entityForChest = new Entity
+
+		var collidable = Collidable.fromCollider(mesh);
+		var drawable = Drawable.fromVisual(visual);
+		var groundable = new Groundable();
+
+		var entityForChest = Entity.fromNameAndProperties
 		(
 			"Chest",
 			[
-				Collidable.fromCollider(mesh),
-				Drawable.fromVisual(visual),
+				collidable,
+				drawable,
 				groundable,
 				locatable
 			]
 		);
 
-		loc = new Disposition
+		return entityForChest;
+	}
+
+	static random_7_EntityForDoor
+	(
+		maze: Maze,
+		nameOfZoneStart: string,
+		cellPosOfStart: Coords,
+		materialDoor: Material,
+		moverHeight: number
+	): Entity
+	{
+		var doorHeight = moverHeight / 2 * 1.33; // ?
+
+		var meshBuilder = MeshBuilder.Instance();
+
+		var mesh = meshBuilder.box
+		(
+			materialDoor,
+			Coords.fromXYZ(.67, .05, 1).multiplyScalar(doorHeight), // size - ?
+			Coords.fromXYZ(0, 0, -1).multiplyScalar(doorHeight) // pos
+		).faceTexturesBuild();
+
+		var loc = Disposition.fromPosOrientationAndPlaceName
 		(
 			cellPosOfStart.clone().add
 			(
@@ -525,59 +661,41 @@ class WorldExtended extends World
 			(
 				maze.cellSizeInPixels
 			),
-			new Orientation
+			Orientation.fromForwardAndDown
 			(
-				new Coords(1, 0, 0),
-				new Coords(0, 0, 1)
+				Coords.fromXYZ(1, 0, 0),
+				Coords.fromXYZ(0, 0, 1)
 			),
 			nameOfZoneStart // venue
 		);
-		locatable = new Locatable(loc);
-		mesh = meshDefnsByName.get("Door");
-		visual = new VisualTransform
+		var locatable = Locatable.fromDisposition(loc);
+		var visual = VisualTransform.fromTransformAndChild
 		(
-			new Transform_Multiple
+			Transform_Multiple.fromChildren
 			([
 				new Transform_Overwrite(mesh),
-				new Transform_Orient(loc.orientation),
-				new Transform_Translate(loc.pos)
+				Transform_Orient.fromOrientation(loc.orientation),
+				Transform_Translate.fromDisplacement(loc.pos)
 			]),
-			new VisualMesh(mesh.clone())
+			VisualMesh.fromMesh(mesh.clone() )
 		);
-		var entityForDoor = new Entity
+
+		var collidable = Collidable.fromCollider(mesh);
+		var drawable = Drawable.fromVisual(visual);
+		var groundable = new Groundable();
+
+		var entityForDoor = Entity.fromNameAndProperties
 		(
 			"Door",
 			[
-				Collidable.fromCollider(mesh),
-				Drawable.fromVisual(visual),
+				collidable,
+				drawable,
 				groundable,
 				locatable
 			]
 		);
 
-		ArrayHelper.addMany
-		(
-			zoneStart.entities,
-			[
-				entityForPlayer,
-				entityForMoverOther,
-				entityForChest,
-				entityForDoor,
-			]
-		);
-
-		var returnValue = new WorldExtended
-		(
-			"Maze-" + maze.sizeInCells.x + "x" + maze.sizeInCells.y,
-			actions,
-			actionToInputsMappings,
-			materials,
-			maze.sizeInPixels,
-			zones,
-			entityForPlayer
-		);
-
-		return returnValue;
+		return entityForDoor;
 	}
 
 	static defnBuild(): WorldDefn
@@ -644,15 +762,6 @@ class WorldExtended extends World
 		this.zoneNext = zoneStart;
 		this.zonesActive = [];
 
-		/*
-		var skeleton = SkeletonHelper.biped
-		(
-			6 // hack - figureHeightInPixels
-		);
-
-		var animationDefnGroupBiped = SkeletonHelper.bipedAnimationDefnGroup();
-		*/
-
 		var constraintsCommon =
 		[
 			new Constraint_Gravity2(.1),
@@ -686,7 +795,7 @@ class WorldExtended extends World
 			0 - focalLength
 		).divideScalar(followDivisor);
 
-		var loc = new Disposition
+		var loc = Disposition.fromPosOrientationAndPlaceName
 		(
 			Locatable.of(this.zoneNext.entities[0] ).loc.pos.clone().add
 			(
@@ -702,12 +811,12 @@ class WorldExtended extends World
 			this.zoneNext.name
 		);
 
-		var locatable = new Locatable(loc);
-		var cameraEntity = new Entity
+		var locatable = Locatable.fromDisposition(loc);
+		var cameraEntity = Entity.fromNameAndProperties
 		(
 			"Camera",
 			[
-				new Constrainable
+				Constrainable.fromConstraints
 				([
 					new Constraint_Follow(this.entityForPlayer, focalLength / followDivisor),
 					new Constraint_OrientToward(this.entityForPlayer),
@@ -717,12 +826,11 @@ class WorldExtended extends World
 			]
 		);
 
-		this.camera = new Camera
+		this.camera = Camera.fromViewSizeFocalLengthAndDisposition
 		(
 			viewSizeInPixels,
 			focalLength,
-			Locatable.of(cameraEntity).loc,
-			null // entitiesSort
+			Locatable.of(cameraEntity).loc
 		);
 
 		zoneStart.entities.push(cameraEntity);

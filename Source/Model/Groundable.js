@@ -40,14 +40,4 @@ class Groundable extends EntityPropertyBase {
     isGrounded(universe, world, place, entity) {
         return (this.ground(universe, world, place, entity) != null);
     }
-    // Clonable.
-    clone() { return this; }
-    overwriteWith(other) { return this; }
-    // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
-    propertyName() { return Groundable.name; }
-    updateForTimerTick(uwpe) { }
-    // Equatable.
-    equals(other) { return false; }
 }
