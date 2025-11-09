@@ -1,17 +1,16 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, actions, actionToInputsMappings, materials, place2) {
-        super(name, DateTime.now(), WorldExtended.defnBuild(), () => { throw new Error("todo"); }, // ?
-        "");
+    constructor(name, actions, actionToInputsMappings, materials, placeInitial) {
+        super(name, DateTime.now(), WorldExtended.defnBuild(), () => placeInitial, placeInitial.name);
         this.name = name;
         this.actions = actions;
         this.actionsByName = ArrayHelper.addLookupsByName(this.actions);
         this.actionToInputsMappings = actionToInputsMappings;
         this.actionToInputsMappingsByInputName = ArrayHelper.addLookups(this.actionToInputsMappings, x => x.inputNames[0]);
         this.materials = materials;
-        this.place2 = place2;
         this.dateStarted = new Date();
         this.timerTicksSoFar = 0;
+        this.placeCurrent = placeInitial;
     }
     // static methods
     static create(universe) {
@@ -48,15 +47,18 @@ class WorldExtended extends World {
         // todo
     }
     initialize(uwpe) {
-        this.place2.initialize(uwpe);
+        var place = this.place();
+        place.initialize(uwpe);
     }
     updateForTimerTick(uwpe) {
-        this.place2.updateForTimerTick(uwpe);
+        var place = this.place();
+        place.updateForTimerTick(uwpe);
         this.timerTicksSoFar++;
     }
     // drawable
     draw(universe) {
-        this.place2.draw(universe);
+        var place = this.place();
+        place.draw(universe);
     }
     // Controls.
     toControl() {

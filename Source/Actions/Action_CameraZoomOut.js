@@ -12,7 +12,7 @@ class Action_CameraZoomOut extends ActionTimed {
     }
     perform(uwpe) {
         var world = uwpe.world;
-        var place = world.place2;
+        var place = world.place();
         var entityForCamera = place.cameraEntity;
         var constraintAttach = Constrainable.of(entityForCamera).constraintByClassName(Constraint_Attach.name);
         constraintAttach.

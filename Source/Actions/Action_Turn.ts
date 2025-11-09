@@ -15,6 +15,11 @@ class Action_Turn extends ActionTimed
 		this.orientationTemp = Orientation.Instances().ForwardXDownZ.clone();
 	}
 
+	static fromAmountToTurnRightAndDown(amountToTurnRightAndDown: Coords): Action_Turn
+	{
+		return new Action_Turn(amountToTurnRightAndDown);
+	}
+
 	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var entity = uwpe.entity;

@@ -6,6 +6,9 @@ class Action_Turn extends ActionTimed {
         this.amountToTurnRightAndDown = amountToTurnRightAndDown;
         this.orientationTemp = Orientation.Instances().ForwardXDownZ.clone();
     }
+    static fromAmountToTurnRightAndDown(amountToTurnRightAndDown) {
+        return new Action_Turn(amountToTurnRightAndDown);
+    }
     perform(uwpe) {
         var entity = uwpe.entity;
         var entityOrientation = Locatable.of(entity).loc.orientation;

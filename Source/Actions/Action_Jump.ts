@@ -14,7 +14,7 @@ class Action_Jump extends ActionTimed
 	{
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
-		var place = world.place2;
+		var place = world.place();
 		var entity = uwpe.entity;
 
 		var entityLoc = Locatable.of(entity).loc;

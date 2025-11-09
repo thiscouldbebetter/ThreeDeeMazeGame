@@ -15,15 +15,16 @@ class PlaceZoned2 extends PlaceBase {
         var amountToYaw = 0.1;
         var amountToStrafe = .1;
         var actions = [
-            new Action_Turn(Coords.fromXY(0 - amountToYaw, 0)), // 0 - a - turn right
+            Action_Turn.fromAmountToTurnRightAndDown(Coords.fromXY(0 - amountToYaw, 0)), // 0 - a - turn right
             new Action_DoSomething(), // 1
-            new Action_Move(Coords.fromXY(0, amountToStrafe)), // 2
-            new Action_Turn(Coords.fromXY(amountToYaw, 0)), // 3
-            new Action_Move(Coords.fromXY(-amountToMoveBackward, 0)), // 4
-            new Action_Move(Coords.fromXY(amountToMoveForward, 0)), // 5
+            Action_Move.fromAmountToMoveForwardRightDown(Coords.fromXY(0, amountToStrafe)), // 2
+            Action_Turn.fromAmountToTurnRightAndDown(Coords.fromXY(amountToYaw, 0)), // 3
+            Action_Move.fromAmountToMoveForwardRightDown(Coords.fromXY(-amountToMoveBackward, 0)), // 4
+            Action_Move.fromAmountToMoveForwardRightDown(Coords.fromXY(amountToMoveForward, 0)), // 5
             new Action_Stop(), // 6
-            new Action_Move(Coords.fromXY(0, 0 - amountToStrafe)), // 7
+            Action_Move.fromAmountToMoveForwardRightDown(Coords.fromXY(0, 0 - amountToStrafe)), // 7
             new Action_Jump(.6), // 8
+            Action_Talk.create() // 9
         ];
         return actions;
     }
@@ -39,7 +40,8 @@ class PlaceZoned2 extends PlaceBase {
             atim(actions[5], inputs.w),
             atim(actions[6], inputs.x),
             atim(actions[7], inputs.z),
-            atim(actions[8], inputs.Space)
+            atim(actions[8], inputs.Space),
+            atim(actions[9], inputs.t)
         ];
         return actionToInputsMappings;
     }
@@ -191,7 +193,13 @@ class PlaceZoned2 extends PlaceBase {
         return entityForPlayer;
     }
     static random_2_EntityForMoverOther(maze, nameOfZoneStart, cellPosOfStart, meshDefnMover) {
-        var loc = Disposition.fromPosOrientationAndPlaceName(cellPosOfStart.clone().add(Coords.fromXYZ(1, 1, 0).multiplyScalar(.1)).multiply(maze.cellSizeInPixels), Orientation.fromForwardAndDown(Coords.fromXYZ(0, 1, 0), Coords.fromXYZ(0, 0, 1)), nameOfZoneStart // venue
+        var pos = cellPosOfStart
+            .clone()
+            .add(Coords
+            .fromXYZ(1, 1, 0)
+            .multiplyScalar(.1))
+            .multiply(maze.cellSizeInPixels);
+        var loc = Disposition.fromPosOrientationAndPlaceName(pos, Orientation.fromForward(Coords.fromXY(0, 1)), nameOfZoneStart // venue
         );
         var locatable = Locatable.fromDisposition(loc);
         var mesh = meshDefnMover;
@@ -204,12 +212,14 @@ class PlaceZoned2 extends PlaceBase {
         var drawable = Drawable.fromVisual(visual);
         var groundable = new Groundable();
         var movable = Movable.default();
+        var talker = Talker.fromConversationDefnName("Talk_Conversation_psv");
         var entityForMoverOther = Entity.fromNameAndProperties("MoverOther", [
             collidable,
             drawable,
             groundable,
             locatable,
-            movable
+            movable,
+            talker
         ]);
         return entityForMoverOther;
     }
@@ -331,6 +341,7 @@ class PlaceZoned2 extends PlaceBase {
     draw3d(universe) {
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
         var display = universe.display;
+        display.clear();
         display.drawBackground();
         display.cameraSet(this.camera);
         display.lightingSet(null); // todo
@@ -348,6 +359,12 @@ class PlaceZoned2 extends PlaceBase {
                 }
             }
         }
+        display.flush();
+    }
+    entitiesAll() {
+        var entityArraysForZonesActive = this.zonesActive.map(x => x.entities);
+        var entitiesForZonesActive = ArrayHelper.flattenArrayOfArrays(entityArraysForZonesActive);
+        return entitiesForZonesActive;
     }
     initialize(uwpe) {
         this.meshesToDraw = [];

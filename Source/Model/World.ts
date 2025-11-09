@@ -6,8 +6,6 @@ class WorldExtended extends World
 	materials: Material[];
 	sizeInPixels: Coords;
 
-	place2: PlaceZoned2;
-
 	actionsByName: Map<string, Action>;
 	actionToInputsMappingsByInputName: Map<string, ActionToInputsMapping>;
 	timerTicksSoFar: number;
@@ -20,7 +18,7 @@ class WorldExtended extends World
 		actions: Action[],
 		actionToInputsMappings: ActionToInputsMapping[],
 		materials: Material[],
-		place2: PlaceZoned2
+		placeInitial: PlaceZoned2
 	)
 	{
 		super
@@ -28,8 +26,8 @@ class WorldExtended extends World
 			name,
 			DateTime.now(),
 			WorldExtended.defnBuild(),
-			() => { throw new Error("todo") }, // ?
-			"", // placeInitialName
+			() => placeInitial,
+			placeInitial.name
 		);
 		this.name = name;
 		this.actions = actions;
@@ -40,11 +38,12 @@ class WorldExtended extends World
 			this.actionToInputsMappings, x => x.inputNames[0]
 		);
 		this.materials = materials;
-		this.place2 = place2;
 
 		this.dateStarted = new Date();
 
 		this.timerTicksSoFar = 0;
+
+		this.placeCurrent = placeInitial;
 	}
 
 	// static methods
@@ -123,12 +122,14 @@ class WorldExtended extends World
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.place2.initialize(uwpe);
+		var place = this.place();
+		place.initialize(uwpe);
 	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.place2.updateForTimerTick(uwpe);
+		var place = this.place();
+		place.updateForTimerTick(uwpe);
 
 		this.timerTicksSoFar++;
 	}
@@ -137,7 +138,8 @@ class WorldExtended extends World
 
 	draw(universe: Universe): void
 	{
-		this.place2.draw(universe);
+		var place = this.place() as PlaceZoned2;
+		place.draw(universe);
 	}
 
 	// Controls.

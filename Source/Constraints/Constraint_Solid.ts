@@ -16,7 +16,7 @@ class Constraint_Solid implements Constraint
 	{
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
-		var place = world.place2;
+		var place = world.place() as PlaceZoned2;
 		var entityToConstrain = uwpe.entity;
 
 		var entityLoc = Locatable.of(entityToConstrain).loc;
@@ -75,17 +75,21 @@ class Constraint_Solid implements Constraint
 
 					entityVel.subtract
 					(
-						planeNormal.clone().multiplyScalar
-						(
-							entityVel.dotProduct(planeNormal)
-						)
+						planeNormal
+							.clone()
+							.multiplyScalar
+							(
+								entityVel.dotProduct(planeNormal)
+							)
 					);
 					entityAccel.subtract
 					(
-						planeNormal.clone().multiplyScalar
-						(
-							entityAccel.dotProduct(planeNormal)
-						)
+						planeNormal
+							.clone()
+							.multiplyScalar
+							(
+								entityAccel.dotProduct(planeNormal)
+							)
 					);
 				}
 

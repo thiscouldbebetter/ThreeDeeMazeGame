@@ -7,7 +7,7 @@ class Action_Jump extends ActionTimed {
     perform(uwpe) {
         var universe = uwpe.universe;
         var world = uwpe.world;
-        var place = world.place2;
+        var place = world.place();
         var entity = uwpe.entity;
         var entityLoc = Locatable.of(entity).loc;
         var isEntityGrounded = Groundable.fromEntity(entity).isGrounded(universe, world, place, entity);

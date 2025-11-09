@@ -7,10 +7,13 @@ class Action_Move extends ActionTimed {
         this.acceleration = Coords.create();
         this.transformOrient = new Transform_Orient(null);
     }
+    static fromAmountToMoveForwardRightDown(amountToMoveForwardRightDown) {
+        return new Action_Move(amountToMoveForwardRightDown);
+    }
     perform(uwpe) {
         var universe = uwpe.universe;
         var world = uwpe.world;
-        var place = world.place2;
+        var place = world.place();
         var entity = uwpe.entity;
         var entityLoc = Locatable.of(entity).loc;
         var isEntityOnGround = Groundable.fromEntity(entity).isGrounded(universe, world, place, entity);

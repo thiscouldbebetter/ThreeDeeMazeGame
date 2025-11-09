@@ -18,11 +18,16 @@ class Action_Move extends ActionTimed
 		this.transformOrient = new Transform_Orient(null);
 	}
 
+	static fromAmountToMoveForwardRightDown(amountToMoveForwardRightDown: Coords): Action_Move
+	{
+		return new Action_Move(amountToMoveForwardRightDown);
+	}
+
 	perform(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
-		var place = world.place2;
+		var place = world.place();
 		var entity = uwpe.entity;
 
 		var entityLoc = Locatable.of(entity).loc;

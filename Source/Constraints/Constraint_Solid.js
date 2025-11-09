@@ -7,7 +7,7 @@ class Constraint_Solid {
     constrain(uwpe) {
         var universe = uwpe.universe;
         var world = uwpe.world;
-        var place = world.place2;
+        var place = world.place();
         var entityToConstrain = uwpe.entity;
         var entityLoc = Locatable.of(entityToConstrain).loc;
         var entityPos = entityLoc.pos;
@@ -32,8 +32,12 @@ class Constraint_Solid {
                     var planeCollidedWith = faceCollidedWith.plane();
                     var planeNormal = planeCollidedWith.normal;
                     entityPos.overwriteWith(collisionClosest.pos);
-                    entityVel.subtract(planeNormal.clone().multiplyScalar(entityVel.dotProduct(planeNormal)));
-                    entityAccel.subtract(planeNormal.clone().multiplyScalar(entityAccel.dotProduct(planeNormal)));
+                    entityVel.subtract(planeNormal
+                        .clone()
+                        .multiplyScalar(entityVel.dotProduct(planeNormal)));
+                    entityAccel.subtract(planeNormal
+                        .clone()
+                        .multiplyScalar(entityAccel.dotProduct(planeNormal)));
                 }
             } // end if (edgeForMovement.length > 0)
         } // end while (true)
