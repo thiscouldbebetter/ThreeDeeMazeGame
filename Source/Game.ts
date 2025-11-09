@@ -34,39 +34,26 @@ class Game
 
 	start_MediaFilePathsLoaded(mediaFilePaths: string[]): void
 	{
-		var colors = Color.Instances();
-
-		var display = new Display3D
+		var displaySize = Coords.fromXY
 		(
-			Coords.fromXYZ(320, 240, 2000),
-			new FontNameAndHeight("Font", 10),
-			colors.White, // colorFore,
-			colors.Black // colorBack
+			// 320, 240
+			400, 300
 		);
+		displaySize.z = displaySize.x * 6; // Formerly 320x240x2000.
+		var display = Display3D.fromViewSizeInPixels(displaySize);
 
-		var soundHelper = new SoundHelperLive();
-
-		var mediaLibrary = MediaLibrary.fromMediaFilePaths(mediaFilePaths)
-
-		var controlBuilder = ControlBuilder.default();
-
-		var profileHelper = ProfileHelper.maximal();
+		var mediaLibrary = MediaLibrary.fromMediaFilePaths(mediaFilePaths);
 
 		var worldCreator = WorldCreator.fromWorldCreate
 		(
 			WorldExtended.create
 		);
 
-		var universe = new Universe
+		var universe = Universe.fromNameDisplayMediaLibraryAndWorldCreator
 		(
 			"ThreeDeeMaze",
-			"0.0.0-20251108-0000", // version
-			TimerHelper.fromTicksPerSecond(20),
 			display,
-			soundHelper,
 			mediaLibrary,
-			controlBuilder,
-			profileHelper,
 			worldCreator
 		);
 

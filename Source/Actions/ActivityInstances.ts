@@ -17,8 +17,8 @@ class ActivityInstances
 		var world = uwpe.world as WorldExtended;
 		var entity = uwpe.entity;
 
-		var inputHelper = universe.inputHelper;
-		var inputsActive = inputHelper.inputsPressed; //Active;
+		var inputTracker = universe.inputTracker;
+		var inputsActive = inputTracker.inputsPressed; //Active;
 		var actionsFromActor = Actor.of(entity).actions;
 
 		var actionsByName = world.actionsByName;

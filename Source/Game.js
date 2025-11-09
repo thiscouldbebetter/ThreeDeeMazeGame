@@ -17,17 +17,14 @@ class Game {
         MediaLibrary.mediaFilePathsReadFromContentDirectoryPathAndManifestFileNameThen(contentDirectoryPath, manifestFileName, this.start_MediaFilePathsLoaded);
     }
     start_MediaFilePathsLoaded(mediaFilePaths) {
-        var colors = Color.Instances();
-        var display = new Display3D(Coords.fromXYZ(320, 240, 2000), new FontNameAndHeight("Font", 10), colors.White, // colorFore,
-        colors.Black // colorBack
-        );
-        var soundHelper = new SoundHelperLive();
+        var displaySize = Coords.fromXY(
+        // 320, 240
+        400, 300);
+        displaySize.z = displaySize.x * 6; // Formerly 320x240x2000.
+        var display = Display3D.fromViewSizeInPixels(displaySize);
         var mediaLibrary = MediaLibrary.fromMediaFilePaths(mediaFilePaths);
-        var controlBuilder = ControlBuilder.default();
-        var profileHelper = ProfileHelper.maximal();
         var worldCreator = WorldCreator.fromWorldCreate(WorldExtended.create);
-        var universe = new Universe("ThreeDeeMaze", "0.0.0-20251108-0000", // version
-        TimerHelper.fromTicksPerSecond(20), display, soundHelper, mediaLibrary, controlBuilder, profileHelper, worldCreator);
+        var universe = Universe.fromNameDisplayMediaLibraryAndWorldCreator("ThreeDeeMaze", display, mediaLibrary, worldCreator);
         universe.initialize(() => universe.start());
     }
 }
