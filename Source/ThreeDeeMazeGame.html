@@ -145,8 +145,12 @@
 
 <script type="text/javascript" src="Framework/Source/Media/Audio/Audible.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/SoundFromFile.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/Audio/SoundFromLibrary.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/SoundHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/Audio/SoundPlayback.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/VisualSound.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Media/Text/TextString.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Media/_Imports.js"></script>
 
@@ -228,10 +232,11 @@
 <script type="text/javascript" src="Model/World.js"></script>
 <script type="text/javascript" src="Model/Zone.js"></script>
 
+<script type="text/javascript" src="Configuration.js"></script>
 <script type="text/javascript" src="Game.js"></script>
 
 <script type="text/javascript">
-new Game().start();
+Game.create().start();
 </script>
 
 </body>
