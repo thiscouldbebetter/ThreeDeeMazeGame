@@ -76,79 +76,19 @@ SubjectPrompt|Prompt
 
 	Game|Push
 	GameDescription|Display|Well, it's kind of a moving target.
-	|Display|The rules and objectives keep changing...
-	|Display|...to say nothing of the bugs.
-	|Display|But basically, use the arrow keys to move.
-	|Display|If you move over the exit there...
-	|Display|...and press E, you'll go outside.
-	|Display|After that, uh, have adventures, I guess.
-	|Option|How do I win?|Game.Win
-	|Option|What buttons do I press?|Game.Controls
-	|Option|Any exciting gameplay mechanics?|Game.Mechanics
-	Game.GoWithMe.Option|Option|Will you go with me, to help?|Game.GoWithMe
-	|Option|Got any general tips?|Game.Tips
-	|Option|I never read the instructions!|Game.NeverMind
+	|Display|The rules and objectives keep changing,
+	|Display|to say nothing of the bugs.
+	|Display|But basically, use the W, A, S, and D keys to move,
+	|Display|and the T key to talk, though I'm the only one here.
+	|Display|Walk through the maze until you find the room
+	|Display|with the floor made of green tile.
+	|Display|You're being timed, by the way.
+	|Option|Guess I should get started.|Game.Done
 	Game.Prompt|Prompt
 
-		Game.Win|Display|Last I heard?
-		|Display|Get five keys, touch the goal.
-		|Display|Whee.
-		|Display|Oh, and since the latest updates...
-		|Display|...you'll have to FIND the goal first.
-		|Prompt
-
-		Game.Controls|Display|The arrow keys move you around.
-		|Display|The G key picks up any nearby items.
-		|Display|The E key interacts with things and people.
-		|Display|The F key uses a weapon, if one's equipped.
-		|Display|Tab or Escape brings up the menu.
-		|Display|Space jumps, if you've learned how.
-		|Display|There's SUPPOSED to be gamepad support...
-		|Display|...but it never gets tested.
-		|Prompt
-
-		Game.Mechanics|Display|Not really.
-		|Display|You can pick stuff up.
-		|Display|You can then see what you've picked up...
-		|Display|...by going to the status screen...
-		|Display|...by pressing, I think, Tab?
-		|Display|You can also equip things from there.
-		|Display|If you can find and equip a gun and ammo...
-		|Display|...you can shoot the red guys...
-		|Display|...but they'll just keep coming forever.
-		|Display|The status screen also has a 'craft' tab...
-		|Display|...though there aren't many recipes yet.
-		|Display|For now I think you can upgrade armor.
-		|Display|Finally, there's a tab for skills...
-		|Display|...like jumping and running...
-		|Display|...which are available to learn...
-		|Display|...provided you already know the prereqs...
-		|Display|...and have enough experience.
-		|Display|You gain experience by killing 'monsters'...
-		|Display|...that makes YOU the real monster, though.
-		|Prompt
-
-		Game.GoWithMe|Display|No, I'm pretty comfortable here.
-		|Display|But I'll give you a walkie-talkie...
-		|Display|...so I can provide valuable insights.
-		|Script|(u) => { u.world.placeCurrent.player().itemHolder().itemEntityAdd( new Entity(null, [ new Item('Walkie-Talkie', 1) ] ) ); }
-		|Display|[You have received a walkie-talkie.]
-		|Disable||Game.GoWithMe.Option
-		|Prompt
-
-		Game.Tips|Display|Don't touch anything red.
-		|Display|Just in the game, I mean...
-		|Display|...not in, like, life.
-		|Prompt
-
-		Game.NeverMind|Display|You were fun.  I'll miss you.
+		Game.Done|Display|Sure, sure.  Have fun, if possible.
 		|Pop
 		|Prompt
-
-	Trade|Display|I guess so.  Got anything good?
-	|Script|u.venueNextSet(ItemBarterer.create().toControl(u, u.display.sizeInPixels, cr.p, cr.t, u.venueCurrent() ).toVenue() )
-	|Display|Well, that was mutually enriching.
-	|Prompt
 
 Quit|Display|Same to you, buddy.
 

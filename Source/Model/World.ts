@@ -50,17 +50,17 @@ class WorldExtended extends World
 
 	static create(universe: Universe): WorldExtended
 	{
-		var actions = PlaceZoned2.actionsCreate();
+		var actions = PlaceBuilder.actionsCreate();
 
-		var actionToInputsMappings = PlaceZoned2.actionToInputsMappingsCreate(actions);
+		var actionToInputsMappings = PlaceBuilder.actionToInputsMappingsCreate(actions);
 
-		var materials = PlaceZoned2.materialsCreate();
+		var materials = PlaceBuilder.materialsCreate();
 		var materialsByName = ArrayHelper.addLookupsByName(materials);
 
 		var mazeSizeInCells = Coords.fromXYZ(4, 4, 1);
 		var mazeCellSizeInPixels = Coords.fromXYZ(2, 2, 1).multiplyScalar(40);
 		var randomizer = universe.randomizer;
-		var place = PlaceZoned2.random
+		var place = PlaceBuilder.placeMazeBuildRandom
 		(
 			mazeSizeInCells, mazeCellSizeInPixels, randomizer, materialsByName
 		);
