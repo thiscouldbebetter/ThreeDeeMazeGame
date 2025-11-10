@@ -340,41 +340,14 @@ class PlaceBuilder
 
 	static materialsCreate(): Material[]
 	{
-		var pixelsGrayWithDarkBorder =
-		[
-			"aaaaaaaaaaaaaaaa",
-			"aAAAAAAAAAAAAAAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAaaaaaaaaaaaaAa",
-			"aAAAAAAAAAAAAAAa",
-			"aaaaaaaaaaaaaaaa",
-		];
-
-		var pixelsGrayWithColoredBorders = new Map<string, any>();
-		var colorCodesForBorders = [ "R", "G", "B" ];
-		for (var c = 0; c < colorCodesForBorders.length; c++)
-		{
-			var colorCodeForBorder = colorCodesForBorders[c];
-			var pixelsGrayWithColoredBorder =
-				pixelsGrayWithDarkBorder
-					.join(",").split("A").join(colorCodeForBorder).split(",");
-			pixelsGrayWithColoredBorders.set
-			(
-				colorCodeForBorder, pixelsGrayWithColoredBorder
-			);
-		}
-
 		var colors = Color.Instances();
+
+		var colorBlue = colors.BlueDark;
+		var colorGray = colors.Gray;
+		var colorGrayDark = colors.GrayDark;
+		var colorGreen = colors.GreenDark;
+		var colorRed = colors.RedDark;
+
 		var imageBuilder = new ImageBuilder(colors._All);
 
 		var textures =
@@ -382,97 +355,63 @@ class PlaceBuilder
 			Texture.fromNameAndImage
 			(
 				"Chest",
-				imageBuilder.buildImageFromStrings
+				imageBuilder.squareOfColorWithInsetBorderOfColor
 				(
-					"Chest",
-					pixelsGrayWithColoredBorders.get("R")
+					colorGray, colorRed
 				)
 			),
 
 			Texture.fromNameAndImage
 			(
 				"Door",
-				imageBuilder.buildImageFromStrings
+				imageBuilder.squareOfColorWithInsetBorderOfColor
 				(
-					"Door",
-					pixelsGrayWithColoredBorders.get("B")
+					colorGray, colorBlue
 				)
 			),
 
 			Texture.fromNameAndImage
 			(
 				"Floor",
-				imageBuilder.buildImageFromStrings
+				imageBuilder.squareOfColorWithInsetBorderOfColor
 				(
-					"Floor",
-					pixelsGrayWithDarkBorder
+					colorGray, colorGrayDark
 				)
 			),
 
 			Texture.fromNameAndImage
 			(
 				"Goal",
-				imageBuilder.buildImageFromStrings
+				imageBuilder.squareOfColorWithInsetBorderOfColor
 				(
-					"Goal",
-					pixelsGrayWithColoredBorders.get("G")
+					colorGray, colorGreen
 				)
 			),
 
 			Texture.fromNameAndImage
 			(
 				"Mover",
-				imageBuilder.buildImageFromStrings
+				imageBuilder.squareOfColor
 				(
-					"Mover",
-					[
-						"@"
-					]
+					colorGray
 				)
 			),
 
 			Texture.fromNameAndImage
 			(
 				"Start",
-				imageBuilder.buildImageFromStrings
+				imageBuilder.squareOfColorWithInsetBorderOfColor
 				(
-					"Start",
-					pixelsGrayWithColoredBorders.get("R")
+					colorGray, colorRed
 				)
 			),
 
 			Texture.fromNameAndImage
 			(
 				"Wall",
-				imageBuilder.buildImageFromStrings
+				imageBuilder.wallMasonryWithColorsForBlocksAndMortar
 				(
-					"Wall",
-					[
-						"AAAAAAAAAAAAAAAA",
-
-						"AaaaAaaaAaaaAaaa",
-						"AaaaAaaaAaaaAaaa",
-						"AaaaAaaaAaaaAaaa",
-
-						"AAAAAAAAAAAAAAAA",
-
-						"aaAaaaAaaaAaaaAa",
-						"aaAaaaAaaaAaaaAa",
-						"aaAaaaAaaaAaaaAa",
-
-						"AAAAAAAAAAAAAAAA",
-
-						"AaaaAaaaAaaaAaaa",
-						"AaaaAaaaAaaaAaaa",
-						"AaaaAaaaAaaaAaaa",
-
-						"AAAAAAAAAAAAAAAA",
-
-						"aaAaaaAaaaAaaaAa",
-						"aaAaaaAaaaAaaaAa",
-						"aaAaaaAaaaAaaaAa",
-
-					]
+					colors.Gray, colors.GrayDark
 				)
 			),
 		];
