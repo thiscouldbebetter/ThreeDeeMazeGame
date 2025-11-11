@@ -14,7 +14,6 @@ Subject.Random|Option|Say something random.|CoinFlip
 Subject.Carol|Option|We NEED to talk about Carol.|TalkOver|false
 |Option|; drop database conversation_topics;|SQLInjection
 |Option|Say, how do I play this game?|Game
-|Option|Do you want to trade items?|Trade
 |Option|Never mind. I hate you.|Quit
 SubjectPrompt|Prompt
 

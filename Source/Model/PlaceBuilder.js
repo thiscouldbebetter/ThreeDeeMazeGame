@@ -37,7 +37,10 @@ class PlaceBuilder {
         return actionToInputsMappings;
     }
     static entityBuildPlayer(maze, nameOfZoneStart, cellPosOfStart, mesh) {
-        var loc = Disposition.fromPosOrientationAndPlaceName(cellPosOfStart.clone().multiply(maze.cellSizeInPixels).add(Coords.fromXYZ(0, 0, -10)), Orientation.fromForwardAndDown(Coords.fromXYZ(0, 1, 0), Coords.fromXYZ(0, 0, 1)), nameOfZoneStart // venue
+        var loc = Disposition.fromPosOrientationAndPlaceName(cellPosOfStart
+            .clone()
+            .multiply(maze.cellSizeInPixels)
+            .add(Coords.fromXYZ(0, 0, -10)), Orientation.fromForwardAndDown(Coords.fromXYZ(0, 1, 0), Coords.fromXYZ(0, 0, 1)), nameOfZoneStart // venue
         );
         var locatable = Locatable.fromDisposition(loc);
         var visual = VisualMesh.fromMesh(mesh.clone());
@@ -74,11 +77,13 @@ class PlaceBuilder {
         var pos = cellPosOfStart
             .clone()
             .add(Coords
-            .fromXYZ(1, 1, 0)
+            .fromXY(1, 1)
             .multiplyScalar(.1))
             .multiply(maze.cellSizeInPixels);
-        var loc = Disposition.fromPosOrientationAndPlaceName(pos, Orientation.fromForward(Coords.fromXY(0, 1)), nameOfZoneStart // venue
+        var ori = Orientation.fromForward(Coords.fromXY(0, 1));
+        var loc = Disposition.fromPosOrientationAndPlaceName(pos, ori, nameOfZoneStart // venue
         );
+        loc.spin.angleInTurnsSet(.01);
         var locatable = Locatable.fromDisposition(loc);
         var mesh = meshDefnMover;
         var visual = VisualTransform.fromTransformAndChild(Transform_Multiple.fromChildren([

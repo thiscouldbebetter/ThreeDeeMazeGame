@@ -104,7 +104,16 @@ class PlaceZoned2 extends PlaceBase {
     }
     initialize(uwpe) {
         this.meshesToDraw = [];
-        // todo - hack
+        var zoneStart = this.initialize_1_ZoneStart();
+        this.zoneNext = zoneStart;
+        this.zonesActive = [];
+        this.initialize_2_Constraints();
+        var cameraEntity = this.initialize_3_Camera(uwpe.universe.display.sizeInPixels);
+        zoneStart.entities.push(cameraEntity);
+        this.cameraEntity = cameraEntity;
+        this.camera = Camera.of(this.cameraEntity);
+    }
+    initialize_1_ZoneStart() {
         var zoneStart;
         for (var i = 0; i < this.zones.length; i++) {
             var zone = this.zones[i];
@@ -115,8 +124,9 @@ class PlaceZoned2 extends PlaceBase {
                 break;
             }
         }
-        this.zoneNext = zoneStart;
-        this.zonesActive = [];
+        return zoneStart;
+    }
+    initialize_2_Constraints() {
         var constraintsCommon = [
             new Constraint_Gravity2(.1),
             new Constraint_Solid(),
@@ -132,85 +142,94 @@ class PlaceZoned2 extends PlaceBase {
                 entity.propertyAdd(constrainable);
             }
         }
-        var universe = uwpe.universe;
-        var viewSizeInPixels = universe.display.sizeInPixels.clone();
+    }
+    initialize_3_Camera(viewSizeInPixels) {
         var focalLength = viewSizeInPixels.z / 16;
         var followDivisor = 16;
         var offsetOfCameraFromPlayer = Coords.fromXYZ(0 - focalLength, 0, 0 - focalLength).divideScalar(followDivisor);
-        var loc = Disposition.fromPosOrientationAndPlaceName(Locatable.of(this.zoneNext.entities[0]).loc.pos.clone().add(offsetOfCameraFromPlayer), Orientation.fromForwardAndDown(Coords.fromXYZ(1, 0, 1), // forward
+        var playerPos = Locatable.of(this.zoneNext.entities[0]).loc.pos;
+        var cameraLoc = Disposition.fromPosOrientationAndPlaceName(playerPos.clone().add(offsetOfCameraFromPlayer), Orientation.fromForwardAndDown(Coords.fromXYZ(1, 0, 1), // forward
         Coords.fromXYZ(0, 0, 1) // down
         ), this.zoneNext.name);
-        var locatable = Locatable.fromDisposition(loc);
+        var cameraLocatable = Locatable.fromDisposition(cameraLoc);
         var cameraEntity = Entity.fromNameAndProperties("Camera", [
             Constrainable.fromConstraints([
                 new Constraint_Follow(this.entityForPlayer, focalLength / followDivisor),
                 new Constraint_OrientToward(this.entityForPlayer),
             ]),
-            locatable,
+            cameraLocatable,
             new Groundable()
         ]);
-        this.camera = Camera.fromViewSizeFocalLengthAndDisposition(viewSizeInPixels, focalLength, Locatable.of(cameraEntity).loc);
-        zoneStart.entities.push(cameraEntity);
-        this.cameraEntity = cameraEntity;
+        var camera = Camera.fromViewSizeFocalLengthAndDisposition(viewSizeInPixels.clone(), focalLength, cameraLoc);
+        cameraEntity.propertyAdd(camera);
+        return cameraEntity;
     }
     updateForTimerTick(uwpe) {
         var universe = uwpe.universe;
-        var world = uwpe.world;
         if (this.zoneNext != null) {
-            var zoneNextEntity = this.zoneNext.entities[0];
-            var zoneNextMesh = Collidable.of(zoneNextEntity).collider;
-            if (zoneNextMesh.materials[0].name == "Goal") {
-                var messageWin = "You reached the goal in "
-                    + world.secondsElapsed()
-                    + " seconds!  Press refresh for a new maze.";
-                alert(messageWin);
-            }
-            this.zoneCurrent = this.zoneNext;
-            this.zonesActive.length = 0;
-            this.zonesActive.push(this.zoneCurrent);
-            var zonesAdjacent = this.zoneCurrent.zonesAdjacent(this);
-            for (var i = 0; i < zonesAdjacent.length; i++) {
-                var zoneAdjacent = zonesAdjacent[i];
-                this.zonesActive.push(zoneAdjacent);
-            }
-            var facesForZonesActive = new Array();
-            for (var i = 0; i < this.zonesActive.length; i++) {
-                var zoneActive = this.zonesActive[i];
-                var zoneActiveEntity = zoneActive.entities[0];
-                var zoneMesh = Collidable.of(zoneActiveEntity).collider;
-                var facesForZone = zoneMesh.faces();
-                ArrayHelper.append(facesForZonesActive, facesForZone);
-            }
-            this.spacePartitioningTreeForZonesActive =
-                SpacePartitioningTree.fromFaces(facesForZonesActive);
-            this.zoneNext = null;
+            this.updateForTimerTick_1_ZoneNextNotNull(uwpe);
         }
-        for (var z = 0; z < this.zonesActive.length; z++) {
-            var zoneActive = this.zonesActive[z];
-            zoneActive.updateForTimerTick(uwpe);
-        }
+        this.zonesActive.forEach(x => x.updateForTimerTick(uwpe));
         this.draw(universe);
+        var playerIsInZoneCurrent = this.updateForTimerTick_2_DetermineIfPlayerIsInZoneCurrent();
+        if (playerIsInZoneCurrent == false) {
+            this.updateForTimerTick_3_PlayerNotInZoneCurrent();
+        }
+    }
+    updateForTimerTick_1_ZoneNextNotNull(uwpe) {
+        var zoneNextEntity = this.zoneNext.entities[0];
+        var zoneNextMesh = Collidable.of(zoneNextEntity).collider;
+        if (zoneNextMesh.materials[0].name == "Goal") {
+            var world = uwpe.world;
+            var messageWin = "You reached the goal in "
+                + world.secondsElapsed()
+                + " seconds!  Press refresh for a new maze.";
+            alert(messageWin);
+        }
+        this.zoneCurrent = this.zoneNext;
+        this.zonesActive.length = 0;
+        this.zonesActive.push(this.zoneCurrent);
+        var zonesAdjacent = this.zoneCurrent.zonesAdjacent(this);
+        for (var i = 0; i < zonesAdjacent.length; i++) {
+            var zoneAdjacent = zonesAdjacent[i];
+            this.zonesActive.push(zoneAdjacent);
+        }
+        var facesForZonesActive = new Array();
+        for (var i = 0; i < this.zonesActive.length; i++) {
+            var zoneActive = this.zonesActive[i];
+            var zoneActiveEntity = zoneActive.entities[0];
+            var zoneMesh = Collidable.of(zoneActiveEntity).collider;
+            var facesForZone = zoneMesh.faces();
+            ArrayHelper.append(facesForZonesActive, facesForZone);
+        }
+        this.spacePartitioningTreeForZonesActive =
+            SpacePartitioningTree.fromFaces(facesForZonesActive);
+        this.zoneNext = null;
+    }
+    updateForTimerTick_2_DetermineIfPlayerIsInZoneCurrent() {
         var zoneCurrentEntity = this.zoneCurrent.entities[0];
         var zoneCurrentMesh = Collidable.of(zoneCurrentEntity).collider;
         var zoneCurrentBounds = zoneCurrentMesh.geometry.box();
-        var playerIsInZoneCurrent = zoneCurrentBounds.containsPoint(Locatable.of(this.entityForPlayer).loc.pos);
-        if (playerIsInZoneCurrent == false) {
-            for (var z = 0; z < this.zonesActive.length; z++) {
-                var zoneActive = this.zonesActive[z];
-                var zoneActiveEntity = zoneActive.entities[0];
-                var zoneActiveMesh = Collidable.of(zoneActiveEntity).collider;
-                var zoneActiveBounds = zoneActiveMesh.geometry.box();
-                var isPlayerInZoneActive = zoneActiveBounds.containsPoint(Locatable.of(this.entityForPlayer).loc.pos);
-                if (isPlayerInZoneActive) {
-                    var zoneCurrentEntities = this.zoneCurrent.entities;
-                    ArrayHelper.remove(zoneCurrentEntities, this.entityForPlayer);
-                    ArrayHelper.remove(zoneCurrentEntities, this.cameraEntity);
-                    this.zoneNext = zoneActive;
-                    var zoneNextEntities = this.zoneNext.entities;
-                    zoneNextEntities.push(this.entityForPlayer);
-                    zoneNextEntities.push(this.cameraEntity);
-                    break;
-                }
+        var playerPos = Locatable.of(this.entityForPlayer).loc.pos;
+        var playerIsInZoneCurrent = zoneCurrentBounds.containsPoint(playerPos);
+        return playerIsInZoneCurrent;
+    }
+    updateForTimerTick_3_PlayerNotInZoneCurrent() {
+        for (var z = 0; z < this.zonesActive.length; z++) {
+            var zoneActive = this.zonesActive[z];
+            var zoneActiveEntity = zoneActive.entities[0];
+            var zoneActiveMesh = Collidable.of(zoneActiveEntity).collider;
+            var zoneActiveBounds = zoneActiveMesh.geometry.box();
+            var isPlayerInZoneActive = zoneActiveBounds.containsPoint(Locatable.of(this.entityForPlayer).loc.pos);
+            if (isPlayerInZoneActive) {
+                var zoneCurrentEntities = this.zoneCurrent.entities;
+                ArrayHelper.remove(zoneCurrentEntities, this.entityForPlayer);
+                ArrayHelper.remove(zoneCurrentEntities, this.cameraEntity);
+                this.zoneNext = zoneActive;
+                var zoneNextEntities = this.zoneNext.entities;
+                zoneNextEntities.push(this.entityForPlayer);
+                zoneNextEntities.push(this.cameraEntity);
+                break;
             }
         }
     }

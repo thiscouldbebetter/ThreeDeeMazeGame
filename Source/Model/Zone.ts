@@ -6,6 +6,8 @@ class Zone2 extends PlaceBase
 	namesOfZonesAdjacent: string[];
 	entities: Entity[];
 
+	entityPropertiesToUpdateNames: string[];
+
 	constructor
 	(
 		name: string,
@@ -32,6 +34,14 @@ class Zone2 extends PlaceBase
 		(
 			new Transform_Locate(Locatable.of(entity).loc)
 		);
+
+		this.entityPropertiesToUpdateNames = 
+		[
+			Actor.name,
+			Animatable2.name,
+			Constrainable.name
+			// Locatable.name // Activating this causes constraints to fail.
+		];
 	}
 
 	static fromNamePosNeighborNamesAndEntities
@@ -47,48 +57,18 @@ class Zone2 extends PlaceBase
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		for (var b = 0; b < this.entities.length; b++)
+		for (var e = 0; e < this.entities.length; e++)
 		{
-			var entity = this.entities[b];
+			var entity = this.entities[e];
 			uwpe.entitySet(entity);
 
-			var actor = Actor.of(entity);
-			if (actor != null)
+			for (var p = 0; p < this.entityPropertiesToUpdateNames.length; p++)
 			{
-				var activity = actor.activity;
-				if (activity != null)
+				var propertyName = this.entityPropertiesToUpdateNames[p];
+				var property = entity.propertyByName(propertyName);
+				if (property != null)
 				{
-					activity.perform(uwpe);
-				}
-
-				var actions = actor.actions;
-				if (actions != null)
-				{
-					for (var a = 0; a < actions.length; a++)
-					{
-						var action = actions[a];
-						action.perform(uwpe);
-					}
-
-					actions.length = 0;
-				}
-			}
-
-			var entityAnimatable = Animatable2.of(entity);
-			if (entityAnimatable != null)
-			{
-				entityAnimatable.updateForTimerTick(uwpe);
-			}
-
-			var entityConstrainable = Constrainable.of(entity);
-
-			if (entityConstrainable != null)
-			{
-				var entityConstraints = entityConstrainable.constraints;
-				for (var c = 0; c < entityConstraints.length; c++)
-				{
-					var constraint = entityConstraints[c];
-					constraint.constrain(uwpe);
+					property.updateForTimerTick(uwpe);
 				}
 			}
 		}

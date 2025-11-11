@@ -11,39 +11,26 @@ class Zone2 extends PlaceBase {
         var entity = this.entities[0];
         var meshTransformed = Collidable.of(entity).collider;
         meshTransformed.transform(new Transform_Locate(Locatable.of(entity).loc));
+        this.entityPropertiesToUpdateNames =
+            [
+                Actor.name,
+                Animatable2.name,
+                Constrainable.name
+                // Locatable.name // Activating this causes constraints to fail.
+            ];
     }
     static fromNamePosNeighborNamesAndEntities(name, pos, namesOfZonesAdjacent, entities) {
         return new Zone2(name, pos, namesOfZonesAdjacent, entities);
     }
     updateForTimerTick(uwpe) {
-        for (var b = 0; b < this.entities.length; b++) {
-            var entity = this.entities[b];
+        for (var e = 0; e < this.entities.length; e++) {
+            var entity = this.entities[e];
             uwpe.entitySet(entity);
-            var actor = Actor.of(entity);
-            if (actor != null) {
-                var activity = actor.activity;
-                if (activity != null) {
-                    activity.perform(uwpe);
-                }
-                var actions = actor.actions;
-                if (actions != null) {
-                    for (var a = 0; a < actions.length; a++) {
-                        var action = actions[a];
-                        action.perform(uwpe);
-                    }
-                    actions.length = 0;
-                }
-            }
-            var entityAnimatable = Animatable2.of(entity);
-            if (entityAnimatable != null) {
-                entityAnimatable.updateForTimerTick(uwpe);
-            }
-            var entityConstrainable = Constrainable.of(entity);
-            if (entityConstrainable != null) {
-                var entityConstraints = entityConstrainable.constraints;
-                for (var c = 0; c < entityConstraints.length; c++) {
-                    var constraint = entityConstraints[c];
-                    constraint.constrain(uwpe);
+            for (var p = 0; p < this.entityPropertiesToUpdateNames.length; p++) {
+                var propertyName = this.entityPropertiesToUpdateNames[p];
+                var property = entity.propertyByName(propertyName);
+                if (property != null) {
+                    property.updateForTimerTick(uwpe);
                 }
             }
         }
