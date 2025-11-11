@@ -356,7 +356,9 @@ class PlaceZoned2 extends PlaceBase
 		var zoneNextEntity = this.zoneNext.entities[0];
 		var zoneNextMesh =
 			Collidable.of(zoneNextEntity).collider as MeshTextured;
-		if (zoneNextMesh.materials[0].name == "Goal")
+		var zoneNextIsGoal =
+			zoneNextMesh.materials.some(x => x.name == "Goal");
+		if (zoneNextIsGoal)
 		{
 			var world = uwpe.world as WorldExtended;
 
