@@ -55,7 +55,7 @@ class Zone2 extends PlaceBase {
         if (collisions == null) {
             collisions = [];
         }
-        var zoneMesh = Collidable.of(this._entities[0]).collider.geometry;
+        var zoneMesh = Collidable.of(this._entities[0]).collider;
         universe.collisionHelper.collisionsOfEdgeAndMesh(edge, zoneMesh, collisions, null // first?
         );
         return collisions;
@@ -67,7 +67,7 @@ class Zone2 extends PlaceBase {
         var entity0 = entities[0];
         var entity0Collidable = Collidable.of(entity0);
         var meshTextured = entity0Collidable.collider;
-        var mesh = meshTextured.geometry;
+        var mesh = meshTextured;
         var meshAsString = mesh.toStringHumanReadable();
         var tab = "\t";
         var tabTab = tab + tab;

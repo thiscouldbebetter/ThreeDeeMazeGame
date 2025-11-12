@@ -26,7 +26,7 @@ class Constraint_Movable2 implements Constraint
 		if (collidable != null)
 		{
 			var meshTransformed = collidable.collider as MeshTextured;
-			var mesh = meshTransformed.geometry;
+			var mesh = meshTransformed;
 			this.transformLocate.loc = entityLoc;
 			mesh.transform(this.transformLocate);
 		}

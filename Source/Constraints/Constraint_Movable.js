@@ -15,7 +15,7 @@ class Constraint_Movable2 {
         var collidable = Collidable.of(entityToConstrain);
         if (collidable != null) {
             var meshTransformed = collidable.collider;
-            var mesh = meshTransformed.geometry;
+            var mesh = meshTransformed;
             this.transformLocate.loc = entityLoc;
             mesh.transform(this.transformLocate);
         }

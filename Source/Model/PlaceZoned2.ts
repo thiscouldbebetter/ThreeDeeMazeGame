@@ -130,7 +130,7 @@ class PlaceZoned2 extends PlaceBase
 					var collisionForFootprint =
 						collisionHelper.collisionOfEdgeAndFace
 						(
-							edgeForFootprint, face.geometry, Collision.create()
+							edgeForFootprint, face, Collision.create()
 						);
 
 					var isEntityStandingOnFace =
@@ -434,7 +434,7 @@ class PlaceZoned2 extends PlaceBase
 		var zoneCurrentMesh =
 			Collidable.of(zoneCurrentEntity).collider as MeshTextured;
 		var zoneCurrentBounds =
-			zoneCurrentMesh.geometry.box();
+			zoneCurrentMesh.box();
 
 		var playerPos = Locatable.of(this.entityForPlayer).loc.pos;
 		var playerIsInZoneCurrent = zoneCurrentBounds.containsPoint(playerPos);
@@ -484,7 +484,7 @@ class PlaceZoned2 extends PlaceBase
 				var zoneActiveMesh =
 					Collidable.of(zoneActiveEntity).collider as MeshTextured;
 				var zoneActiveBounds =
-					zoneActiveMesh.geometry.box();
+					zoneActiveMesh.box();
 				var zoneContainsPos =
 					zoneActiveBounds.containsPoint(posToCheck);
 

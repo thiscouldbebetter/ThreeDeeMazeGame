@@ -56,7 +56,7 @@ class PlaceZoned2 extends PlaceBase {
                 ]);
                 for (var g = facesToDraw.length - 1; g >= 0; g--) {
                     var face = facesToDraw[g];
-                    var collisionForFootprint = collisionHelper.collisionOfEdgeAndFace(edgeForFootprint, face.geometry, Collision.create());
+                    var collisionForFootprint = collisionHelper.collisionOfEdgeAndFace(edgeForFootprint, face, Collision.create());
                     var isEntityStandingOnFace = (collisionForFootprint != null
                         && collisionForFootprint.isActive);
                     if (isEntityStandingOnFace) {
@@ -226,7 +226,7 @@ class PlaceZoned2 extends PlaceBase {
     updateForTimerTick_2_DetermineIfPlayerIsInZoneCurrent() {
         var zoneCurrentEntity = this.zoneCurrent.entityForEnvironment();
         var zoneCurrentMesh = Collidable.of(zoneCurrentEntity).collider;
-        var zoneCurrentBounds = zoneCurrentMesh.geometry.box();
+        var zoneCurrentBounds = zoneCurrentMesh.box();
         var playerPos = Locatable.of(this.entityForPlayer).loc.pos;
         var playerIsInZoneCurrent = zoneCurrentBounds.containsPoint(playerPos);
         return playerIsInZoneCurrent;
@@ -254,7 +254,7 @@ class PlaceZoned2 extends PlaceBase {
                 var zone = zonesToCheck[z];
                 var zoneActiveEntity = zone.entityForEnvironment();
                 var zoneActiveMesh = Collidable.of(zoneActiveEntity).collider;
-                var zoneActiveBounds = zoneActiveMesh.geometry.box();
+                var zoneActiveBounds = zoneActiveMesh.box();
                 var zoneContainsPos = zoneActiveBounds.containsPoint(posToCheck);
                 if (zoneContainsPos) {
                     zoneContainingPos = zone;

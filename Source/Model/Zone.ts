@@ -109,7 +109,7 @@ class Zone2 extends PlaceBase
 		}
 
 		var zoneMesh =
-			(Collidable.of(this._entities[0]).collider as MeshTextured).geometry;
+			(Collidable.of(this._entities[0]).collider as MeshTextured);
 
 		universe.collisionHelper.collisionsOfEdgeAndMesh
 		(
@@ -129,7 +129,7 @@ class Zone2 extends PlaceBase
 		var entity0 = entities[0];
 		var entity0Collidable = Collidable.of(entity0);
 		var meshTextured = entity0Collidable.collider as MeshTextured;
-		var mesh = meshTextured.geometry;
+		var mesh = meshTextured;
 		var meshAsString = mesh.toStringHumanReadable();
 		var tab = "\t";
 		var tabTab = tab + tab;

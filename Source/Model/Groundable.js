@@ -25,7 +25,7 @@ class Groundable extends EntityPropertyBase {
             var zone = zonesToCheck[i];
             var zoneEntity = zone.entityForEnvironment();
             var zoneMesh = Collidable.of(zoneEntity).collider;
-            var collisions = collisionHelper.collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh.geometry, null, null // ?
+            var collisions = collisionHelper.collisionsOfEdgeAndMesh(edgeForFootprint, zoneMesh, null, null // ?
             );
             if (collisions.some((x) => x.isActive)) {
                 var collision = collisions[0];

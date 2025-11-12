@@ -8,9 +8,9 @@ class DisplayHelper {
         if (faceToDraw == null) {
             return;
         }
-        var vertices = faceToDraw.geometry.vertices;
+        var vertices = faceToDraw.vertices;
         var displacementFromCameraToVertex0 = vertices[0].clone().subtract(Locatable.of(cameraEntity).loc.pos);
-        var faceNormal = faceToDraw.geometry.plane().normal;
+        var faceNormal = faceToDraw.plane().normal;
         var faceNormalDotDisplacementFromCameraToVertex0 = faceNormal.dotProduct(displacementFromCameraToVertex0);
         if (faceNormalDotDisplacementFromCameraToVertex0 >= 0) {
             return;

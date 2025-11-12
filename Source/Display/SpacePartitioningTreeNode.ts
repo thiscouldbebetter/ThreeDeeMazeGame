@@ -8,7 +8,7 @@ class SpacePartitioningTreeNode
 	{
 		var faceToDivideOn = faces[0];
 		this.faces = [ faceToDivideOn ];
-		var planeToDivideOn = faceToDivideOn.geometry.plane();
+		var planeToDivideOn = faceToDivideOn.plane();
 
 		if (faces.length == 1)
 		{
@@ -25,7 +25,7 @@ class SpacePartitioningTreeNode
 			for (var f = 1; f < faces.length; f++)
 			{
 				var faceOther = faces[f];
-				var faceOtherGeometry = faceOther.geometry;
+				var faceOtherGeometry = faceOther;
 				var planeOther = faceOtherGeometry.plane();
 				if (planeOther.equals(planeToDivideOn) == true)
 				{
@@ -82,8 +82,10 @@ class SpacePartitioningTreeNode
 		}
 		else
 		{
+			var face0 = this.faces[0];
+
 			var distanceOfCameraAbovePlane =
-				this.faces[0].geometry.plane().distanceToPointAlongNormal(cameraPos);
+				face0.plane().distanceToPointAlongNormal(cameraPos);
 
 			var childIndexFirst = (distanceOfCameraAbovePlane > 0 ? 1 : 0);
 
