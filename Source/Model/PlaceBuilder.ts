@@ -514,6 +514,22 @@ class PlaceBuilder
 				maze, nameOfZoneStart, cellPosOfStart, meshMover
 			);
 
+		ArrayHelper.addMany
+		(
+			zoneStart.entitiesAll(),
+			[
+				entityForPlayer,
+				entityForMoverOther
+			]
+		);
+
+		var place = PlaceZoned2.fromSizeZonesAndEntityForPlayer
+		(
+			maze.sizeInPixels,
+			zones,
+			entityForPlayer
+		);
+
 		var entityForChest =
 			this.entityBuildChest
 			(
@@ -523,6 +539,7 @@ class PlaceBuilder
 				materialsByName.get("Chest"),
 				moverHeight
 			);
+		place.entityToSpawnAdd(entityForChest);
 
 		var entityForDoor =
 			this.entityBuildDoor
@@ -533,24 +550,7 @@ class PlaceBuilder
 				materialsByName.get("Door"),
 				moverHeight
 			);
-
-		ArrayHelper.addMany
-		(
-			zoneStart.entities,
-			[
-				entityForPlayer,
-				entityForMoverOther,
-				entityForChest,
-				entityForDoor,
-			]
-		);
-
-		var place = new PlaceZoned2
-		(
-			maze.sizeInPixels,
-			zones,
-			entityForPlayer
-		);
+		place.entityToSpawnAdd(entityForDoor);
 
 		return place;
 	}
@@ -771,8 +771,8 @@ class PlaceBuilder
 
 		var zoneConnectorName =
 			neighborIsOdd
-			? zoneForNodeName + zoneNeighborName
-			: zoneNeighborName + zoneForNodeName;
+			? zoneForNodeName + "-" + zoneNeighborName
+			: zoneNeighborName + "-" + zoneForNodeName;
 
 		// Only create connectors for neighbors south and east,
 		// because north and west are handled by another node.

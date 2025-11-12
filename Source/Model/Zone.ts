@@ -3,8 +3,8 @@ class Zone2 extends PlaceBase
 {
 	name: string;
 	pos: Coords;
-	namesOfZonesAdjacent: string[];
-	entities: Entity[];
+	zonesAdjacentNames: string[];
+	//entities: Entity[];
 
 	entityPropertiesToUpdateNames: string[];
 
@@ -12,7 +12,7 @@ class Zone2 extends PlaceBase
 	(
 		name: string,
 		pos: Coords,
-		namesOfZonesAdjacent: string[],
+		zonesAdjacentNames: string[],
 		entities: Entity[]
 	)
 	{
@@ -25,14 +25,15 @@ class Zone2 extends PlaceBase
 			entities
 		);
 		this.pos = pos;
-		this.namesOfZonesAdjacent = namesOfZonesAdjacent;
-		this.entities = entities;
+		this.zonesAdjacentNames = zonesAdjacentNames;
+		this._entities = entities;
 
-		var entity = this.entities[0];
-		var meshTransformed = Collidable.of(entity).collider;
+		var entityForEnvironment = this.entityForEnvironment();
+		var meshTransformed = Collidable.of(entityForEnvironment).collider;
+		var disp = Locatable.of(entityForEnvironment).loc;
 		meshTransformed.transform
 		(
-			new Transform_Locate(Locatable.of(entity).loc)
+			Transform_Locate.fromDisposition(disp)
 		);
 
 		this.entityPropertiesToUpdateNames = 
@@ -48,18 +49,19 @@ class Zone2 extends PlaceBase
 	(
 		name: string,
 		pos: Coords,
-		namesOfZonesAdjacent: string[],
+		zonesAdjacentNames: string[],
 		entities: Entity[]
 	): Zone2
 	{
-		return new Zone2(name, pos, namesOfZonesAdjacent, entities);
+		return new Zone2(name, pos, zonesAdjacentNames, entities);
 	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		for (var e = 0; e < this.entities.length; e++)
+		var entities = this._entities;
+		for (var e = 0; e < entities.length; e++)
 		{
-			var entity = this.entities[e];
+			var entity = entities[e];
 			uwpe.entitySet(entity);
 
 			for (var p = 0; p < this.entityPropertiesToUpdateNames.length; p++)
@@ -74,15 +76,20 @@ class Zone2 extends PlaceBase
 		}
 	}
 
+	entityForEnvironment(): Entity
+	{
+		return this._entities[0];
+	}
+
 	zonesAdjacent(place: PlaceZoned2): Zone2[]
 	{
 		var returnValues = [];
 
-		var namesOfZonesAdjacent = this.namesOfZonesAdjacent;
-		for (var i = 0; i < namesOfZonesAdjacent.length; i++)
+		var zonesAdjacentNames = this.zonesAdjacentNames;
+		for (var i = 0; i < zonesAdjacentNames.length; i++)
 		{
-			var nameOfZoneAdjacent = namesOfZonesAdjacent[i];
-			var zoneAdjacent = place.zoneByName(nameOfZoneAdjacent);
+			var zonesAdjacentName = zonesAdjacentNames[i];
+			var zoneAdjacent = place.zoneByName(zonesAdjacentName);
 			returnValues.push(zoneAdjacent);
 		}
 
@@ -102,7 +109,7 @@ class Zone2 extends PlaceBase
 		}
 
 		var zoneMesh =
-			(Collidable.of(this.entities[0]).collider as MeshTextured).geometry;
+			(Collidable.of(this._entities[0]).collider as MeshTextured).geometry;
 
 		universe.collisionHelper.collisionsOfEdgeAndMesh
 		(
@@ -111,4 +118,39 @@ class Zone2 extends PlaceBase
 
 		return collisions;
 	}
+
+	// Serialization.
+
+	toStringHumanReadable(): string
+	{
+		var newline = "\n";
+
+		var entities = this._entities;
+		var entity0 = entities[0];
+		var entity0Collidable = Collidable.of(entity0);
+		var meshTextured = entity0Collidable.collider as MeshTextured;
+		var mesh = meshTextured.geometry;
+		var meshAsString = mesh.toStringHumanReadable();
+		var tab = "\t";
+		var tabTab = tab + tab;
+		var newlineTabTab = newline + tabTab;
+		meshAsString =
+			tabTab
+			+ meshAsString.split(newline).join(newlineTabTab);
+
+		var zoneAsLines =
+		[
+			"Zone:",
+			tab + "Name: " + this.name,
+			tab + "Pos: " + this.pos.toStringXYZ(),
+			tab + "Neighbors: " + this.zonesAdjacentNames.join(", "),
+			tab + "Meshes:",
+			meshAsString
+		];
+
+		var zoneAsString = zoneAsLines.join(newline);
+
+		return zoneAsString;
+	}
+
 }

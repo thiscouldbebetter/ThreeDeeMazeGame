@@ -220,15 +220,15 @@ class PlaceBuilder {
         var zoneStart = zonesByName.get(nameOfZoneStart);
         var entityForPlayer = this.entityBuildPlayer(maze, nameOfZoneStart, cellPosOfStart, meshMover);
         var entityForMoverOther = this.entityBuildMoverOther(maze, nameOfZoneStart, cellPosOfStart, meshMover);
-        var entityForChest = this.entityBuildChest(maze, nameOfZoneStart, cellPosOfStart, materialsByName.get("Chest"), moverHeight);
-        var entityForDoor = this.entityBuildDoor(maze, nameOfZoneStart, cellPosOfStart, materialsByName.get("Door"), moverHeight);
-        ArrayHelper.addMany(zoneStart.entities, [
+        ArrayHelper.addMany(zoneStart.entitiesAll(), [
             entityForPlayer,
-            entityForMoverOther,
-            entityForChest,
-            entityForDoor,
+            entityForMoverOther
         ]);
-        var place = new PlaceZoned2(maze.sizeInPixels, zones, entityForPlayer);
+        var place = PlaceZoned2.fromSizeZonesAndEntityForPlayer(maze.sizeInPixels, zones, entityForPlayer);
+        var entityForChest = this.entityBuildChest(maze, nameOfZoneStart, cellPosOfStart, materialsByName.get("Chest"), moverHeight);
+        place.entityToSpawnAdd(entityForChest);
+        var entityForDoor = this.entityBuildDoor(maze, nameOfZoneStart, cellPosOfStart, materialsByName.get("Door"), moverHeight);
+        place.entityToSpawnAdd(entityForDoor);
         return place;
     }
     static zonesBuildForMazeMaterialsStartAndGoalPositions(maze, materialWall, materialFloor, cellPosOfStart, materialStart, cellPosOfGoal, materialGoal) {
@@ -320,8 +320,8 @@ class PlaceBuilder {
         var zoneNeighborName = neighborPosInCells.toString();
         var neighborIsOdd = (n % 2) == 1;
         var zoneConnectorName = neighborIsOdd
-            ? zoneForNodeName + zoneNeighborName
-            : zoneNeighborName + zoneForNodeName;
+            ? zoneForNodeName + "-" + zoneNeighborName
+            : zoneNeighborName + "-" + zoneForNodeName;
         // Only create connectors for neighbors south and east,
         // because north and west are handled by another node.
         if (neighborIsOdd) {

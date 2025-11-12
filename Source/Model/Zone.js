@@ -1,16 +1,17 @@
 "use strict";
 class Zone2 extends PlaceBase {
-    constructor(name, pos, namesOfZonesAdjacent, entities) {
+    constructor(name, pos, zonesAdjacentNames, entities) {
         super(name, null, // defnName
         null, // parentName
         null, // size
         entities);
         this.pos = pos;
-        this.namesOfZonesAdjacent = namesOfZonesAdjacent;
-        this.entities = entities;
-        var entity = this.entities[0];
-        var meshTransformed = Collidable.of(entity).collider;
-        meshTransformed.transform(new Transform_Locate(Locatable.of(entity).loc));
+        this.zonesAdjacentNames = zonesAdjacentNames;
+        this._entities = entities;
+        var entityForEnvironment = this.entityForEnvironment();
+        var meshTransformed = Collidable.of(entityForEnvironment).collider;
+        var disp = Locatable.of(entityForEnvironment).loc;
+        meshTransformed.transform(Transform_Locate.fromDisposition(disp));
         this.entityPropertiesToUpdateNames =
             [
                 Actor.name,
@@ -19,12 +20,13 @@ class Zone2 extends PlaceBase {
                 // Locatable.name // Activating this causes constraints to fail.
             ];
     }
-    static fromNamePosNeighborNamesAndEntities(name, pos, namesOfZonesAdjacent, entities) {
-        return new Zone2(name, pos, namesOfZonesAdjacent, entities);
+    static fromNamePosNeighborNamesAndEntities(name, pos, zonesAdjacentNames, entities) {
+        return new Zone2(name, pos, zonesAdjacentNames, entities);
     }
     updateForTimerTick(uwpe) {
-        for (var e = 0; e < this.entities.length; e++) {
-            var entity = this.entities[e];
+        var entities = this._entities;
+        for (var e = 0; e < entities.length; e++) {
+            var entity = entities[e];
             uwpe.entitySet(entity);
             for (var p = 0; p < this.entityPropertiesToUpdateNames.length; p++) {
                 var propertyName = this.entityPropertiesToUpdateNames[p];
@@ -35,12 +37,15 @@ class Zone2 extends PlaceBase {
             }
         }
     }
+    entityForEnvironment() {
+        return this._entities[0];
+    }
     zonesAdjacent(place) {
         var returnValues = [];
-        var namesOfZonesAdjacent = this.namesOfZonesAdjacent;
-        for (var i = 0; i < namesOfZonesAdjacent.length; i++) {
-            var nameOfZoneAdjacent = namesOfZonesAdjacent[i];
-            var zoneAdjacent = place.zoneByName(nameOfZoneAdjacent);
+        var zonesAdjacentNames = this.zonesAdjacentNames;
+        for (var i = 0; i < zonesAdjacentNames.length; i++) {
+            var zonesAdjacentName = zonesAdjacentNames[i];
+            var zoneAdjacent = place.zoneByName(zonesAdjacentName);
             returnValues.push(zoneAdjacent);
         }
         return returnValues;
@@ -50,9 +55,35 @@ class Zone2 extends PlaceBase {
         if (collisions == null) {
             collisions = [];
         }
-        var zoneMesh = Collidable.of(this.entities[0]).collider.geometry;
+        var zoneMesh = Collidable.of(this._entities[0]).collider.geometry;
         universe.collisionHelper.collisionsOfEdgeAndMesh(edge, zoneMesh, collisions, null // first?
         );
         return collisions;
+    }
+    // Serialization.
+    toStringHumanReadable() {
+        var newline = "\n";
+        var entities = this._entities;
+        var entity0 = entities[0];
+        var entity0Collidable = Collidable.of(entity0);
+        var meshTextured = entity0Collidable.collider;
+        var mesh = meshTextured.geometry;
+        var meshAsString = mesh.toStringHumanReadable();
+        var tab = "\t";
+        var tabTab = tab + tab;
+        var newlineTabTab = newline + tabTab;
+        meshAsString =
+            tabTab
+                + meshAsString.split(newline).join(newlineTabTab);
+        var zoneAsLines = [
+            "Zone:",
+            tab + "Name: " + this.name,
+            tab + "Pos: " + this.pos.toStringXYZ(),
+            tab + "Neighbors: " + this.zonesAdjacentNames.join(", "),
+            tab + "Meshes:",
+            meshAsString
+        ];
+        var zoneAsString = zoneAsLines.join(newline);
+        return zoneAsString;
     }
 }

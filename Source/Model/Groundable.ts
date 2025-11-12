@@ -39,7 +39,7 @@ class Groundable extends EntityPropertyBase<Groundable>
 		for (var i = 0; i < zonesToCheck.length; i++)
 		{
 			var zone = zonesToCheck[i];
-			var zoneEntity = zone.entities[0];
+			var zoneEntity = zone.entityForEnvironment();
 			var zoneMesh = Collidable.of(zoneEntity).collider as MeshTextured
 			var collisions = collisionHelper.collisionsOfEdgeAndMesh
 			(
