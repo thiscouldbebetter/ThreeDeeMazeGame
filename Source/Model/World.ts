@@ -65,6 +65,13 @@ class WorldExtended extends World
 			mazeSizeInCells, mazeCellSizeInPixels, randomizer, materialsByName
 		);
 
+		// hack - Lighting test.
+		var entityPlayer = place.entityForPlayer;
+		var playerPos = Locatable.of(entityPlayer).pos();
+		var display = universe.display as Display3D;
+		var lightPoint = display.lighting.lightPoint;
+		lightPoint.pos.overwriteWith(playerPos);
+
 		var returnValue = new WorldExtended
 		(
 			World.name + place.name,

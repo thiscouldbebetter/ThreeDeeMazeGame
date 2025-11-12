@@ -22,6 +22,12 @@ class WorldExtended extends World {
         var mazeCellSizeInPixels = Coords.fromXYZ(2, 2, 1).multiplyScalar(40);
         var randomizer = universe.randomizer;
         var place = PlaceBuilder.placeMazeBuildRandom(mazeSizeInCells, mazeCellSizeInPixels, randomizer, materialsByName);
+        // hack - Lighting test.
+        var entityPlayer = place.entityForPlayer;
+        var playerPos = Locatable.of(entityPlayer).pos();
+        var display = universe.display;
+        var lightPoint = display.lighting.lightPoint;
+        lightPoint.pos.overwriteWith(playerPos);
         var returnValue = new WorldExtended(World.name + place.name, actions, actionToInputsMappings, materials, place);
         return returnValue;
     }
