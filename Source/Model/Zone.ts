@@ -142,7 +142,7 @@ class Zone2 extends PlaceBase
 		[
 			"Zone:",
 			tab + "Name: " + this.name,
-			tab + "Pos: " + this.pos.toStringXYZ(),
+			tab + "Pos: " + this.pos.toStringXxYxZ(),
 			tab + "Neighbors: " + this.zonesAdjacentNames.join(", "),
 			tab + "Meshes:",
 			meshAsString

@@ -535,7 +535,7 @@ class PlaceZoned2 extends PlaceBase
 		[
 			"PlaceZoned:",
 			tab + "Name: " + this.name,
-			tab + "Size: " + this.size().toStringXYZ(),
+			tab + "Size: " + this.size().toStringXxYxZ(),
 			tab + "Zones: ",
 			zonesAsString
 		];
